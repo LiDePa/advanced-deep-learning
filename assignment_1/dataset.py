@@ -5,6 +5,10 @@ from typing import Tuple, List
 import torch
 from torch.utils.data import DataLoader
 
+import glob
+import os
+import numpy as np
+
 
 def get_simpsons_subsets(dataset_path):
     """
@@ -12,7 +16,13 @@ def get_simpsons_subsets(dataset_path):
     :param dataset_path: path to the "imgs" folder of the simpsons dataset (this is important, do not use another path logic!)
     :return: list of training images, training labels, validation images, validation labels, and class class names
     """
-    raise NotImplementedError
+    #train liste definieren
+    #validation liste definieren
+    for character_path in sorted(glob.glob(os.path.join(dataset_path, "*"))):
+        n_train = np.ceil(len(glob.glob(os.path.join(character_path,"*.jpg")))*0.6)
+        print(n_train)
+        #element 1-n zu train liste hinzufügen
+        #rest zu validation liste hinzufügen
 
 
 class SimpsonsDataset(torch.utils.data.Dataset):
