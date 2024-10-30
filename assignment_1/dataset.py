@@ -16,13 +16,28 @@ def get_simpsons_subsets(dataset_path):
     :param dataset_path: path to the "imgs" folder of the simpsons dataset (this is important, do not use another path logic!)
     :return: list of training images, training labels, validation images, validation labels, and class class names
     """
-    #train liste definieren
-    #validation liste definieren
+
+    #define training and validation lists to be filled iteratively
+    images_train = []
+    images_val = []
+    labels_train = []
+    labels_val = []
+    character_label = 0
+
+    #iterate through each character folder and split the images into a training and a validation set
     for character_path in sorted(glob.glob(os.path.join(dataset_path, "*"))):
-        n_train = np.ceil(len(glob.glob(os.path.join(character_path,"*.jpg")))*0.6)
-        print(n_train)
-        #element 1-n zu train liste hinzufügen
-        #rest zu validation liste hinzufügen
+        images = glob.glob(os.path.join(character_path,"*.jpg")) #sorting shouldn't be necessary here
+        n_images = len(images)
+        n_train = int(np.ceil(n_images*0.6))
+
+        images_train.extend(images[:n_train])
+        images_val.extend(images[n_train:])
+
+        character_label += 1
+        labels_train.extend([character_label] * n_train)
+        labels_val.extend([character_label] * (n_images - n_train))
+
+    print(images_train, labels_train)
 
 
 class SimpsonsDataset(torch.utils.data.Dataset):
