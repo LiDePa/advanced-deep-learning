@@ -1,11 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" autoUpload="Always" serverName="depascli@mmc116.informatik.uni-augsburg.de:22 password" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="scdavid@mmc114.informatik.uni-augsburg.de:22 password (2)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="depascli@mmc116.informatik.uni-augsburg.de:22 password">
         <serverdata>
           <mappings>
             <mapping deploy="/tmp/pycharm_project_868" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="scdavid@mmc114.informatik.uni-augsburg.de:22 password">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_58" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="scdavid@mmc114.informatik.uni-augsburg.de:22 password (2)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/tmp/pycharm_project_790" local="$PROJECT_DIR$" />
           </mappings>
         </serverdata>
       </paths>
