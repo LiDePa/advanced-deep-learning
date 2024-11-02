@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from typing import Tuple, List
-
 import torch
+from torch.nn import Bilinear
 from torch.utils.data import DataLoader
-
 import glob
 import os
 import numpy as np
+import torchvision.transforms.v2 as transforms
+from PIL import Image
+from torch.xpu import device
+from torchvision.transforms.v2 import PILToTensor
+
 
 
 def get_simpsons_subsets(dataset_path):
@@ -48,9 +52,6 @@ def get_simpsons_subsets(dataset_path):
         return images_train, labels_train, images_val, labels_val, class_names
 
 
-
-
-
 class SimpsonsDataset(torch.utils.data.Dataset):
     def __init__(self, images, labels, class_names, is_validation):
         """
@@ -60,20 +61,39 @@ class SimpsonsDataset(torch.utils.data.Dataset):
         :param is_validation: Flag indicating evaluation or training mode
         yields Image as numpy array and label
         """
-
         self.images = images
         self.labels = labels
         self.class_names = class_names
         self.is_validation = is_validation
-
-        raise NotImplementedError
+        self.pil_to_tensor = PILToTensor()
+        self.transform = transforms.Compose([
+            transforms.Resize(127, max_size=128),
+            transforms.ConvertImageDtype(torch.float),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
 
     def __getitem__(self, idx):
-        raise NotImplementedError
+        image = Image.open(self.images[idx]).convert('RGB')
+        image.thumbnail((128,128), Image.LANCZOS)
+
+        width = image.width
+        height = image.height
+        x = self.pil_to_tensor(image)
+        if width < 128:
+            self.x = x.transforms.Pad(0,0, 128-width, 0)
+        elif height < 128:
+            self.x =x.transforms.Pad(0,0,0,128-height)
+
+
+        self.y = self.labels[idx]
+        return self.x, self.y
 
     def __len__(self):
-        raise NotImplementedError
+        return len(self.x)
 
 
 def get_dataloader(dataset_path) -> Tuple[DataLoader, DataLoader, List[str]]:
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #create train dataset object and send it to device
+    #create val dataset and send it to device
+    #return both datasets
     raise NotImplementedError
