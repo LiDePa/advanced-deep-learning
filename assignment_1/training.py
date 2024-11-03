@@ -29,6 +29,23 @@ def train(
     :param ema_model: Used in Exercise 1.2(c)
     :return:
     """
+
+    model.to(device)
+
+    for epoch in range(epochs):
+        model.train()
+
+        for batch in train_loader:
+            x, y = batch
+            x = x.to(device)
+            y = y.to(device)
+
+            optimizer.zero_grad()
+            y_predictions = model(x)
+            loss = torch.nn.functional.cross_entropy(y_predictions, y)
+            loss.backward()
+            optimizer.step()
+
     raise NotImplementedError
 
 
