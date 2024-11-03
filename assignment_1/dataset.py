@@ -31,24 +31,15 @@ def get_simpsons_subsets(dataset_path):
 
     #iterate through each character folder and split the images into a training and a validation set
     for character_path in sorted(glob.glob(os.path.join(dataset_path, "*"))):
-        #get list of images in character folder and determine split size
         images = sorted(glob.glob(os.path.join(character_path,"*.jpg")))
         n_images = len(images)
         n_train = int(np.ceil(n_images*0.6))
-
-        #add training and validation images to the respective lists
         images_train.extend(images[:n_train])
         images_val.extend(images[n_train:])
-
-        #add the correct amount of labels to the respective lists
         labels_train.extend([character_label] * n_train)
         labels_val.extend([character_label] * (n_images - n_train))
-
-        #add character name to the class names list
         class_names.append(os.path.basename(character_path))
-
         character_label += 1
-
         return images_train, labels_train, images_val, labels_val, class_names
 
 
@@ -66,26 +57,19 @@ class SimpsonsDataset(torch.utils.data.Dataset):
         self.class_names = class_names
         self.is_validation = is_validation
         self.pil_to_tensor = PILToTensor()
-        self.transform = transforms.Compose([
-            transforms.Resize(127, max_size=128),
+        self.normalize = transforms.Compose([
             transforms.ConvertImageDtype(torch.float),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
 
     def __getitem__(self, idx):
         image = Image.open(self.images[idx]).convert('RGB')
-        image.thumbnail((128,128), Image.LANCZOS)
-
-        width = image.width
-        height = image.height
-        x = self.pil_to_tensor(image)
-        if width < 128:
-            self.x = x.transforms.Pad(0,0, 128-width, 0)
-        elif height < 128:
-            self.x =x.transforms.Pad(0,0,0,128-height)
-
-
-        self.y = self.labels[idx]
-        return self.x, self.y
+        image.thumbnail((128,128))
+        pad_image = transforms.Pad((0,0, 128-image.width, 128-image.height), fill=0, padding_mode='constant')
+        image = pad_image(image)
+        image_tensor = self.pil_to_tensor(image)
+        self.x_tensor = self.normalize(image_tensor)
+        self.y_tensor = torch.tensor(self.labels[idx])
+        return self.x_tensor, self.y_tensor
 
     def __len__(self):
         return len(self.x)

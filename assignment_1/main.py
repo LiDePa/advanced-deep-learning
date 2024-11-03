@@ -11,7 +11,7 @@ def main(dataset_path, model_name, epochs, weights=None):
     #TODO: where do i put the device= stuff?
 
     dataset = SimpsonsDataset(get_simpsons_subsets(dataset_path)[0],get_simpsons_subsets(dataset_path)[1],get_simpsons_subsets(dataset_path)[4],0)
-    print(dataset[0])
+    print(dataset[1])
 
 
 if __name__ == '__main__':
