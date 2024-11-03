@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import sys
 from typing import Tuple, List
 import torch
 from torch.nn import Bilinear
@@ -15,12 +15,6 @@ from torch.xpu import device
 
 
 def get_simpsons_subsets(dataset_path):
-    """
-    Creates image lists and labels for the simpsons dataset
-    :param dataset_path: path to the "simpsons" folder of the simpsons dataset (this is important, do not use another path logic!)
-    :return: list of training images, training labels, validation images, validation labels, and class class names
-    """
-
     #define training and validation lists to be filled iteratively
     images_train = []
     labels_train = []
@@ -42,7 +36,7 @@ def get_simpsons_subsets(dataset_path):
         class_names.append(os.path.basename(character_path))
 
         character_label += 1
-        return images_train, labels_train, images_val, labels_val, class_names
+    return images_train, labels_train, images_val, labels_val, class_names
 
 
 class SimpsonsDataset(torch.utils.data.Dataset):
@@ -64,7 +58,7 @@ class SimpsonsDataset(torch.utils.data.Dataset):
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
 
     #resize the image to 128x128 without distortion or cropping (padding with zeros);
-    #normalize to ImageNet standard and return both image and label as a tensor
+    #normalize to ImageNet values and return both image and label as a tensor
     def __getitem__(self, idx):
         image = Image.open(self.images[idx]).convert('RGB')
         image.thumbnail((128,128))
@@ -80,8 +74,29 @@ class SimpsonsDataset(torch.utils.data.Dataset):
 
 
 def get_dataloader(dataset_path) -> Tuple[DataLoader, DataLoader, List[str]]:
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    #create train dataset object and send it to device
-    #create val dataset and send it to device
-    #return both datasets
-    raise NotImplementedError
+    if sys.gettrace() is None:
+        num_workers = 16
+    else:
+        num_workers = 0
+
+    simpsons_subsets = get_simpsons_subsets(dataset_path)
+    train_dataset = SimpsonsDataset(images=simpsons_subsets[0],
+                                    labels=simpsons_subsets[1],
+                                    class_names=simpsons_subsets[4],
+                                    is_validation=0)
+    val_dataset = SimpsonsDataset(images=simpsons_subsets[2],
+                                  labels=simpsons_subsets[3],
+                                  class_names=simpsons_subsets[4],
+                                  is_validation=1)
+    train_dataloader = DataLoader(train_dataset,
+                                  batch_size=64,
+                                  num_workers=num_workers,
+                                  shuffle=True,
+                                  drop_last=True)
+    val_dataloader = DataLoader(val_dataset,
+                                batch_size=64,
+                                num_workers=num_workers,
+                                shuffle=False,
+                                drop_last=False)
+
+    return train_dataloader, val_dataloader, simpsons_subsets[4]
