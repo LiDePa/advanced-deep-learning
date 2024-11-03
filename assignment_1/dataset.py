@@ -67,12 +67,12 @@ class SimpsonsDataset(torch.utils.data.Dataset):
         pad_image = transforms.Pad((0,0, 128-image.width, 128-image.height), fill=0, padding_mode='constant')
         image = pad_image(image)
         image_tensor = self.pil_to_tensor(image)
-        self.x_tensor = self.normalize(image_tensor)
-        self.y_tensor = torch.tensor(self.labels[idx])
-        return self.x_tensor, self.y_tensor
+        x_tensor = self.normalize(image_tensor)
+        y_tensor = torch.tensor(self.labels[idx])
+        return x_tensor, y_tensor
 
     def __len__(self):
-        return len(self.x)
+        return len(self.images)
 
 
 def get_dataloader(dataset_path) -> Tuple[DataLoader, DataLoader, List[str]]:
