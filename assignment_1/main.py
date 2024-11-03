@@ -8,10 +8,10 @@ from dataset import SimpsonsDataset
 
 def main(dataset_path, model_name, epochs, weights=None):
     # TODO: setup datasets and call training routine
-    #TODO: where do i put the device= stuff?
 
-    dataset = SimpsonsDataset(get_simpsons_subsets(dataset_path)[0],get_simpsons_subsets(dataset_path)[1],get_simpsons_subsets(dataset_path)[4],0)
-    print(dataset[1])
+    dataset_train = SimpsonsDataset(get_simpsons_subsets(dataset_path)[0],get_simpsons_subsets(dataset_path)[1],get_simpsons_subsets(dataset_path)[4],0)
+
+    print(dataset_train[3])
 
 
 if __name__ == '__main__':

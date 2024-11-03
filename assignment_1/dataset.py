@@ -8,9 +8,9 @@ import glob
 import os
 import numpy as np
 import torchvision.transforms.v2 as transforms
+from torchvision.transforms.v2 import PILToTensor
 from PIL import Image
 from torch.xpu import device
-from torchvision.transforms.v2 import PILToTensor
 
 
 
@@ -34,11 +34,13 @@ def get_simpsons_subsets(dataset_path):
         images = sorted(glob.glob(os.path.join(character_path,"*.jpg")))
         n_images = len(images)
         n_train = int(np.ceil(n_images*0.6))
+
         images_train.extend(images[:n_train])
         images_val.extend(images[n_train:])
         labels_train.extend([character_label] * n_train)
         labels_val.extend([character_label] * (n_images - n_train))
         class_names.append(os.path.basename(character_path))
+
         character_label += 1
         return images_train, labels_train, images_val, labels_val, class_names
 
@@ -61,6 +63,8 @@ class SimpsonsDataset(torch.utils.data.Dataset):
             transforms.ConvertImageDtype(torch.float),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
 
+    #resize the image to 128x128 without distortion or cropping (padding with zeros);
+    #normalize to ImageNet standard and return both image and label as a tensor
     def __getitem__(self, idx):
         image = Image.open(self.images[idx]).convert('RGB')
         image.thumbnail((128,128))
