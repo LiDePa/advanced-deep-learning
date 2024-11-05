@@ -39,6 +39,7 @@ def get_simpsons_subsets(dataset_path):
     return images_train, labels_train, images_val, labels_val, class_names
 
 
+
 class SimpsonsDataset(torch.utils.data.Dataset):
     def __init__(self, images, labels, class_names, is_validation):
         """
@@ -61,16 +62,21 @@ class SimpsonsDataset(torch.utils.data.Dataset):
     #normalize to ImageNet values and return both image and label as a tensor
     def __getitem__(self, idx):
         image = Image.open(self.images[idx]).convert('RGB')
+
+        #image transformations
         image.thumbnail((128,128))
         pad_image = transforms.Pad((0,0, 128-image.width, 128-image.height), fill=0, padding_mode='constant')
         image = pad_image(image)
         image_tensor = self.pil_to_tensor(image)
         x_tensor = self.normalize(image_tensor)
+
         y_tensor = torch.tensor(self.labels[idx])
+
         return x_tensor, y_tensor
 
     def __len__(self):
         return len(self.images)
+
 
 
 def get_dataloader(dataset_path) -> Tuple[DataLoader, DataLoader, List[str]]:

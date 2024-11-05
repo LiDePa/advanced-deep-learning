@@ -12,9 +12,17 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 
+"""
 def train(
         model: Module, optimizer: Optimizer, train_loader: DataLoader, val_loader: DataLoader, device: torch.device,
         class_names: List[str], epochs: int, log_dir, ema_model: Module = None
+        ):
+"""
+
+
+def train(
+        model: Module, optimizer: Optimizer, train_loader: DataLoader, device: torch.device,
+        epochs: int
         ):
     """
     Basic training routine for the  classification task
@@ -29,11 +37,11 @@ def train(
     :param ema_model: Used in Exercise 1.2(c)
     :return:
     """
-
     model.to(device)
 
     for epoch in range(epochs):
         model.train()
+        loss_sum = 0.0
 
         for batch in train_loader:
             x, y = batch
@@ -46,7 +54,11 @@ def train(
             loss.backward()
             optimizer.step()
 
-    raise NotImplementedError
+            loss_sum += loss.item()
+
+        loss_avg = loss_sum / len(train_loader)
+        print(loss_avg)
+
 
 
 def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device: torch.device):
