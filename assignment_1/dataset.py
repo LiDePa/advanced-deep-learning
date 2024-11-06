@@ -61,7 +61,7 @@ class SimpsonsDataset(torch.utils.data.Dataset):
     #resize the image to 128x128 without distortion or cropping (padding with zeros);
     #normalize to ImageNet values and return both image and label as a tensor
     def __getitem__(self, idx):
-        image = Image.open(self.images[idx]).convert('RGB')
+        image = Image.open(self.images[idx]).convert("RGB")
 
         #image transformations
         image.thumbnail((128,128))

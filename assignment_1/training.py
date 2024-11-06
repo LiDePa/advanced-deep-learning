@@ -30,9 +30,9 @@ def train(
     :param ema_model: Used in Exercise 1.2(c)
     :return:
     """
-    model.to(device)
     best_accuracy = 0.0
     best_checkpoint = os.path.join(log_dir, "best_checkpoint.pth")
+    last_checkpoint = os.path.join(log_dir, "last_checkpoint.pth")
 
     for epoch in range(epochs):
         model.train()
@@ -48,16 +48,23 @@ def train(
             loss.backward()
             optimizer.step()
 
-        #get tensor containing accuracy for each class on the validation set and calculate the overall mean
+        # get tensor containing accuracy for each class on the validation set and calculate the overall mean
         class_accuracies = evaluation(model, val_loader, class_names, device)
         mean_accuracy = np.mean(class_accuracies)
 
-        #update best_accuracy and best_checkpoint if new accuracy is better
+        # update best_accuracy and best_checkpoint if new accuracy is better
         if mean_accuracy > best_accuracy:
             best_accuracy = mean_accuracy
-            torch.save(model.state_dict(), best_checkpoint)
+            torch.save({
+                "epoch": epoch,
+                "model_state_dict": model.state_dict()}, last_checkpoint)
 
-        print("Current mean: %.2f" % mean_accuracy, "Best: %.2f" % best_accuracy)
+        torch.save({
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict()}, last_checkpoint)
+
+        print("Epoch: ", epoch, "Current mean: %.2f" % mean_accuracy, "Best: %.2f" % best_accuracy)
 
 
 def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device: torch.device):
@@ -80,12 +87,13 @@ def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device
             y = y.to(device)
 
             y_predictions = model(x)
-            classes_predicted = torch.max(y_predictions, 1)[1] #returns tensor of size batch-length with predicted class for each sample
+            classes_predicted = torch.max(y_predictions, 1)[1] # returns tensor of size batch-length with predicted class for each sample
 
-            for i in range(len(classes_predicted)):
-                class_totals[y[i]] += 1
-                if classes_predicted[i] == y[i]:
-                    class_scores[y[i]] += 1
+            # count class appearances and correct predictions in class_totals and class_scores vectors
+            for sample in range(len(classes_predicted)):
+                class_totals[y[sample]] += 1
+                if classes_predicted[sample] == y[sample]:
+                    class_scores[y[sample]] += 1
 
     class_accuracies = 100 * class_scores / class_totals
     return class_accuracies
