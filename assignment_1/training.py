@@ -53,11 +53,11 @@ def train(
         mean_accuracy = np.mean(class_accuracies)
 
         # update best_accuracy and best_checkpoint if new accuracy is better
-        if mean_accuracy > best_accuracy:
+        if mean_accuracy >= best_accuracy:
             best_accuracy = mean_accuracy
             torch.save({
                 "epoch": epoch,
-                "model_state_dict": model.state_dict()}, last_checkpoint)
+                "model_state_dict": model.state_dict()}, best_checkpoint)
 
         torch.save({
             "epoch": epoch,

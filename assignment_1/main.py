@@ -23,15 +23,13 @@ def main(dataset_path, model_name, epochs, weights=None):
         checkpoint = torch.load(weights, weights_only=True)
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
-        epochs_remaining = epochs - checkpoint["epoch"]
 
     # start training
     train(model, optimizer, train_dataloader, val_dataloader, device, class_names, epochs_remaining, "logs")
 
 
 if __name__ == '__main__':
-    dataset_path = "../datasets/simpsons"
-    model_name = "ResNet18Model"
-    epochs = 30
-    weights = None # "logs/last_checkpoint.pth"
-    main(dataset_path, model_name, epochs, weights)
+    main("../datasets/simpsons",
+         "ResNet18Model",
+         30,
+         None)
