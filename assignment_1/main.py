@@ -33,5 +33,5 @@ if __name__ == '__main__':
     dataset_path = "../datasets/simpsons"
     model_name = "ResNet18Model"
     epochs = 30
-    weights = "logs/last_checkpoint.pth"
+    weights = None # "logs/last_checkpoint.pth"
     main(dataset_path, model_name, epochs, weights)
