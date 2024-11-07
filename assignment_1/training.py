@@ -33,6 +33,7 @@ def train(
         model.train()
         class_scores = np.full(len(class_names), 0, float) # to calculate mean training accuracy
         class_totals = np.full(len(class_names), 0, int) # to calculate mean training accuracy
+        loss_running = 0.0
 
         for batch in train_loader:
             # get new training batch with labels and send it to the device
@@ -48,12 +49,13 @@ def train(
                 y_predictions = model(x)
                 loss = torch.nn.functional.cross_entropy(y_predictions, y)
 
-            # track mean training accuracy
+            # track mean training accuracy and loss
             classes_predicted = torch.max(y_predictions, 1)[1]
             for sample in range(len(classes_predicted)):
                 class_totals[y[sample]] += 1
                 if classes_predicted[sample] == y[sample]:
                     class_scores[y[sample]] += 1
+            loss_running += loss
 
             # backpropagate the scaled loss and update weights with unscaled gradients
             scaler.scale(loss).backward()
@@ -62,30 +64,31 @@ def train(
             # update scaler for next iteration
             scaler.update()
 
-        # calculate mean training accuracy
+        # calculate mean training accuracy and loss
         mean_accuracy_train = np.mean(100 * np.divide(class_scores, class_totals, where=class_totals != 0, out=np.zeros_like(class_scores)))
+        loss_train = loss_running / len(train_loader)
 
         # calculate mean validation accuracy; get average validation loss
-        class_accuracies, loss_avg_val = evaluation(model, val_loader, class_names, device)
-        mean_accuracy = np.mean(class_accuracies)
+        class_accuracies = evaluation(model, val_loader, class_names, device)
+        mean_accuracy_val = np.mean(class_accuracies)
 
-        # update best_accuracy and best_checkpoint if new accuracy is the best of overall training history
-        if mean_accuracy >= best_accuracy:
-            best_accuracy = mean_accuracy
+        # overwrite best_checkpoint if new accuracy is best so far
+        if mean_accuracy_val >= best_accuracy:
+            best_accuracy = mean_accuracy_val
             torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict()}, best_checkpoint)
 
-        # save current model and optimizer state
+        # save current model and optimizer state to resume training
         torch.save({
             "epoch": epoch,
             "model_state_dict": model.state_dict(),
             "optimizer_state_dict": optimizer.state_dict()}, last_checkpoint)
 
-
-        print("Epoch: ", epoch, "Validation Accuracy Mean: %.2f" % mean_accuracy, "Best: %.2f" % best_accuracy)
-        writer.add_scalars("Accuracy", {"Train": mean_accuracy_train, "Validation": mean_accuracy}, epoch)
-        writer.add_scalar("Validation Loss", loss_avg_val, epoch)
+        # tensorboard logging
+        print("Epoch: ", epoch, "Validation Accuracy Mean: %.2f" % mean_accuracy_val, "Best: %.2f" % best_accuracy)
+        writer.add_scalars("Mean Accuracy", {"Train": mean_accuracy_train, "Validation": mean_accuracy_val}, epoch)
+        writer.add_scalars("Loss", {"Train": loss_train}, epoch)
 
     writer.close()
 
@@ -93,9 +96,9 @@ def train(
 
 def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device: torch.device):
     model.eval()
-    class_scores = np.full(len(classes), 0, float)
-    class_totals = np.full(len(classes), 0, int)
-    loss_running = 0.0
+    class_scores = np.full(len(classes), 0, float) # to calculate mean validation accuracy
+    class_totals = np.full(len(classes), 0, int) # to calculate mean validation accuracy
+    # loss_running = 0.0
 
     with torch.no_grad():
         for batch in val_loader:
@@ -104,23 +107,20 @@ def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device
             x = x.to(device)
             y = y.to(device)
 
-            # execute forward propagation on the batch and get a tensor of size batch-length with predicted class for each sample
+            # execute forward propagation on the batch
             y_predictions = model(x)
-            classes_predicted = torch.max(y_predictions, 1)[1]
 
-            # count class appearances and their correct predictions in numpy arrays class_totals and class_scores
+            # track validation accuracy and loss
+            classes_predicted = torch.max(y_predictions, 1)[1]
             for sample in range(len(classes_predicted)):
                 class_totals[y[sample]] += 1
                 if classes_predicted[sample] == y[sample]:
                     class_scores[y[sample]] += 1
+            # loss_running += torch.nn.functional.cross_entropy(y_predictions, y).item()
 
-            # accumulate evaluation loss for logging
-            loss_running += torch.nn.functional.cross_entropy(y_predictions, y).item()
-
+    # calculate validation accuracies
     class_accuracies = 100 * np.divide(class_scores, class_totals, where=class_totals != 0, out=np.zeros_like(class_scores))
-    loss_avg = loss_running / len(val_loader)
-
-    return class_accuracies, loss_avg
+    return class_accuracies #, loss_running
 
 
 
