@@ -29,7 +29,7 @@ def get_simpsons_subsets(dataset_path):
 
         # get number of images in folder and calculate number of images to use for training
         n_images = len(images)
-        n_train = int(np.ceil(n_images*0.6))
+        n_train = int(np.floor(n_images*0.6))
 
         # slice list of image paths into training and validation set and add them to their respective lists
         images_train.extend(images[:n_train])
