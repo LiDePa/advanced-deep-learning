@@ -32,7 +32,7 @@ def train(
     for epoch in range(epochs):
         model.train()
 
-        for batch_idx, batch in enumerate(train_loader):
+        for batch in train_loader:
             # get new training batch with labels and send it to the device
             x, y = batch
             x = x.to(device)
@@ -54,9 +54,10 @@ def train(
             scaler.update()
 
         # get numpy array containing the validation accuracy [%] for each class and calculate the overall mean
-        class_accuracies = evaluation(model, val_loader, class_names, device)
+        class_accuracies, loss_avg = evaluation(model, val_loader, class_names, device)
         mean_accuracy = np.mean(class_accuracies)
         writer.add_scalar("Validation Accuracy", mean_accuracy, epoch)
+        writer.add_scalar("Validation Loss", loss_avg, epoch)
 
         # update best_accuracy and best_checkpoint if new accuracy is the best of overall training history
         if mean_accuracy >= best_accuracy:
@@ -101,9 +102,9 @@ def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device
                     class_scores[y[sample]] += 1
 
             # accumulate evaluation loss for logging
-            # loss_running += torch.nn.functional.cross_entropy(y_predictions, y).item()
+            loss_running += torch.nn.functional.cross_entropy(y_predictions, y).item()
 
     class_accuracies = 100 * class_scores / class_totals
-    # loss_avg = loss_running / len(val_loader)
+    loss_avg = loss_running / len(val_loader)
 
-    return class_accuracies
+    return class_accuracies, loss_avg
