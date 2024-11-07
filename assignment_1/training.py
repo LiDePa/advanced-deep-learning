@@ -11,54 +11,57 @@ from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
+from torch import amp
+
 
 
 def train(
         model: Module, optimizer: Optimizer, train_loader: DataLoader, val_loader: DataLoader, device: torch.device,
         class_names: List[str], epochs: int, log_dir, ema_model: Module = None
         ):
-    """
-    Basic training routine for the  classification task
-    :param model: Neural network to train
-    :param optimizer: optimizer to use
-    :param val_loader: data loader for validation data
-    :param train_loader: data loader for training data
-    :param device: Device to use for training
-    :param epochs: Number of epochs to train
-    :param class_names: List of class names, order matching the label indices
-    :param log_dir: Directory to log to (for tensorboard and checkpoints)
-    :param ema_model: Used in Exercise 1.2(c)
-    :return:
-    """
     best_accuracy = 0.0
     best_checkpoint = os.path.join(log_dir, "best_checkpoint.pth")
     last_checkpoint = os.path.join(log_dir, "last_checkpoint.pth")
+
+    # create grad scaler for mixed precision training
+    scaler = amp.GradScaler(device="cuda" if torch.cuda.is_available() else "cpu")
 
     for epoch in range(epochs):
         model.train()
 
         for batch in train_loader:
+            # get new training batch with labels and send it to the device
             x, y = batch
             x = x.to(device)
             y = y.to(device)
 
+            # throw away gradients from previous loop
             optimizer.zero_grad()
-            y_predictions = model(x)
-            loss = torch.nn.functional.cross_entropy(y_predictions, y)
-            loss.backward()
-            optimizer.step()
 
-        # get tensor containing accuracy for each class on the validation set and calculate the overall mean
+            # execute forward propagation on the batch and calculate the loss using mixed precision
+            with amp.autocast(device_type="cuda" if torch.cuda.is_available() else "cpu"):
+                y_predictions = model(x)
+                loss = torch.nn.functional.cross_entropy(y_predictions, y)
+
+            # backpropagate the scaled loss and update weights with unscaled gradients
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+
+            # update scaler for next iteration
+            scaler.update()
+
+        # get numpy array containing the accuracy [%] for each class on the validation set and calculate the overall mean
         class_accuracies = evaluation(model, val_loader, class_names, device)
         mean_accuracy = np.mean(class_accuracies)
 
-        # update best_accuracy and best_checkpoint if new accuracy is better
+        # update best_accuracy and best_checkpoint if new accuracy is better or the same
         if mean_accuracy >= best_accuracy:
             best_accuracy = mean_accuracy
             torch.save({
                 "epoch": epoch,
                 "model_state_dict": model.state_dict()}, best_checkpoint)
 
+        # save current model and optimizer state
         torch.save({
             "epoch": epoch,
             "model_state_dict": model.state_dict(),
@@ -67,27 +70,22 @@ def train(
         print("Epoch: ", epoch, "Current mean: %.2f" % mean_accuracy, "Best: %.2f" % best_accuracy)
 
 
+
 def evaluation(model: Module, val_loader: DataLoader, classes: List[str], device: torch.device):
-    """
-    Evaluation routine for the classification task
-    :param model: the model to be evaluated
-    :param val_loader: the data loader for the validation data
-    :param classes: list of class names (order matching the label indices)
-    :param device: the device to evaluate on
-    :return: List of accuracies in percent for each class in same order as the classes list
-    """
     model.eval()
     class_scores = np.full(len(classes), 0, float)
     class_totals = np.full(len(classes), 0, int)
 
     with torch.no_grad():
         for batch in val_loader:
+            # get new validation batch and labels and send them to the device
             x, y = batch
             x = x.to(device)
             y = y.to(device)
 
+            # execute forward propagation on the batch and get a tensor of size batch-length with predicted class for each sample
             y_predictions = model(x)
-            classes_predicted = torch.max(y_predictions, 1)[1] # returns tensor of size batch-length with predicted class for each sample
+            classes_predicted = torch.max(y_predictions, 1)[1]
 
             # count class appearances and correct predictions in class_totals and class_scores vectors
             for sample in range(len(classes_predicted)):

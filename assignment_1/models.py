@@ -4,6 +4,7 @@ import torchvision.models as models
 from torchvision.models import ResNet18_Weights, ConvNeXt_Tiny_Weights
 
 
+
 class ResNet18Model(torch.nn.Module):
     def __init__(self, num_classes):
         #get pretrained ResNet18 model
@@ -24,6 +25,7 @@ class ResNet18Model(torch.nn.Module):
 
     def forward(self, x):
         return self.backbone(x)
+
 
 
 class ConvNextTinyModel(torch.nn.Module):

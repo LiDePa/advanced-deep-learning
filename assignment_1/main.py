@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 import torch
-
 import models
 from dataset import get_dataloader
 from training import train
+
 
 
 def main(dataset_path, model_name, epochs, weights=None):
@@ -28,8 +27,9 @@ def main(dataset_path, model_name, epochs, weights=None):
     train(model, optimizer, train_dataloader, val_dataloader, device, class_names, epochs_remaining, "logs")
 
 
+
 if __name__ == '__main__':
     main("../datasets/simpsons",
-         "ResNet18Model",
+         "ConvNextTinyModel",
          30,
          None)

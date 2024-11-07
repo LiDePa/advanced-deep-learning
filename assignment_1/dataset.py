@@ -10,12 +10,11 @@ import numpy as np
 import torchvision.transforms.v2 as transforms
 from torchvision.transforms.v2 import PILToTensor
 from PIL import Image
-from torch.xpu import device
 
 
 
 def get_simpsons_subsets(dataset_path):
-    #define training and validation lists to be filled iteratively
+    # define training and validation lists to be filled iteratively
     images_train = []
     labels_train = []
     images_val = []
@@ -23,32 +22,33 @@ def get_simpsons_subsets(dataset_path):
     class_names = []
     character_label = 0
 
-    #iterate through each character folder and split the images into a training and a validation set
+    # iterate through each character folder and split the images into a training and a validation set
     for character_path in sorted(glob.glob(os.path.join(dataset_path, "*"))):
+        # get list of image paths
         images = sorted(glob.glob(os.path.join(character_path,"*.jpg")))
+
+        # get number of images in folder and calculate number of images to use for training
         n_images = len(images)
         n_train = int(np.ceil(n_images*0.6))
 
+        # slice list of image paths into training and validation set and add them to their respective lists
         images_train.extend(images[:n_train])
         images_val.extend(images[n_train:])
-        labels_train.extend([character_label] * n_train)
-        labels_val.extend([character_label] * (n_images - n_train))
+
+        # add class names to the respective list
         class_names.append(os.path.basename(character_path))
 
+        # add the correct amount of labels to their respective lists and increase integer for next loop
+        labels_train.extend([character_label] * n_train)
+        labels_val.extend([character_label] * (n_images - n_train))
         character_label += 1
+
     return images_train, labels_train, images_val, labels_val, class_names
 
 
 
 class SimpsonsDataset(torch.utils.data.Dataset):
     def __init__(self, images, labels, class_names, is_validation):
-        """
-        :param images: A List of image filenames
-        :param labels: A List of corresponding labels
-        :param class_names: A List of class names, corresponding to the labels
-        :param is_validation: Flag indicating evaluation or training mode
-        yields Image as numpy array and label
-        """
         self.images = images
         self.labels = labels
         self.class_names = class_names
@@ -58,15 +58,20 @@ class SimpsonsDataset(torch.utils.data.Dataset):
             transforms.ConvertImageDtype(torch.float),
             transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),])
 
-    #resize the image to 128x128 without distortion or cropping (padding with zeros);
-    #normalize to ImageNet values and return both image and label as a tensor
+    # resize the image to 128x128 without distortion or cropping (padding with zeros);
+    # normalize to ImageNet values and return both image and label as a tensor
     def __getitem__(self, idx):
+        # open image as PIL
         image = Image.open(self.images[idx]).convert("RGB")
 
-        #image transformations
+        # scale image such that the larger side is 128 pixels while keeping aspect ratio
         image.thumbnail((128,128))
+
+        # pad image either on the right or bottom to arrive at a 128x128 image
         pad_image = transforms.Pad((0,0, 128-image.width, 128-image.height), fill=0, padding_mode='constant')
         image = pad_image(image)
+
+        # turn PIL image into tensor and normalize to ImageNet values
         image_tensor = self.pil_to_tensor(image)
         x_tensor = self.normalize(image_tensor)
 
