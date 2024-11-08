@@ -12,6 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from torch import amp
+import gc
 
 
 # TODO: remove validation loss stuff
@@ -77,15 +78,15 @@ def train(
                     ema_param.copy_(ema_rate * ema_param + (1 - ema_rate) * model_param)
                 for ema_buffer, model_buffer in zip(ema_model.buffers(), model.buffers()):
                     ema_buffer.copy_(model_buffer)
+                # track training performance of ema model
+                ema_y_predictions = ema_model(x)
+                ema_loss_running += torch.nn.functional.cross_entropy(ema_y_predictions, y)
+                ema_classes_predicted = torch.max(ema_y_predictions, 1)[1]
+                for sample in range(len(ema_classes_predicted)):
+                    ema_class_totals[y[sample]] += 1
+                    if ema_classes_predicted[sample] == y[sample]:
+                        ema_true_positives[y[sample]] += 1
 
-            # track training performance of ema model
-            ema_y_predictions = ema_model(x)
-            ema_loss_running += torch.nn.functional.cross_entropy(ema_y_predictions, y)
-            ema_classes_predicted = torch.max(ema_y_predictions, 1)[1]
-            for sample in range(len(ema_classes_predicted)):
-                ema_class_totals[y[sample]] += 1
-                if ema_classes_predicted[sample] == y[sample]:
-                    ema_true_positives[y[sample]] += 1
 
         # calculate mean training accuracy and mean loss
         mean_accuracy_train = np.mean(100 * np.divide(true_positives, class_totals, where=class_totals != 0, out=np.zeros_like(true_positives)))
