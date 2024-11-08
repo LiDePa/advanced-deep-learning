@@ -31,6 +31,6 @@ def main(dataset_path, model_name, epochs, weights=None):
 
 if __name__ == '__main__':
     main("../datasets/simpsons",
-         "ConvNextTinyModel",
-         3,
+         "ResNet18Model",
+         30,
          None)
