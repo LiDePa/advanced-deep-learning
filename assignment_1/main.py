@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import copy
+
 import torch
 import models
 from dataset import get_dataloader
@@ -24,13 +26,16 @@ def main(dataset_path, model_name, epochs, weights=None):
         model.load_state_dict(checkpoint["model_state_dict"])
         optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
+    # create copy of model to keep track of an EMA version
+    ema_model = copy.deepcopy(model).to(device)
+
     # start training
-    train(model, optimizer, train_dataloader, val_dataloader, device, class_names, epochs, "logs")
+    train(model, optimizer, train_dataloader, val_dataloader, device, class_names, epochs, "logs", ema_model)
 
 
 
 if __name__ == '__main__':
     main("../datasets/simpsons",
-         "ResNet18Model",
+         "ConvNextTinyModel",
          30,
          None)
