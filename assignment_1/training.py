@@ -12,7 +12,6 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
 from torch import amp
-import gc
 
 
 # TODO: remove validation loss stuff
@@ -72,12 +71,13 @@ def train(
             scaler.step(optimizer)
             scaler.update()
 
-            # update ema model parameters and buffer
             with torch.no_grad():
+                # update ema model parameters and buffer
                 for ema_param, model_param in zip(ema_model.parameters(), model.parameters()):
                     ema_param.copy_(ema_rate * ema_param + (1 - ema_rate) * model_param)
                 for ema_buffer, model_buffer in zip(ema_model.buffers(), model.buffers()):
                     ema_buffer.copy_(model_buffer)
+
                 # track training performance of ema model
                 ema_y_predictions = ema_model(x)
                 ema_loss_running += torch.nn.functional.cross_entropy(ema_y_predictions, y)
@@ -115,10 +115,8 @@ def train(
 
         # console output and tensorboard logging
         print("Epoch: ", epoch, "| Validation Accuracy Mean: %.2f" % mean_accuracy_val, "| Best: %.2f" % best_accuracy)
-        writer.add_scalars("Mean Per-Class Accuracy", {"Training": mean_accuracy_train, "Validation": mean_accuracy_val}, epoch)
-        writer.add_scalars("EMA Mean Per-Class Accuracy", {"Training": ema_mean_accuracy_train, "Validation": ema_mean_accuracy_val}, epoch)
-        writer.add_scalars("Loss", {"Training": loss_train, "Validation": loss_val}, epoch)
-        writer.add_scalars("EMA Loss", {"Training": ema_loss_train, "Validation": ema_loss_val}, epoch)
+        writer.add_scalars("Mean Per-Class Accuracy", {"placeholder": 0, "Training": mean_accuracy_train, "Validation": mean_accuracy_val, "EMA Training": ema_mean_accuracy_train, "EMA Validation": ema_mean_accuracy_val}, epoch)
+        writer.add_scalars("Loss", {"placeholder": 0, "Training": loss_train, "Validation": loss_val, "EMA Training": ema_loss_train, "EMA Validation": ema_loss_val}, epoch)
         # writer.add_scalar("Training Loss", loss_train, epoch)
 
     writer.close()

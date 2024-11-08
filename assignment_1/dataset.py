@@ -2,7 +2,6 @@
 import sys
 from typing import Tuple, List
 import torch
-from torch.nn import Bilinear
 from torch.utils.data import DataLoader
 import glob
 import os
