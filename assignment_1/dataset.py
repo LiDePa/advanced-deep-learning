@@ -13,7 +13,7 @@ from PIL import Image
 
 
 def get_simpsons_subsets(dataset_path):
-    # define training and validation lists to be filled iteratively
+    # create training and validation lists to be filled iteratively
     images_train = []
     labels_train = []
     images_val = []
@@ -41,6 +41,9 @@ def get_simpsons_subsets(dataset_path):
         labels_train.extend([character_label] * n_train)
         labels_val.extend([character_label] * (n_images - n_train))
         character_label += 1
+
+    n_samples = len(images_train)+len(images_val)
+    print("n_samples: ", n_samples)
 
     return images_train, labels_train, images_val, labels_val, class_names
 
@@ -74,6 +77,7 @@ class SimpsonsDataset(torch.utils.data.Dataset):
         image_tensor = self.pil_to_tensor(image)
         x_tensor = self.normalize(image_tensor)
 
+        # turn labels into tensor
         y_tensor = torch.tensor(self.labels[idx])
 
         return x_tensor, y_tensor
@@ -89,7 +93,10 @@ def get_dataloader(dataset_path) -> Tuple[DataLoader, DataLoader, List[str]]:
     else:
         num_workers = 0
 
+    # get lists of image paths and labels
     simpsons_subsets = get_simpsons_subsets(dataset_path)
+
+    # instantiate dataset objects
     train_dataset = SimpsonsDataset(images=simpsons_subsets[0],
                                     labels=simpsons_subsets[1],
                                     class_names=simpsons_subsets[4],
@@ -98,6 +105,8 @@ def get_dataloader(dataset_path) -> Tuple[DataLoader, DataLoader, List[str]]:
                                   labels=simpsons_subsets[3],
                                   class_names=simpsons_subsets[4],
                                   is_validation=1)
+
+    # instantiate dataloaders with datasets
     train_dataloader = DataLoader(train_dataset,
                                   batch_size=64,
                                   num_workers=num_workers,
