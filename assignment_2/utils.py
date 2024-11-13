@@ -40,4 +40,8 @@ def collate_fn(samples: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor
     # TODO: Stack the entries of every data sample into a single tensor.
     #       Keep the same keys.
 
+    for sample in samples:
+
+
+
     raise NotImplementedError("utils.collate_fn has nbt been implemented yet.")

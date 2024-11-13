@@ -9,6 +9,9 @@ from torch.utils.data import Dataset
 
 from .transforms import Compose, Transform
 
+import torchvision.transforms.functional
+
+
 
 class CarlaDataset(Dataset):
 
@@ -31,21 +34,17 @@ class CarlaDataset(Dataset):
         #       Do NOT load the whole dataset as images upon initialization, just store the paths.
         #       You should try to calculate all necessary information for fast loading here.
 
-        raise NotImplementedError(
-                "CarlaDataset.__init__ has not been implemented yet.")
+        self.transforms = Compose(*transforms)
+        self.image_paths = sorted(glob.glob(os.path.join(dataset_path,"images/*.png")))
+        self.label_paths = sorted(glob.glob(os.path.join(dataset_path,"segmentations/*.png")))
+        self._dataset_path = dataset_path
 
     @property
     def dataset_path(self: CarlaDataset) -> str:
-        # TODO: Return the dataset root path
-
-        raise NotImplementedError(
-                "CarlaDataset.dataset_path has not been implemented yet.")
+        return self._dataset_path
 
     def __len__(self: CarlaDataset) -> int:
-        # TODO: Return the length of this dataset, i.e. how many samples it contains.
-
-        raise NotImplementedError(
-                "CarlaDataset.__len__ has not been implemented yet.")
+        return len(self.image_paths)
 
     def __getitem__(self: CarlaDataset, idx: int) -> Dict[str, torch.Tensor]:
         """Loads a single sample from disk.
@@ -58,13 +57,23 @@ class CarlaDataset(Dataset):
             given transformations applied.
         """
 
-        # TODO: Implement loading a data sample from disk.
-        #       A sample is a dictionary of tensors.
-        #       A sample contains an entry "x" with the input image and an entry "y" with the training target.
-        #       See instructions in the assignment for more details.
-        #       As a last step apply all transformations that were provided during initialization.
+        # load the image and its segmentation mask and convert them to tensors
+        image = Image.open(self.image_paths[idx]).convert("RGB")
+        label = Image.open(self.label_paths[idx]).convert("L")
+        image_tensor = torchvision.transforms.functional.to_tensor(image).float()
+        label_tensor = torch.from_numpy(np.array(label)).to(torch.int8)
 
-        raise NotImplementedError("No CarlaDataset has been implemented yet.")
+        # create sample dictionary
+        sample = {
+            "x": image_tensor,
+            "y": label_tensor}
+
+        # apply transformations if given
+        if self.transforms:
+            sample = self.transforms(sample)
+
+        return sample
+
 
 
 def get_carla_dataset(root: str, *, split: Literal["train", "val"], transforms: List[Transform] = list()) -> CarlaDataset:
@@ -80,7 +89,8 @@ def get_carla_dataset(root: str, *, split: Literal["train", "val"], transforms: 
         SegmentationDataset: The correct split of the carla3.0_for_students dataset.
     """
 
-    # TODO: Implement selecting a datasplit from the carla3.0_for_students base folder.
-
-    raise NotImplementedError(
-            "get_segmentation_dataset has not been implemented yet.")
+    match split:
+        case "train":
+            return CarlaDataset(os.path.join(root, "train"), transforms=transforms)
+        case "val":
+            return CarlaDataset(os.path.join(root, "val"), transforms=transforms)
