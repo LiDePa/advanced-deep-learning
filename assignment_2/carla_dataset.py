@@ -29,11 +29,6 @@ class CarlaDataset(Dataset):
             this dataset. Defaults to list().
         """
 
-        # TODO: Implement the initialization of a CarlaDataset.
-        #       Use the "Compose" transform from transforms.py (not from torch.transforms!) to compose the transforms together.
-        #       Do NOT load the whole dataset as images upon initialization, just store the paths.
-        #       You should try to calculate all necessary information for fast loading here.
-
         self.transforms = Compose(*transforms)
         self.image_paths = sorted(glob.glob(os.path.join(dataset_path,"images/*.png")))
         self.label_paths = sorted(glob.glob(os.path.join(dataset_path,"segmentations/*.png")))
@@ -66,7 +61,8 @@ class CarlaDataset(Dataset):
         # create sample dictionary
         sample = {
             "x": image_tensor,
-            "y": label_tensor}
+            "y": label_tensor
+        }
 
         # apply transformations if given
         if self.transforms:

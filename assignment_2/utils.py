@@ -37,11 +37,8 @@ def collate_fn(samples: List[Dict[str, torch.Tensor]]) -> Dict[str, torch.Tensor
         Dict[str, torch.Tensor]: A dictionary of stacked data samples.
     """
 
-    # TODO: Stack the entries of every data sample into a single tensor.
-    #       Keep the same keys.
-
-    for sample in samples:
-
-
-
-    raise NotImplementedError("utils.collate_fn has nbt been implemented yet.")
+    # list all tensors of all samples dictionaries and stack them into one batch tensor
+    return {
+        "x": torch.stack(list(sample["x"] for sample in samples)),
+        "y": torch.stack(list(sample["y"] for sample in samples))
+    }
