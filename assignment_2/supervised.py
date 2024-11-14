@@ -111,10 +111,15 @@ def get_validation_step(
         batch["x"] = batch["x"].to(device)
         batch["y"] = batch["y"].to(device)
 
-        # perform forward propagation and calculate loss using mixed precision
+        # perform forward propagation using mixed precision
         with torch.autocast(device):
             output = model(batch["x"])
 
-        raise NotImplementedError("No training step has been implemented")
+        # create return dict
+        return_value = batch
+        return_value["outputs"] = output
+        return_value["predictions"] = torch.argmax(output, dim=1)
+
+        return return_value
 
     return validation_step

@@ -37,7 +37,7 @@ def train(
         # set model into training mode
         model.train()
 
-        # create values and numpy arrays for performance tracking
+        # create         values and numpy arrays for performance tracking
         true_positives = np.full(len(class_names), 0, float) # to calculate mean training accuracy
         class_totals = np.full(len(class_names), 0, int) # to calculate mean training accuracy
         loss_running = 0.0 # to calculate training loss
