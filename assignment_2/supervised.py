@@ -48,7 +48,26 @@ def get_train_step(
         #       Use the gradient scaler provided by the outer function to scale gradients accordingly.
         #       For more information read the docstrings and the assignment!
 
-        raise NotImplementedError("No training step has been implemented")
+        # send image and label tensors to device
+        batch["x"] = batch["x"].to(device)
+        batch["y"] = batch["y"].to(device)
+
+        # perform forward propagation and calculate loss using mixed precision
+        with torch.autocast(device):
+            output = model(batch["x"])
+            loss = loss_fn(output, batch["y"])
+
+        # backpropagate and update weights using mixed precision
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
+
+        # create return dict
+        return_value = batch
+        return_value["loss"] = loss.item()
+        return_value["outputs"] = output
+
+        return return_value
 
     return train_step
 
@@ -87,6 +106,14 @@ def get_validation_step(
         #       After the validation step a single output and prediction should have been produced.
         #       To produce the predictions apply pixelwise class prediction using the maximum confidence value.
         #       For more information read the docstrings!
+
+        # send image and label tensors to device
+        batch["x"] = batch["x"].to(device)
+        batch["y"] = batch["y"].to(device)
+
+        # perform forward propagation and calculate loss using mixed precision
+        with torch.autocast(device):
+            output = model(batch["x"])
 
         raise NotImplementedError("No training step has been implemented")
 
