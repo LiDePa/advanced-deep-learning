@@ -28,11 +28,8 @@ class Normalize(Transform):
 
     def __init__(
             self: Normalize,
-            mean: Tuple[float, float, float] = NotImplementedError(
-                    "Normalize.__init__ has not been implemented. Put the mean here"),
-            stdd: Tuple[float, float, float] = NotImplementedError(
-                    "Normalize.__init__ has not been implemented. Put the standard deviation here")
-            ) -> None:
+            mean: Tuple[float, float, float] = (0.485, 0.456, 0.406),
+            stdd: Tuple[float, float, float] = (0.229, 0.224, 0.225)) -> None:
 
         # TODO: Research Imagenet normalization. Put mean and standard deviation as default parameters of this function.
         #       Take note of the provided type hints, otherwise it might not work.
@@ -47,17 +44,11 @@ class Normalize(Transform):
 
     @property
     def mean(self: Normalize) -> torch.Tensor:
-
-        # TODO: Return the mean
-
-        raise NotImplementedError("Normalize.mean has not been implemented.")
+        return self._mean
 
     @property
     def stdd(self: Normalize) -> torch.Tensor:
-
-        # TODO: Return the standard deviation
-
-        raise NotImplementedError("Normalize.stdd has not been implemented.")
+        return self._stdd
 
     def __call__(self: Normalize, sample: Dict[str, torch.Tensor], *, targets: List[str] = list("x")) -> Dict[str, torch.Tensor]:
         """Normalizes the given images to the provided mean and standard deviation.
@@ -71,11 +62,17 @@ class Normalize(Transform):
             Dict[str, torch.Tensor]: The input sample with the targets normalized to the provided mean and standard deviation.
         """
 
-        # TODO: Normalize every entry in the sample using the mean and standard deviation provided during initialization
-        #       Return the sample updated with the normalized values. (Still as a dictionary)
+        # add dimensions to mean and stdd to make them broadcast-able
+        mean_broadcast = self._mean.view(3,1,1)
+        stdd_broadcast = self._stdd.view(3,1,1)
 
-        raise NotImplementedError(
-                "Normalize.__call__ has not been implemented yet.")
+        # update each target in the sample with its normalized tensor
+        for target in targets:
+            sample[target] = (sample[target] - mean_broadcast) / stdd_broadcast
+
+        return sample
+
+
 
 
 class RandomCrop(Transform):
