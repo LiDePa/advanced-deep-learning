@@ -67,8 +67,7 @@ class MeanIntersectionOverUnion(Metric):
         # TODO: Use the inner state of this metric to calculate the current mean section over union.
         #       Do not use anything but the inner state.
 
-        raise NotImplementedError(
-                "Mean intersection over union _compute has not been implemented yet.")
+        return self._tp / (self._tp + self._fp + self._fn)
 
     def _reset(self: MeanIntersectionOverUnion):
         """Resets the inner state of this metric.
@@ -77,5 +76,6 @@ class MeanIntersectionOverUnion(Metric):
         # TODO: Reset the inner state of this metric.
         # This function is also called in the __init__ function of the class.
 
-        raise NotImplementedError(
-                "Mean intersection over union _reset has not been implemented yet.")
+        self._tp = 0.0
+        self._fp = 0.0
+        self._fn = 0.0
