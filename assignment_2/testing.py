@@ -18,7 +18,6 @@ mylist = [{"x": a, "y": a}, {"x": a,"y": a}, {"x": a,"y": a}]
 
 nm = Normalize()
 
-sample = get_carla_dataset(root,split="train")[0]
+sample = get_carla_dataset(root,split="train")[0]["y"]
 
 print(sample)
-print(nm(sample))

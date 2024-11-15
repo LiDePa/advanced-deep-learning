@@ -4,6 +4,8 @@ from typing import Any
 
 import torch
 
+import numpy as np
+
 
 class Metric(ABC):
 
@@ -54,6 +56,26 @@ class MeanIntersectionOverUnion(Metric):
         #       Do not retain all predictions and labels, this will cause your GPU to run out of memory.
         #       Make sure to move everything to the correct device.
 
+
+
+        # TODO: move to device
+        # TODO: ignore 255
+        # TODO: ask chatgpt whether a tensor is retained here
+
+        # create masks of true positive and of false pixel predictions while ignoring class 255
+        tp_mask = ((predictions == labels) & (labels != 255))
+        f_mask = (~tp_mask & (labels != 255))
+        tp_mask.to(self._device)
+        f_mask.to(self._device)
+
+        # mask predictions tensor with only the tp-pixels to obtain an image of the correctly predicted classes
+        tp_image = tp_mask * predictions
+        fp_image = f_mask * predictions
+        fn_image = f_mask * labels
+
+        # flatten the tensor and add the number of occurrences for each class to their running variables
+        self._tp_running += torch.bincount(tp_image.flatten())
+
         raise NotImplementedError(
                 "Mean intersection over union _update has not been implemented yet.")
 
@@ -67,7 +89,12 @@ class MeanIntersectionOverUnion(Metric):
         # TODO: Use the inner state of this metric to calculate the current mean section over union.
         #       Do not use anything but the inner state.
 
-        return self._tp / (self._tp + self._fp + self._fn)
+
+
+
+        raise NotImplementedError(
+                "Mean intersection over union _compute has not been implemented yet.")
+
 
     def _reset(self: MeanIntersectionOverUnion):
         """Resets the inner state of this metric.
@@ -76,6 +103,7 @@ class MeanIntersectionOverUnion(Metric):
         # TODO: Reset the inner state of this metric.
         # This function is also called in the __init__ function of the class.
 
-        self._tp = 0.0
-        self._fp = 0.0
-        self._fn = 0.0
+        # tensors with running variables for true positives, false positives and false negatives of each class
+        self._tp_running = torch.empty(dtype=torch.uint8)
+        self._fp_running = torch.empty(dtype=torch.uint8)
+        self._fn_running = torch.empty(dtype=torch.uint8)

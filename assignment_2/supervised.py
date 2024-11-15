@@ -48,6 +48,8 @@ def get_train_step(
         #       Use the gradient scaler provided by the outer function to scale gradients accordingly.
         #       For more information read the docstrings and the assignment!
 
+        model.train()
+
         # send image and label tensors to device
         batch["x"] = batch["x"].to(device)
         batch["y"] = batch["y"].to(device)
@@ -106,6 +108,8 @@ def get_validation_step(
         #       After the validation step a single output and prediction should have been produced.
         #       To produce the predictions apply pixelwise class prediction using the maximum confidence value.
         #       For more information read the docstrings!
+
+        model.eval()
 
         # send image and label tensors to device
         batch["x"] = batch["x"].to(device)

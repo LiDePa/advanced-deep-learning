@@ -13,6 +13,9 @@ from torch import amp
 
 
 
+# TODO: implement training timer
+
+
 def train(
         model: Module, optimizer: Optimizer, train_loader: DataLoader, val_loader: DataLoader, device: torch.device,
         class_names: List[str], epochs: int, log_dir, ema_model: Module = None
