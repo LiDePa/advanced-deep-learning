@@ -59,8 +59,9 @@ class MeanIntersectionOverUnion(Metric):
 
 
         # TODO: ask chatgpt whether a tensor is retained here
-        # TODO: testing
+        # TODO: testing, also with _ignore_class=None
 
+        # send predictions and labels tensors to the device
         predictions = predictions.to(self._device)
         labels = labels.to(self._device)
 
@@ -102,7 +103,7 @@ class MeanIntersectionOverUnion(Metric):
         # TODO: Reset the inner state of this metric.
         # This function is also called in the __init__ function of the class.
 
-        # tensors with running variables for true positives, false positives and false negatives of each class
+        # create or reset tensors with running variables for true positives, false positives and false negatives of each class
         self._tp_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
         self._fp_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
         self._fn_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
