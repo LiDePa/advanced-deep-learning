@@ -58,26 +58,25 @@ class MeanIntersectionOverUnion(Metric):
 
 
 
-        # TODO: move to device
-        # TODO: ignore 255
         # TODO: ask chatgpt whether a tensor is retained here
+        # TODO: testing
 
-        # create masks of true positive and of false pixel predictions while ignoring class 255
-        tp_mask = ((predictions == labels) & (labels != 255))
-        f_mask = (~tp_mask & (labels != 255))
-        tp_mask.to(self._device)
-        f_mask.to(self._device)
+        predictions = predictions.to(self._device)
+        labels = labels.to(self._device)
 
-        # mask predictions tensor with only the tp-pixels to obtain an image of the correctly predicted classes
-        tp_image = tp_mask * predictions
-        fp_image = f_mask * predictions
-        fn_image = f_mask * labels
+        # create masks of true positive and of false pixel predictions while excluding _ignore_class
+        tp_mask = ((predictions == labels) & (labels != self._ignore_class))
+        f_mask = (~tp_mask & (labels != self._ignore_class))
 
-        # flatten the tensor and add the number of occurrences for each class to their running variables
-        self._tp_running += torch.bincount(tp_image.flatten())
+        # mask predictions and labels tensors to obtain all true positive, false positive and false negative classes
+        tp_classes = predictions[tp_mask]
+        fp_classes = predictions[f_mask]
+        fn_classes = labels[f_mask]
 
-        raise NotImplementedError(
-                "Mean intersection over union _update has not been implemented yet.")
+        # count the number of occurrences of each class and update running variables
+        self._tp_running += torch.bincount(tp_classes, minlength=self._num_classes)
+        self._fp_running += torch.bincount(fp_classes, minlength=self._num_classes)
+        self._fn_running += torch.bincount(fn_classes, minlength=self._num_classes)
 
     def _compute(self: MeanIntersectionOverUnion) -> float:
         """Computes the mean intersection over union of the currently seen samples.
@@ -89,11 +88,11 @@ class MeanIntersectionOverUnion(Metric):
         # TODO: Use the inner state of this metric to calculate the current mean section over union.
         #       Do not use anything but the inner state.
 
+        # calculate IoU for each class
+        denominator = self._tp_running + self._fp_running + self._fn_running
+        ious = torch.where(denominator > 0, self._tp_running / denominator, torch.tensor(0.0, device=self._device))
 
-
-
-        raise NotImplementedError(
-                "Mean intersection over union _compute has not been implemented yet.")
+        return torch.mean(ious).item()
 
 
     def _reset(self: MeanIntersectionOverUnion):
@@ -104,6 +103,6 @@ class MeanIntersectionOverUnion(Metric):
         # This function is also called in the __init__ function of the class.
 
         # tensors with running variables for true positives, false positives and false negatives of each class
-        self._tp_running = torch.empty(dtype=torch.uint8)
-        self._fp_running = torch.empty(dtype=torch.uint8)
-        self._fn_running = torch.empty(dtype=torch.uint8)
+        self._tp_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
+        self._fp_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
+        self._fn_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
