@@ -35,11 +35,13 @@ class Metric(ABC):
         raise NotImplementedError()
 
 
+# TODO: make sure init looks like in template
 class MeanIntersectionOverUnion(Metric):
 
     def __init__(self, num_classes: int, *, ignore_class: int | None = None, **kwargs):
         self._num_classes = num_classes
         self._ignore_class = ignore_class
+        # super(MeanIntersectionOverUnion, self).__init__(**kwargs)
         self._reset()
         super(MeanIntersectionOverUnion, self).__init__(**kwargs)
 
@@ -58,12 +60,7 @@ class MeanIntersectionOverUnion(Metric):
 
 
 
-        # TODO: ask chatgpt whether a tensor is retained here
-        # TODO: testing, also with _ignore_class=None
-
-        # send predictions and labels tensors to the device
-        predictions = predictions.to(self._device)
-        labels = labels.to(self._device)
+        # TODO: catch case _ignore_class=None even though i have no idea what they want me to do with it
 
         # create masks of true positive and of false pixel predictions while excluding _ignore_class
         tp_mask = ((predictions == labels) & (labels != self._ignore_class))

@@ -6,7 +6,6 @@ import torch
 class ResNetSegmentationModel(torch.nn.Module):
 
     def __init__(self, num_classes, use_intermediate_features=False):
-        # TODO: Implement the Model initialization
 
         super(ResNetSegmentationModel, self).__init__()
 
@@ -27,10 +26,9 @@ class ResNetSegmentationModel(torch.nn.Module):
             self.backbone.layer2,
             self.backbone.layer3,
             self.backbone.layer4,
-            torch.nn.Conv2d(self.backbone.layer4[1].conv2.output_channels, num_classes, (1, 1)),
+            torch.nn.Conv2d(self.backbone.layer4[1].conv2.out_channels, num_classes, (1, 1)),
             torch.nn.Upsample((256, 512), mode="bilinear")) #scale_factor=8
 
     def forward(self, x):
-        # TODO: Implement the forward pass of the model as described in the assignment
 
         return self.model_segmentation(x)
