@@ -54,20 +54,21 @@ def get_train_step(
         batch["x"] = batch["x"].to(device)
         batch["y"] = batch["y"].to(device)
 
+
         # perform forward propagation and calculate loss using mixed precision
-        with torch.autocast(device):
+        with torch.autocast(autocast_device_type):
             output = model(batch["x"])
             loss = loss_fn(output, batch["y"])
 
         # backpropagate and update weights using mixed precision
-        scaler.scale(loss).backward()
+        scaler.scale(loss.mean()).backward()
         scaler.step(optimizer)
         scaler.update()
 
-        # create return dict
+        # detach gradients from loss and output and create return dict
         return_value = batch
-        return_value["loss"] = loss.item()
-        return_value["outputs"] = output
+        return_value["loss"] = loss.mean().item()
+        return_value["outputs"] = output.detach()
 
         return return_value
 

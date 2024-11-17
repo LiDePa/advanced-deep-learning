@@ -41,9 +41,9 @@ class MeanIntersectionOverUnion(Metric):
     def __init__(self, num_classes: int, *, ignore_class: int | None = None, **kwargs):
         self._num_classes = num_classes
         self._ignore_class = ignore_class
-        # super(MeanIntersectionOverUnion, self).__init__(**kwargs)
-        self._reset()
         super(MeanIntersectionOverUnion, self).__init__(**kwargs)
+        self._reset()
+        # super(MeanIntersectionOverUnion, self).__init__(**kwargs)
 
     def _update(self: MeanIntersectionOverUnion, predictions: torch.Tensor, labels: torch.Tensor):
         """Updates the inner state of this metric such that the mean intersection over union can be calculated.
@@ -90,7 +90,7 @@ class MeanIntersectionOverUnion(Metric):
         denominator = self._tp_running + self._fp_running + self._fn_running
         ious = torch.where(denominator > 0, self._tp_running / denominator, torch.tensor(0.0, device=self._device))
 
-        return torch.mean(ious).item()
+        return torch.mean(ious) # returns a tensor because event handlers in training.py expect a tensor, not a float (they are calling .item() on the result)
 
 
     def _reset(self: MeanIntersectionOverUnion):

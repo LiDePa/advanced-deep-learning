@@ -56,7 +56,7 @@ class CarlaDataset(Dataset):
         image = Image.open(self.image_paths[idx]).convert("RGB")
         label = Image.open(self.label_paths[idx]).convert("L")
         image_tensor = torchvision.transforms.functional.to_tensor(image).float()
-        label_tensor = torch.from_numpy(np.array(label)).to(torch.int8)
+        label_tensor = torch.from_numpy(np.array(label)).to(torch.int64) # would like to use int8 but then cross_entropy complains and other weird stuff happens
 
         # create sample dictionary
         sample = {
