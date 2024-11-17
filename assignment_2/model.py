@@ -12,7 +12,7 @@ class ResNetSegmentationModel(torch.nn.Module):
         # get a pretrained ResNet18 model
         self.backbone = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
 
-        # decrease the stride of the last two layers to retain a higher resolution
+        # decrease the stride of the last conv layers to retain a higher resolution
         self.backbone.layer3[0].conv2.stride = (1, 1)
         self.backbone.layer4[0].conv2.stride = (1, 1)
 

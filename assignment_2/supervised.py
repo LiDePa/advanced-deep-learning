@@ -122,7 +122,7 @@ def get_validation_step(
 
         # create return dict
         return_value = batch
-        return_value["outputs"] = output
+        return_value["outputs"] = output.detach()
         return_value["predictions"] = torch.argmax(output, dim=1)
 
         return return_value
