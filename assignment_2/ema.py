@@ -50,8 +50,11 @@ class EMAModel(nn.Module):
         #
         #       ât = b * â(t - 1) + (1 - b) * a
 
-        raise NotImplementedError(
-            f'{EMAModel.update.__name__} has not been implemented yet.')
+        # iterate through all parameters and buffers of the main model and update the ema model according to the given formula
+        for ema_param, model_param in zip(self._model.parameters(), model.parameters()):
+            ema_param.copy_(self._decay_rate * ema_param + (1 - self._decay_rate) * model_param)
+        for ema_buffer, model_buffer in zip(self._model.buffers(), model.buffers()):
+            ema_buffer.copy_(self._decay_rate * ema_buffer + (1 - self._decay_rate) * model_buffer)
 
     def forward(self: EMAModel, *args, **kwargs) -> Any:
         """Forwards to the forward function of the inner model.
