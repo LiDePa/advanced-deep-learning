@@ -1,7 +1,6 @@
 # TODO: delete this file
 
 
-"""
 
 import torch
 from .model import ResNetSegmentationModel
@@ -143,3 +142,4 @@ def test_miou():
 test_miou()
 
 
+"""

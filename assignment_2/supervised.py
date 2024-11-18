@@ -42,18 +42,13 @@ def get_train_step(
             Dict[str, torch.Tensor]: Returns the batch + the outputs produced by the model and the current loss as a scalar.
         """
 
-        # TODO: Implement a training step using the parameters provided by the outer function.
-        #       After the training step a single gradient update has to be performed on the model.
-        #       Use torch.autocast() to perform mixed precision calculations during predictions and loss calculation.
-        #       Use the gradient scaler provided by the outer function to scale gradients accordingly.
-        #       For more information read the docstrings and the assignment!
-
+        # put model into train mode and throw away gradients from previous batch
         model.train()
+        optimizer.zero_grad()
 
         # send image and label tensors to device
         batch["x"] = batch["x"].to(device)
         batch["y"] = batch["y"].to(device)
-
 
         # perform forward propagation and calculate loss using mixed precision
         with torch.autocast(autocast_device_type):
@@ -104,11 +99,6 @@ def get_validation_step(
             Dict[str, torch.Tensor]: The validation batch + the outputs produced by the model as well as the actual class
             predictions.
         """
-
-        # TODO: Please implement a validation step using the function parameters provided by the outer function.
-        #       After the validation step a single output and prediction should have been produced.
-        #       To produce the predictions apply pixelwise class prediction using the maximum confidence value.
-        #       For more information read the docstrings!
 
         model.eval()
 

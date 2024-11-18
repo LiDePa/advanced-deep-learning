@@ -31,9 +31,6 @@ class Normalize(Transform):
             mean: Tuple[float, float, float] = (0.485, 0.456, 0.406),
             stdd: Tuple[float, float, float] = (0.229, 0.224, 0.225)) -> None:
 
-        # TODO: Research Imagenet normalization. Put mean and standard deviation as default parameters of this function.
-        #       Take note of the provided type hints, otherwise it might not work.
-
         if type(mean) is NotImplementedError:
             raise mean
         elif type(stdd) is NotImplementedError:

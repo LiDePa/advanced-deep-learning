@@ -13,8 +13,12 @@ class ResNetSegmentationModel(torch.nn.Module):
         self.backbone = resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
 
         # decrease the stride of the last conv layers to retain a higher resolution
-        self.backbone.layer3[0].conv2.stride = (1, 1)
-        self.backbone.layer4[0].conv2.stride = (1, 1)
+        self.backbone.layer3[0].conv1.stride = (1, 1)
+        self.backbone.layer4[0].conv1.stride = (1, 1)
+
+        # adapt the skip connections accordingly
+        self.backbone.layer3[0].downsample[0].stride = (1, 1)
+        self.backbone.layer4[0].downsample[0].stride = (1, 1)
 
         # construct a segmentation model using the convolutional layers of the pretrained resnet18 backbone
         self.model_segmentation = torch.nn.Sequential(
@@ -26,8 +30,13 @@ class ResNetSegmentationModel(torch.nn.Module):
             self.backbone.layer2,
             self.backbone.layer3,
             self.backbone.layer4,
-            torch.nn.Conv2d(self.backbone.layer4[1].conv2.out_channels, num_classes, (1, 1)),
-            torch.nn.Upsample((256, 512), mode="bilinear")) #scale_factor=8
+            torch.nn.Conv2d(
+                self.backbone.layer4[1].conv2.out_channels,
+                num_classes,
+                (1, 1)),
+            torch.nn.Upsample(
+                scale_factor=8,
+                mode="bilinear"))
 
     def forward(self, x):
 

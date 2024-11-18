@@ -41,7 +41,7 @@ class MeanIntersectionOverUnion(Metric):
     def __init__(self, num_classes: int, *, ignore_class: int | None = None, **kwargs):
         self._num_classes = num_classes
         self._ignore_class = ignore_class
-        super(MeanIntersectionOverUnion, self).__init__(**kwargs)
+        super(MeanIntersectionOverUnion, self).__init__(**kwargs) # had to move this up to initialize running tensors in _reset()
         self._reset()
         # super(MeanIntersectionOverUnion, self).__init__(**kwargs)
 
@@ -53,14 +53,7 @@ class MeanIntersectionOverUnion(Metric):
             labels (torch.Tensor): Ground truth from which the mean intersection over union will be calculated.
         """
 
-        # TODO: Update the inner state of this metric such that mean intersection over union can be calculated.
-        #       Do not actually calculate the mean intersection over union value in this function.
-        #       Do not retain all predictions and labels, this will cause your GPU to run out of memory.
-        #       Make sure to move everything to the correct device.
-
-
-
-        # TODO: catch case _ignore_class=None even though i have no idea what they want me to do with it
+        # TODO: catch case _ignore_class=None but does that mean i evaluate class 255? Can I expect num_classes to be one higher then?
 
         # create masks of true positive and of false pixel predictions while excluding _ignore_class
         tp_mask = ((predictions == labels) & (labels != self._ignore_class))
@@ -83,10 +76,7 @@ class MeanIntersectionOverUnion(Metric):
             float: The mean intersection over union.
         """
 
-        # TODO: Use the inner state of this metric to calculate the current mean section over union.
-        #       Do not use anything but the inner state.
-
-        # calculate IoU for each class
+        # calculate intersection over union for each class
         denominator = self._tp_running + self._fp_running + self._fn_running
         ious = torch.where(denominator > 0, self._tp_running / denominator, torch.tensor(0.0, device=self._device))
 
@@ -96,9 +86,6 @@ class MeanIntersectionOverUnion(Metric):
     def _reset(self: MeanIntersectionOverUnion):
         """Resets the inner state of this metric.
         """
-
-        # TODO: Reset the inner state of this metric.
-        # This function is also called in the __init__ function of the class.
 
         # create or reset tensors with running variables for true positives, false positives and false negatives of each class
         self._tp_running = torch.zeros(self._num_classes, dtype=torch.float32, device=self._device)
