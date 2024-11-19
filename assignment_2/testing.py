@@ -1,6 +1,6 @@
 # TODO: delete this file
 
-
+"""
 
 from .transforms import RandomCrop, Normalize
 from .carla_dataset import get_carla_dataset
@@ -43,7 +43,6 @@ def test_resnet_segmentation_model():
     # Move the model to the same device as the dummy input
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model = model.to(device)
-
     # Create dummy input
     dummy_input = torch.rand(input_shape).to(device)
 
@@ -76,7 +75,7 @@ test_resnet_segmentation_model()
 
 
 
-
+"""
 
 
 
