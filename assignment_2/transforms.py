@@ -5,6 +5,8 @@ import torch
 import torch.nn.functional as F
 from typing import Dict, List, Tuple
 
+import torchvision.transforms.functional as TF
+
 
 class Transform(ABC):
 
@@ -92,10 +94,19 @@ class RandomCrop(Transform):
             Dict[str, torch.Tensor]: The input sample with the "x" and "y" entries cropped to the provided size.
         """
 
-        # TODO: Crop the the "x" and "y" entries of the sample to the provided size selecting a random region of the image
+        # calculate maximum y and x position of the crop depending on image size and crop size
+        # TF.crop() expects position arguments to be the top left pixel of the crop and starts counting from zero
+        max_position = (sample["x"].size(1) - self._crop_size,
+                        sample["x"].size(2) - self._crop_size)
 
-        raise NotImplementedError(
-                "RandomCrop.__call__ has not been implemented yet.")
+        # get random crop position; +1 because tensor.to(torch.int64) floors
+        rand_position = ((torch.rand(1) * (max_position[0]+1)).to(torch.int64).item(),
+                         (torch.rand(1) * (max_position[1]+1)).to(torch.int64).item())
+
+        return {
+            "x": TF.crop(sample["x"], rand_position[0], rand_position[1], self._crop_size, self._crop_size),
+            "y": TF.crop(sample["y"], rand_position[0], rand_position[1], self._crop_size, self._crop_size)
+        }
 
 
 class RandomResizeCrop(RandomCrop):

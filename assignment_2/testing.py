@@ -2,6 +2,29 @@
 
 
 
+from .transforms import RandomCrop, Normalize
+from .carla_dataset import get_carla_dataset
+
+
+dataset = get_carla_dataset("datasets/carla3.0_for_students", split="train")
+crop = RandomCrop(crop_size=192)
+sample = dataset[11]
+sample_cropped = crop(sample)
+
+print(sample["y"], sample_cropped["y"])
+
+
+
+
+
+
+
+
+
+
+
+"""
+
 import torch
 from .model import ResNetSegmentationModel
 
@@ -50,7 +73,7 @@ test_resnet_segmentation_model()
 
 
 
-"""
+
 
 
 
