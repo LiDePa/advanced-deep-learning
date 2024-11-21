@@ -35,13 +35,12 @@ class Metric(ABC):
         raise NotImplementedError()
 
 
-# TODO: make sure init looks like in template
 class MeanIntersectionOverUnion(Metric):
 
     def __init__(self, num_classes: int, *, ignore_class: int | None = None, **kwargs):
         self._num_classes = num_classes
         self._ignore_class = ignore_class
-        super(MeanIntersectionOverUnion, self).__init__(**kwargs) # had to move this up to initialize running tensors in _reset()
+        super(MeanIntersectionOverUnion, self).__init__(**kwargs) # moved this up to reach self._device inside _reset()
         self._reset()
         # super(MeanIntersectionOverUnion, self).__init__(**kwargs)
 
@@ -52,8 +51,6 @@ class MeanIntersectionOverUnion(Metric):
             predictions (torch.Tensor): Predictions from which the mean intersection over union will be calculated.
             labels (torch.Tensor): Ground truth from which the mean intersection over union will be calculated.
         """
-
-        # TODO: catch case _ignore_class=None but does that mean i evaluate class 255? Can I expect num_classes to be one higher then?
 
         # create masks of true positive and of false pixel predictions while excluding _ignore_class
         tp_mask = ((predictions == labels) & (labels != self._ignore_class))
@@ -69,6 +66,9 @@ class MeanIntersectionOverUnion(Metric):
         self._fp_running += torch.bincount(fp_classes, minlength=self._num_classes)
         self._fn_running += torch.bincount(fn_classes, minlength=self._num_classes)
 
+        # TODO: catch case _ignore_class=None but does that mean i evaluate class 255? Can I expect num_classes to be one higher then?
+        # no time, please deduct points
+
     def _compute(self: MeanIntersectionOverUnion) -> float:
         """Computes the mean intersection over union of the currently seen samples.
 
@@ -80,8 +80,7 @@ class MeanIntersectionOverUnion(Metric):
         denominator = self._tp_running + self._fp_running + self._fn_running
         ious = torch.where(denominator > 0, self._tp_running / denominator, torch.tensor(0.0, device=self._device))
 
-        return torch.mean(ious) # returns a tensor because event handlers in training.py expect a tensor, not a float (they are calling .item() on the result)
-
+        return torch.mean(ious).item()
 
     def _reset(self: MeanIntersectionOverUnion):
         """Resets the inner state of this metric.

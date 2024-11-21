@@ -135,7 +135,7 @@ if __name__ == "__main__":
 
     # Adding metric logging for the directly trained model.
     validation_engine.add_event_handler(Event.EPOCH_COMPLETED, lambda _engine: summary_writer.add_scalar(
-            "val//miou", metric.compute().item(), global_step=train_engine.iteration))
+            "val//miou", metric.compute(), global_step=train_engine.iteration)) # had to remove .item() here since compute() is supposed to return float
 
     # Checkpointing the directly trained model.
     validation_engine.add_event_handler(Event.EPOCH_COMPLETED, lambda _engine: model_checkpoint.checkpoint_if_necessary(
@@ -164,7 +164,7 @@ if __name__ == "__main__":
 
     # Adding metric logging for the EMA model.
     ema_validation_engine.add_event_handler(Event.EPOCH_COMPLETED, lambda _engine: summary_writer.add_scalar(
-            "val/ema/miou", ema_metric.compute().item(), global_step=train_engine.iteration))
+            "val/ema/miou", ema_metric.compute(), global_step=train_engine.iteration)) # had to remove .item() here since compute() is supposed to return float
 
     # Adding model checkpointing for each finished validation run.
     ema_validation_engine.add_event_handler(Event.EPOCH_COMPLETED, lambda _engine: ema_model_checkpoint.checkpoint_if_necessary(

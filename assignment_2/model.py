@@ -37,7 +37,7 @@ class ResNetSegmentationModel(torch.nn.Module):
                 scale_factor=8,
                 mode="bilinear"))
 
-        # create layers for intermediate feature mapping if flag is set
+        # set up layers for intermediate feature mapping if flag is set
         if use_intermediate_features:
             self._upsample_times2 = torch.nn.Upsample(scale_factor=2, mode="bilinear")
             self._upsample_times4 = torch.nn.Upsample(scale_factor=4, mode="bilinear")
@@ -48,9 +48,8 @@ class ResNetSegmentationModel(torch.nn.Module):
                 num_classes,
                 (1, 1))
 
-    # TODO: remove prints
-    def forward(self, x):
 
+    def forward(self, x):
         # use early-layer features for upsampling if flag is set
         if self._use_intermediate_features:
             x = self.model_segmentation[0](x) # Conv2d - has stride=(2,2) -> first downsampling to 1/2 of original

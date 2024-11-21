@@ -41,18 +41,11 @@ class EMAModel(nn.Module):
             model (nn.Module): The model from which to update the inner model parameters.
         """
 
-        # TODO: Update self._model according to the update rules of an exponential moving average model.
-        #       You are allowed the copy_ method that comes with each torch tensor to modify the inner
-        #       model directly.
-        #
-        #       The update rule of an exponential moving average model parameters at timestep t, given
-        #       the EMA model â, model a and decay rate b is:
-        #
-        #       ât = b * â(t - 1) + (1 - b) * a
-
-        # iterate through all parameters and buffers of the main model and update ema model according to the given formula
+        # iterate through all parameters  of the main model and update ema model according to the given formula
         for ema_param, model_param in zip(self._model.parameters(), model.parameters()):
             ema_param.copy_(self._decay_rate * ema_param + (1 - self._decay_rate) * model_param)
+
+        # iterate through all buffers of the main model and update ema model according to the given formula
         for ema_buffer, model_buffer in zip(self._model.buffers(), model.buffers()):
             ema_buffer.copy_(self._decay_rate * ema_buffer + (1 - self._decay_rate) * model_buffer)
 

@@ -100,6 +100,7 @@ def get_validation_step(
             predictions.
         """
 
+        # put model into evaluation mode
         model.eval()
 
         # send image and label tensors to device

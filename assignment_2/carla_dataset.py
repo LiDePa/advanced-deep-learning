@@ -29,9 +29,9 @@ class CarlaDataset(Dataset):
             this dataset. Defaults to list().
         """
 
-        self.transforms = Compose(*transforms)
-        self.image_paths = sorted(glob.glob(os.path.join(dataset_path,"images/*.png")))
-        self.label_paths = sorted(glob.glob(os.path.join(dataset_path,"segmentations/*.png")))
+        self._transforms = Compose(*transforms)
+        self._image_paths = sorted(glob.glob(os.path.join(dataset_path,"images/*.png")))
+        self._label_paths = sorted(glob.glob(os.path.join(dataset_path,"segmentations/*.png")))
         self._dataset_path = dataset_path
 
     @property
@@ -39,7 +39,7 @@ class CarlaDataset(Dataset):
         return self._dataset_path
 
     def __len__(self: CarlaDataset) -> int:
-        return len(self.image_paths)
+        return len(self._image_paths)
 
     def __getitem__(self: CarlaDataset, idx: int) -> Dict[str, torch.Tensor]:
         """Loads a single sample from disk.
@@ -53,8 +53,8 @@ class CarlaDataset(Dataset):
         """
 
         # load the image and its segmentation mask and convert them to tensors
-        image = Image.open(self.image_paths[idx]).convert("RGB")
-        label = Image.open(self.label_paths[idx]).convert("L")
+        image = Image.open(self._image_paths[idx]).convert("RGB")
+        label = Image.open(self._label_paths[idx]).convert("L")
         image_tensor = torchvision.transforms.functional.to_tensor(image).float()
         label_tensor = torch.from_numpy(np.array(label)).to(torch.int64) # would like to use int8 but then cross_entropy complains and other weird stuff happens
 
@@ -65,8 +65,8 @@ class CarlaDataset(Dataset):
         }
 
         # apply transformations if given
-        if self.transforms:
-            sample = self.transforms(sample)
+        if self._transforms:
+            sample = self._transforms(sample)
 
         return sample
 
