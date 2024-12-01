@@ -57,9 +57,6 @@ def get_ss_train_step_hl(
             Dict[str, torch.Tensor]: The original minibatch with the student output and loss added.
         """
 
-        raise NotImplementedError(
-            f'{ss_train_step_hl.__name__} has not been implemented yet.')
-
         # TODO: You need to write a training step function for self-training using hard pseudo labels.
         #
         #       To do this you need to first generate hard pseudo-labels using the teacher.
@@ -75,6 +72,27 @@ def get_ss_train_step_hl(
         #
         #       The return statement given to you should not be changed and is required for logging.
         #       "prediction" should be the output of the student model and "loss" should be the loss.
+
+        # use teacher to get hard pseudo-labels and their confidences
+        with torch.no_grad():
+            teacher_predictions = teacher(batch["x"])
+            teacher_probabilities = torch.softmax(teacher_predictions, dim=1)
+            confidences, pseudo_labels = torch.max(teacher_probabilities, dim=1)
+        batch["pseudo_labels"] = pseudo_labels
+        batch["confidences"] = confidences
+
+        # apply transformations like pseudo-label filtering or sample perturbations
+        transform = Compose(*transforms)
+        batch = transform(batch)
+
+        # perform student training step using mixed precision
+        optimizer.zero_grad()
+        with torch.autocast(autocast_device_type):
+            prediction = student(batch)
+            loss = loss_fn(prediction, batch["pseudo_labels"])
+        scaler.scale(loss).backward()
+        scaler.step(optimizer)
+        scaler.update()
 
         return batch | dict(prediction=prediction, loss=loss.item())
 
