@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="390c63dd-bb9e-43b1-be42-52b879ce2396" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/advanced-deep-learning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/advanced-deep-learning.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/carla_dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/carla_dataset.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/check_testability.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/check_testability.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/checkpoint.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/checkpoint.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/ema.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/ema.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/engine.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/engine.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/metrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/metrics.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/supervised.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/supervised.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/training.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/training.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_2/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_2/transforms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_3/semi_supervised.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_3/semi_supervised.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -45,7 +31,7 @@
   "keyToString": {
     "Python.assignment_2.training.executor": "Run",
     "Python.assignment_3.executor": "Run",
-    "Python.assignment_3.training.executor": "Debug",
+    "Python.assignment_3.training.executor": "Run",
     "Python.training.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
@@ -56,7 +42,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
+    "settings.editor.selected.configurable": "web.server",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -127,7 +113,8 @@
       <workItem from="1732968335237" duration="1526000" />
       <workItem from="1732970517591" duration="811000" />
       <workItem from="1732972634263" duration="145000" />
-      <workItem from="1733061045772" duration="2397000" />
+      <workItem from="1733061045772" duration="7806000" />
+      <workItem from="1733139147616" duration="19876000" />
     </task>
     <servers />
   </component>
@@ -135,7 +122,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_3_training.coverage" NAME="assignment_3.training Coverage Results" MODIFIED="1733062984121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_3_training.coverage" NAME="assignment_3.training Coverage Results" MODIFIED="1733174864655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732795192017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_2" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_2_training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732972664306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
   </component>

@@ -73,6 +73,8 @@ def get_ss_train_step_hl(
         #       The return statement given to you should not be changed and is required for logging.
         #       "prediction" should be the output of the student model and "loss" should be the loss.
 
+        batch["x"] = batch["x"].to(device)
+
         # use teacher to get hard pseudo-labels and their confidences
         with torch.no_grad():
             teacher_predictions = teacher(batch["x"])
@@ -82,14 +84,13 @@ def get_ss_train_step_hl(
         batch["confidences"] = confidences
 
         # apply transformations like pseudo-label filtering or sample perturbations
-        transform = Compose(*transforms)
-        batch = transform(batch)
+        batch = transforms(batch)
 
         # perform student training step using mixed precision
         optimizer.zero_grad()
         with torch.autocast(autocast_device_type):
-            prediction = student(batch)
-            loss = loss_fn(prediction, batch["pseudo_labels"])
+            prediction = student(batch["x"])
+            loss = loss_fn(prediction, batch["pseudo_labels"]).mean()
         scaler.scale(loss).backward()
         scaler.step(optimizer)
         scaler.update()
