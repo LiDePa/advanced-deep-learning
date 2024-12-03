@@ -42,15 +42,22 @@ class CutOut(Transform):
         x = sample['x']
         pseudo_labels = sample['pseudo_labels']
 
-        raise NotImplementedError(
-            f'{CutOut.__name__} has not been implemented yet.')
-
         # TODO: The cut_out function expects the "bbox" parameter.
         #       This should be a bounding box to be cut out from the data sample using the
         #       (x, y, x_size, y_size) format. This box needs to be uniformly drawn from
         #       a random distribution. The size of the bounding box should be determined
         #       by the size of the input and the minimum and maximum scale given in the
         #       constructor of the CutOut class.
+
+        # get sample size as tensor
+        sample_size = torch.tensor(list(x.shape[2:]))
+
+        # create random cutout size and position within self.scale boundaries; +1 because tensor.to(torch.int64) floors
+        cutout_size = ((torch.rand(2) * (self.scales[1] - self.scales[0]) + self.scales[0]) * sample_size + 1).to(torch.int64)
+        cutout_position = (torch.rand(2) * (sample_size - cutout_size + 1)).to(torch.int64)
+
+        # create bounding box from cutout_size and cutout_position
+        bbox = (cutout_position[0].item(), cutout_position[1].item(), cutout_size[0].item(), cutout_size[1].item())
 
         x, pseudo_labels = cut_out(
             x, pseudo_labels, bbox, ignore_class=self.ignore_class)
@@ -79,13 +86,24 @@ def cut_out(
         Tuple[torch.Tensor, torch.Tensor]: _description_
     """
 
-    raise NotImplementedError(
-        f'{cut_out.__name__} has not been implemented yet.')
-
     # TODO: Cut out the given bounding box from the data sample.
-    #       This means setting all affected pixels in the minibatch of images to 0
+    #       This means setting all affected pixels  in the minibatch of images to 0
     #       and all the affected pseudo-labels to the ignore class (so that gradients
     #       for those pixels will be ignored later on).
+
+    x_pos, y_pos, x_size, y_size = bbox
+
+    # create cutout mask
+    cutout_mask = torch.ones_like(pseudo_labels, dtype=torch.uint8)
+    cutout_mask[:, y_pos:y_pos + y_size, x_pos:x_pos + x_size] = 0
+
+    # make mask broadcastable and apply it to samples and labels
+    x *= cutout_mask.unsqueeze(1)
+    pseudo_labels[~cutout_mask.bool()] = ignore_class
+
+    return x, pseudo_labels
+
+
 
 #############################################################
 #                      DO NOT MODIFY                        #

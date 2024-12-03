@@ -1,6 +1,8 @@
 from torchvision.models import resnet18, ResNet18_Weights
 import torch
 
+import torch.nn.functional as F
+
 
 class ResNetSegmentationModel(torch.nn.Module):
 
@@ -41,12 +43,16 @@ class ResNetSegmentationModel(torch.nn.Module):
         x = self.backbone.maxpool(x)
 
         if use_dropout_perturbation:
-            raise NotImplementedError(
-                f'The use of dropout in {self.forward.__name__} has not been implemented yet.')
-
-            # TODO: Use dropout after applying layers 1-4.
-            #       You are allowed to use torch.nn.functional to do this.
-            #       Use a dropout rate of 20%.
+            if use_dropout_perturbation:
+                # add dropout layer after layer 1 to 4
+                x_4 = x = self.backbone.layer1(x)
+                x = F.dropout(x, p=0.2, training=self.training)
+                x = self.backbone.layer2(x)
+                x = F.dropout(x, p=0.2, training=self.training)
+                x = self.backbone.layer3(x)
+                x = F.dropout(x, p=0.2, training=self.training)
+                x = self.backbone.layer4(x)
+                x = F.dropout(x, p=0.2, training=self.training)
 
         else:
             x_4 = x = self.backbone.layer1(x)

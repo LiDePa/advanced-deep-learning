@@ -57,25 +57,9 @@ def get_ss_train_step_hl(
             Dict[str, torch.Tensor]: The original minibatch with the student output and loss added.
         """
 
-        # TODO: You need to write a training step function for self-training using hard pseudo labels.
-        #
-        #       To do this you need to first generate hard pseudo-labels using the teacher.
-        #       Do not use automatic mixed precision during this step.
-        #
-        #       You then apply the given transforms to the data (important for later exercises).
-        #       To do so, you need to pass them a dictionary containing "x" (the unlabeled images), 
-        #       the "confidences" of the predicted pseudo-labels, and the "pseudo_labels".
-        #       For more information refer to the assignment sheet.
-        #
-        #       You then perform a regular parameter update using the given optimizer on the student
-        #       model. This is also where you should use automatic mixed precision.
-        #
-        #       The return statement given to you should not be changed and is required for logging.
-        #       "prediction" should be the output of the student model and "loss" should be the loss.
-
         batch["x"] = batch["x"].to(device)
 
-        # use teacher to get hard pseudo-labels and their confidences
+        # use teacher to get hard pseudo-labels and confidences
         with torch.no_grad():
             teacher_predictions = teacher(batch["x"])
             teacher_probabilities = torch.softmax(teacher_predictions, dim=1)
@@ -83,13 +67,16 @@ def get_ss_train_step_hl(
         batch["pseudo_labels"] = pseudo_labels
         batch["confidences"] = confidences
 
-        # apply transformations like pseudo-label filtering or sample perturbations
+        # apply transformations like pseudo-label filtering or perturbations
         batch = transforms(batch)
 
         # perform student training step using mixed precision
         optimizer.zero_grad()
         with torch.autocast(autocast_device_type):
-            prediction = student(batch["x"])
+            if use_dropout_perturbation:
+                prediction = student(batch["x"], use_dropout_perturbation=True)
+            else:
+                prediction = student(batch["x"])
             loss = loss_fn(prediction, batch["pseudo_labels"]).mean()
         scaler.scale(loss).backward()
         scaler.step(optimizer)

@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="390c63dd-bb9e-43b1-be42-52b879ce2396" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_3/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_3/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_3/semi_supervised.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_3/semi_supervised.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_3/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_3/transforms.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +34,11 @@
     "Python.assignment_2.training.executor": "Run",
     "Python.assignment_3.executor": "Run",
     "Python.assignment_3.training.executor": "Run",
+    "Python.cutout assignment_3.training.executor": "Debug",
+    "Python.logs cutout assignment_3.training.executor": "Run",
     "Python.training.executor": "Run",
+    "Python.trash cutout assignment_3.training.executor": "Debug",
+    "Python.trash dropout assignment_3.training.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
@@ -51,7 +57,7 @@
       <recent name="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning\assignment_3" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.logs dropout assignment_3.training">
     <configuration name="assignment_3.training" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="advanced-deep-learning" />
       <option name="ENV_FILES" value="" />
@@ -75,6 +81,81 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="logs cutout assignment_3.training" type="PythonConfigurationType" factoryName="Python">
+      <module name="advanced-deep-learning" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="assignment_3.training" />
+      <option name="PARAMETERS" value="--dataset-root=datasets/carla3.0_for_students/ --device=&quot;cuda:0&quot; --cutout-perturbation --output-dir=logs/" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="logs dropout assignment_3.training" type="PythonConfigurationType" factoryName="Python">
+      <module name="advanced-deep-learning" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="assignment_3.training" />
+      <option name="PARAMETERS" value="--dataset-root=datasets/carla3.0_for_students/ --device=&quot;cuda:0&quot; --use-dropout-perturbation --output-dir=logs/" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="trash dropout assignment_3.training" type="PythonConfigurationType" factoryName="Python">
+      <module name="advanced-deep-learning" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="assignment_3.training" />
+      <option name="PARAMETERS" value="--dataset-root=datasets/carla3.0_for_students/ --device=&quot;cuda:0&quot; --use-dropout-perturbation --output-dir=trash/" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.trash dropout assignment_3.training" />
+      <item itemvalue="Python.logs dropout assignment_3.training" />
+      <item itemvalue="Python.logs cutout assignment_3.training" />
+      <item itemvalue="Python.assignment_3.training" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.assignment_3.training" />
@@ -114,16 +195,35 @@
       <workItem from="1732970517591" duration="811000" />
       <workItem from="1732972634263" duration="145000" />
       <workItem from="1733061045772" duration="7806000" />
-      <workItem from="1733139147616" duration="19876000" />
+      <workItem from="1733139147616" duration="26086000" />
+      <workItem from="1733227185404" duration="29021000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="cutout_mask" />
+      </configuration>
+    </watches-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_3_training.coverage" NAME="assignment_3.training Coverage Results" MODIFIED="1733174864655" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_3_training.coverage" NAME="assignment_3.training Coverage Results" MODIFIED="1733178924167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732795192017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_2" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_2_training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732972664306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$cutout_assignment_3_training.coverage" NAME="trash dropout assignment_3.training Coverage Results" MODIFIED="1733268158271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_cutout_assignment_3_training.coverage" NAME="logs cutout assignment_3.training Coverage Results" MODIFIED="1733251917199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
   </component>
 </project>
