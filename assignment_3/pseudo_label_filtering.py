@@ -65,10 +65,18 @@ def pseudo_label_filtering(
         torch.Tensor: Filtered pseudo-labels with filtered labels set to the ignore class.
     """
 
-    raise NotImplementedError(
-        f'{pseudo_label_filtering.__name__} has not been implemented yet.')
+    # iterate through each of the classes; everything is handled batch-wise
+    for class_label in range(num_classes):
+        # get all confidence values for the class; skip rest of loop if class doesn't appear in pseudo_labels
+        mask_class = pseudo_labels == class_label
+        if not mask_class.any():
+            continue
+        confidences_class = confidences[mask_class]
 
-    # TODO: Filter the pseudo-labels per class. To do so, first calculate the mean confidence
-    #       given a class prediction and their standard deviation. The filter pseudo-labels
-    #       where the confidence that lead to a given prediction is smaller than mean + stdd.
-    #       This means you should use a total of 15 thresholds.
+        # calculate mean and standard deviation of confidence values to define a threshold
+        threshold_class = torch.mean(confidences_class) + torch.std(confidences_class)
+
+        #set all pseudo labels with a confidence below or equal to the threshold to ignore_class
+        pseudo_labels[mask_class & (confidences <= threshold_class)] = ignore_class
+
+    return pseudo_labels

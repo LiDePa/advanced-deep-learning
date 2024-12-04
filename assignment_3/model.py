@@ -44,7 +44,7 @@ class ResNetSegmentationModel(torch.nn.Module):
 
         if use_dropout_perturbation:
             if use_dropout_perturbation:
-                # add dropout layer after layer 1 to 4
+                # add dropout layers after layer 1 to 4
                 x_4 = x = self.backbone.layer1(x)
                 x = F.dropout(x, p=0.2, training=self.training)
                 x = self.backbone.layer2(x)
