@@ -86,11 +86,6 @@ def cut_out(
         Tuple[torch.Tensor, torch.Tensor]: _description_
     """
 
-    # TODO: Cut out the given bounding box from the data sample.
-    #       This means setting all affected pixels  in the minibatch of images to 0
-    #       and all the affected pseudo-labels to the ignore class (so that gradients
-    #       for those pixels will be ignored later on).
-
     x_pos, y_pos, x_size, y_size = bbox
 
     # create cutout mask
