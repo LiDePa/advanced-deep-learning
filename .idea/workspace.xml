@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="390c63dd-bb9e-43b1-be42-52b879ce2396" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_3/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_3/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_3/transforms.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_3/transforms.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -202,12 +200,12 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.trash filter assignment_3.training" />
-      <item itemvalue="Python.logs filter assignment_3.training" />
-      <item itemvalue="Python.logs dropout assignment_3.training" />
-      <item itemvalue="Python.logs cutout assignment_3.training" />
-      <item itemvalue="Python.trash cutout assignment_3.training" />
       <item itemvalue="Python.assignment_3.training" />
+      <item itemvalue="Python.logs cutout assignment_3.training" />
+      <item itemvalue="Python.logs dropout assignment_3.training" />
+      <item itemvalue="Python.logs filter assignment_3.training" />
+      <item itemvalue="Python.trash cutout assignment_3.training" />
+      <item itemvalue="Python.trash filter assignment_3.training" />
     </list>
     <recent_temporary>
       <list>
@@ -251,7 +249,8 @@
       <workItem from="1733139147616" duration="26086000" />
       <workItem from="1733227185404" duration="31506000" />
       <workItem from="1733319276803" duration="17445000" />
-      <workItem from="1733388891919" duration="10446000" />
+      <workItem from="1733388891919" duration="10547000" />
+      <workItem from="1733496512869" duration="2289000" />
     </task>
     <servers />
   </component>

@@ -1,0 +1,9 @@
+Flask==3.1.0
+huggingface-hub>=0.26.2
+numpy>=1.23.2
+pillow>=11.0.0
+sam-2 @ git+https://github.com/facebookresearch/sam2@c2ec8e14a185632b0a5d8b161928ceb50197eddc
+torch>=2.2.1
+waitress==3.0.2
+neo4j==5.27.0
+ollama==0.4.2

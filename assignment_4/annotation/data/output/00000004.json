@@ -1,0 +1,201 @@
+{
+  "img_id": "00000004",
+  "prompts": [
+    "What weapon does the statue with UID d34cba6a_d276_4ff5_b3a5_948b8b52893a carry?",
+    "How many statues are there?",
+    "Which of the statues is in the middle? Hint: only LEFT_OF relationships suffice.",
+    "What are the maximum number of weapons, a statue is holding?"
+  ],
+  "relations": [
+    {
+      "sbj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52",
+      "rel": "holds",
+      "obj": "0e3ab1c5_3ef1_4238_8505_30bbe051d9aa"
+    },
+    {
+      "sbj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52",
+      "rel": "holds",
+      "obj": "21235c80_55c5_43c9_b562_fb3028f20e33"
+    },
+    {
+      "sbj": "d34cba6a_d276_4ff5_b3a5_948b8b52893a",
+      "rel": "holds",
+      "obj": "028b5a73_5704_4531_a0db_8a87362103c7"
+    },
+    {
+      "sbj": "c9662769_e651_4201_92bc_b07b01e338ef",
+      "rel": "holds",
+      "obj": "447dc845_24b7_4991_94fa_2a95935ecaca"
+    },
+    {
+      "sbj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52",
+      "rel": "right of",
+      "obj": "d34cba6a_d276_4ff5_b3a5_948b8b52893a"
+    },
+    {
+      "sbj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52",
+      "rel": "right of",
+      "obj": "c9662769_e651_4201_92bc_b07b01e338ef"
+    },
+    {
+      "sbj": "d34cba6a_d276_4ff5_b3a5_948b8b52893a",
+      "rel": "right of",
+      "obj": "c9662769_e651_4201_92bc_b07b01e338ef"
+    },
+    {
+      "sbj": "d34cba6a_d276_4ff5_b3a5_948b8b52893a",
+      "rel": "left of",
+      "obj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52"
+    },
+    {
+      "sbj": "c9662769_e651_4201_92bc_b07b01e338ef",
+      "rel": "left of",
+      "obj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52"
+    },
+    {
+      "sbj": "c9662769_e651_4201_92bc_b07b01e338ef",
+      "rel": "left of",
+      "obj": "d34cba6a_d276_4ff5_b3a5_948b8b52893a"
+    },
+    {
+      "sbj": "3186d617_8d0f_438d_be5a_f48ea6f0ef52",
+      "rel": "on",
+      "obj": "afb5e5f7_db87_46e9_889e_b9bd8bdf989e"
+    },
+    {
+      "sbj": "d34cba6a_d276_4ff5_b3a5_948b8b52893a",
+      "rel": "on",
+      "obj": "1a17f91e_df94_4301_aca3_c3df64ee49bc"
+    },
+    {
+      "sbj": "c9662769_e651_4201_92bc_b07b01e338ef",
+      "rel": "on",
+      "obj": "4b03f90d_2c67_4332_a0f6_c27eeb632390"
+    },
+    {
+      "sbj": "38d06a1b_fe71_47d4_8f62_73c8e1e2a537",
+      "rel": "attached to",
+      "obj": "1a17f91e_df94_4301_aca3_c3df64ee49bc"
+    }
+  ],
+  "instances": [
+    {
+      "labels": [
+        "statue"
+      ],
+      "attributes": {
+        "chess_role": "rook"
+      },
+      "uid": "3186d617_8d0f_438d_be5a_f48ea6f0ef52"
+    },
+    {
+      "labels": [
+        "statue"
+      ],
+      "attributes": {
+        "chess_role": "knight"
+      },
+      "uid": "d34cba6a_d276_4ff5_b3a5_948b8b52893a"
+    },
+    {
+      "labels": [
+        "statue"
+      ],
+      "attributes": {
+        "chess_role": "queen"
+      },
+      "uid": "c9662769_e651_4201_92bc_b07b01e338ef"
+    },
+    {
+      "labels": [
+        "weapon"
+      ],
+      "attributes": {
+        "weapon_type": "shield"
+      },
+      "uid": "0e3ab1c5_3ef1_4238_8505_30bbe051d9aa"
+    },
+    {
+      "labels": [
+        "weapon"
+      ],
+      "attributes": {
+        "weapon_type": "flail"
+      },
+      "uid": "028b5a73_5704_4531_a0db_8a87362103c7"
+    },
+    {
+      "labels": [
+        "weapon"
+      ],
+      "attributes": {
+        "weapon_type": "staff"
+      },
+      "uid": "447dc845_24b7_4991_94fa_2a95935ecaca"
+    },
+    {
+      "labels": [
+        "socket"
+      ],
+      "attributes": {
+        "material": "concrete",
+        "colour": "grey"
+      },
+      "uid": "afb5e5f7_db87_46e9_889e_b9bd8bdf989e"
+    },
+    {
+      "labels": [
+        "sky"
+      ],
+      "attributes": {
+        "colour": "grey"
+      },
+      "uid": "2f27b9ef_7af7_40d4_bea9_5a1ce21189c1"
+    },
+    {
+      "labels": [
+        "building"
+      ],
+      "attributes": {
+        "colour": "yellow"
+      },
+      "uid": "f1cab620_b4b3_4232_ab25_d3593ca701a8"
+    },
+    {
+      "labels": [
+        "socket"
+      ],
+      "attributes": {
+        "material": "concrete",
+        "colour": "grey"
+      },
+      "uid": "1a17f91e_df94_4301_aca3_c3df64ee49bc"
+    },
+    {
+      "labels": [
+        "socket"
+      ],
+      "attributes": {
+        "material": "concrete",
+        "colour": "grey"
+      },
+      "uid": "4b03f90d_2c67_4332_a0f6_c27eeb632390"
+    },
+    {
+      "labels": [
+        "weapon"
+      ],
+      "attributes": {
+        "weapon_type": "sword"
+      },
+      "uid": "21235c80_55c5_43c9_b562_fb3028f20e33"
+    },
+    {
+      "labels": [
+        "sign"
+      ],
+      "attributes": {},
+      "uid": "38d06a1b_fe71_47d4_8f62_73c8e1e2a537"
+    }
+  ]
+}
