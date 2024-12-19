@@ -1,4 +1,17 @@
 import neo4j
+import os
+from ollama import Client
+
+
+
+PROJECT_DIR = "assignment_4"
+OLLAMA_URI = 'http://localhost:11434'
+LLM_MODEL = "llama3.1:70b"
+DATABASE_NAME = "neo4j"
+DATABASE_URI = "bolt://localhost:7687"
+DATABASE_USERNAME = "neo4j"
+DATABASE_PASSWORD = "juhujuhu"
+
 
 
 def get_db_schema(driver: neo4j.Driver, database: str) -> tuple[str, str]:
@@ -25,7 +38,7 @@ def get_db_schema(driver: neo4j.Driver, database: str) -> tuple[str, str]:
 
         # if you want to provide additional information like all possible categories,
         # you could run an additional cypher query like the following
-        res = session.run("MATCH (n:Node) RETURN DISTINCT n.category;")
+        # res = session.run("MATCH (n:Node) RETURN DISTINCT n.category;")
 
     # set to be filled in parsing to prevent duplicate relations
     unique_relations = set()
@@ -74,7 +87,20 @@ def ask_llm(model: str, system_prompt: str, user_prompt: str) -> str:
     # so something like `ssh -L 11434:localhost:11434 rzname@mmcXZY.informatik.uni-augsburg.de`
     # this way, you don't have to run the Ollama server locally. The only requirement
     # on you local machine is the ollama python package.
-    raise NotImplementedError()
+
+    client = Client(host=OLLAMA_URI)
+    response = client.chat(model='qwen2:7b', messages=[
+        {
+            'role': 'system',
+            'content': system_prompt
+        },
+        {
+            'role': 'user',
+            'content': user_prompt
+        }
+    ])
+
+    return response["message"]["content"]
 
 
 def extract_cypher_query(raw_response: str) -> str:
@@ -88,19 +114,34 @@ def extract_cypher_query(raw_response: str) -> str:
     raise NotImplementedError()
 
 
+def create_system_prompt() -> str:
+    # read prompt template
+    template_file = open(os.path.join(PROJECT_DIR, "reasoning/prompt.txt"))
+    template = template_file.read()
+    template_file.close()
+
+    # get database schema from neo4j graph database
+    driver = neo4j.GraphDatabase.driver(DATABASE_URI, auth=(DATABASE_USERNAME, DATABASE_PASSWORD))
+    node_schema, rel_schema = get_db_schema(driver, DATABASE_NAME)
+    driver.close()
+
+    system_prompt = template.replace("{{node_schema}}", node_schema).replace("{{rel_schema}}", rel_schema)
+
+    return system_prompt
+
+
+
+
+
 def main():
     """
     Put your code for exercise 4.1g) here.
     Either implement a command line interface or run all 4 required prompts here.
     """
-    URI = "bolt://localhost:7687"
-    USERNAME = "neo4j"
-    PASSWORD = "juhujuhu"
-    driver = neo4j.GraphDatabase.driver(URI, auth=(USERNAME, PASSWORD))
 
-    get_db_schema(driver, database="neo4j")
+    system_prompt = create_system_prompt()
 
-    driver.close()
+    print(ask_llm(LLM_MODEL, system_prompt, "This is a test, generate me a sample cypher query. Choose whatever you want"))
 
 
 if __name__ == "__main__":
