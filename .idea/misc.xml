@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Black">
-    <option name="sdkName" value="Remote Python 3.12.3 (sftp://depascli@mmc116.informatik.uni-augsburg.de:22/cfs/home/d/e/depascli/.virtualenvs/myenv/bin/python)" />
+    <option name="sdkName" value="Python 3.12 (myenv)" />
   </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (myenv)" project-jdk-type="Python SDK" />
 </project>

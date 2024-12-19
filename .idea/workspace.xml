@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="22379e84-5cce-4691-9c1a-6b13edf030e3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/assignment_4/4_1_(c).py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/advanced-deep-learning.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/advanced-deep-learning.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/deployment.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2qOkfMnDw5qpK3zdlCQCd9b0LUn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.4_1_(c).executor": "Run",
+    "Python.assignment_3.executor": "Run",
+    "Python.reason.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/RazerBlade14/Documents/AdDeLe/advanced-deep-learning",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Python.reason">
+    <configuration name="assignment_3" type="PythonConfigurationType" factoryName="Python">
+      <module name="advanced-deep-learning" />
+      <option name="ENV_FILES" value="$PROJECT_DIR$/../myenv/Scripts/python.exe" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (myenv)" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="assignment_3.training" />
+      <option name="PARAMETERS" value="--dataset-root=datasets/carla3.0_for_students/ --device=&quot;cuda:0&quot;" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="true" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="reason" type="PythonConfigurationType" factoryName="Python">
+      <module name="advanced-deep-learning" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.12 (myenv)" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="assignment_4/reasoning/reason.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.assignment_3" />
+      <item itemvalue="Python.reason" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23726.102" />
+        <option value="bundled-python-sdk-5e1850174b45-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23726.102" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="22379e84-5cce-4691-9c1a-6b13edf030e3" name="Changes" comment="" />
+      <created>1734541120227</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1734541120227</updated>
+      <workItem from="1734541121398" duration="2192000" />
+      <workItem from="1734543346274" duration="117000" />
+      <workItem from="1734543474251" duration="2253000" />
+      <workItem from="1734611552859" duration="1869000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/assignment_4/reasoning/reason.py</url>
+          <line>59</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_4_reason.coverage" NAME="assignment_4.reason Coverage Results" MODIFIED="1734389508446" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732795192017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_2" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_2_training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732972664306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$cutout_assignment_3_training.coverage" NAME="trash dropout assignment_3.training Coverage Results" MODIFIED="1733268158271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$reason.coverage" NAME="reason Coverage Results" MODIFIED="1734615597076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$trash_filter_assignment_3_training.coverage" NAME="trash filter assignment_3.training Coverage Results" MODIFIED="1733325377270" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_everything_assignment_3_training.coverage" NAME="logs everything assignment_3.training Coverage Results" MODIFIED="1733347230965" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_3_training.coverage" NAME="assignment_3.training Coverage Results" MODIFIED="1733178924167" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_dropout_assignment_3_training.coverage" NAME="logs dropout assignment_3.training Coverage Results" MODIFIED="1733410654774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_filter_assignment_3_training.coverage" NAME="logs filter assignment_3.training Coverage Results" MODIFIED="1733340514781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_cutout_assignment_3_training.coverage" NAME="logs cutout assignment_3.training Coverage Results" MODIFIED="1733251917199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$4_1__c_.coverage" NAME="4_1_(c) Coverage Results" MODIFIED="1734543728429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_4" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$trash_cutout_assignment_3_training.coverage" NAME="trash cutout assignment_3.training Coverage Results" MODIFIED="1733391417824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+  </component>
+</project>
