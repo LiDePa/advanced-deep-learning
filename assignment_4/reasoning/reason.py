@@ -149,6 +149,8 @@ def ask_database(driver: neo4j.Driver, database: str, user_prompt: str, system_p
     raw_response = ask_llm(LLM_MODEL, system_prompt, user_prompt)
     query = extract_cypher_query(raw_response)
 
+    print(query)
+
     with driver.session(database=database) as session:
         result = session.run(query).data()[0]
 
@@ -166,16 +168,28 @@ def main():
 
     system_prompt = create_system_prompt(driver)
 
-    user_prompt = "When was the actor Keanu Reeves born?"
+    user_prompts = ["How many actors starred in ”Joe Versus the Volcano”?",
+                    "When was the director of the movie ”Stand By Me” born?",
+                    "Which actors starred in both ”The Matrix Revolutions” and ”The Matrix Reloaded”?",
+                    "Who is the youngest director in the dataset?"]
 
-    result = ask_database(driver, DATABASE_NAME, user_prompt, system_prompt)
+    for user_prompt in user_prompts:
+        result = ask_database(driver, DATABASE_NAME, user_prompt, system_prompt)
+        print(result)
 
     driver.close()
-
-    print(result)
-
-
 
 
 if __name__ == "__main__":
     main()
+
+
+# First try:
+# MATCH (m:Movie {title: "Joe Versus the Volcano"})-[:ACTED_IN]-(p:Person) RETURN COUNT(p)
+# {'COUNT(p)': 3}
+# MATCH (m:Movie {title: 'Stand By Me'})-[:DIRECTED]-(p:Person) RETURN p.born
+# {'p.born': 1947}
+# MATCH (p1:Person)-[:ACTED_IN]->(m1:Movie {title: "The Matrix Revolutions"}), (p2:Person)-[:ACTED_IN]->(m2:Movie {title: "The Matrix Reloaded"}) WHERE p1 = p2 RETURN DISTINCT p1.name
+# {'p1.name': 'Keanu Reeves'}
+# MATCH (p:Person)-[:DIRECTED]->(:Movie) RETURN p ORDER BY p.born ASC LIMIT 1
+# {'p': {'born': 1930, 'name': 'Clint Eastwood'}}
