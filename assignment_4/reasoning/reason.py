@@ -1,6 +1,8 @@
 import neo4j
 import os
 from ollama import Client
+import json
+import re
 
 
 
@@ -89,7 +91,7 @@ def ask_llm(model: str, system_prompt: str, user_prompt: str) -> str:
     # on you local machine is the ollama python package.
 
     client = Client(host=OLLAMA_URI)
-    response = client.chat(model='qwen2:7b', messages=[
+    response = client.chat(model=LLM_MODEL, messages=[
         {
             'role': 'system',
             'content': system_prompt
@@ -111,20 +113,34 @@ def extract_cypher_query(raw_response: str) -> str:
     :param raw_response: The raw response from ask_llm()
     :return: The cleaned response
     """
-    raise NotImplementedError()
+
+    start = raw_response.find("{")
+    end = raw_response.rfind("}") + 1
+    json_block = raw_response[start:end]
+
+    data_response = json.loads(json_block)
+    query = data_response.get("query", "")
+
+    # Check for restricted keywords
+    restricted_keywords = ["delete", "merge", "insert"]
+    if any(keyword in query.lower() for keyword in restricted_keywords):
+        return ""
+
+    else:
+        return query
 
 
+# read system prompt template and insert database schema
 def create_system_prompt() -> str:
     # read prompt template
-    template_file = open(os.path.join(PROJECT_DIR, "reasoning/prompt.txt"))
-    template = template_file.read()
-    template_file.close()
+    with open(os.path.join(PROJECT_DIR, "reasoning/prompt.txt")) as template_file:
+        template = template_file.read()
 
     # get database schema from neo4j graph database
-    driver = neo4j.GraphDatabase.driver(DATABASE_URI, auth=(DATABASE_USERNAME, DATABASE_PASSWORD))
-    node_schema, rel_schema = get_db_schema(driver, DATABASE_NAME)
-    driver.close()
+    with neo4j.GraphDatabase.driver(DATABASE_URI, auth=(DATABASE_USERNAME, DATABASE_PASSWORD)) as driver:
+        node_schema, rel_schema = get_db_schema(driver, DATABASE_NAME)
 
+    # insert database schema into system prompt template
     system_prompt = template.replace("{{node_schema}}", node_schema).replace("{{rel_schema}}", rel_schema)
 
     return system_prompt
@@ -141,7 +157,14 @@ def main():
 
     system_prompt = create_system_prompt()
 
-    print(ask_llm(LLM_MODEL, system_prompt, "This is a test, generate me a sample cypher query. Choose whatever you want"))
+    user_prompt = "When was the actor Keanu Reeves born?"
+
+    raw_response = ask_llm(LLM_MODEL, system_prompt, user_prompt)
+
+    cypher_query = extract_cypher_query(raw_response)
+
+    print(cypher_query)
+
 
 
 if __name__ == "__main__":
