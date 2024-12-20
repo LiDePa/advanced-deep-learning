@@ -131,20 +131,28 @@ def extract_cypher_query(raw_response: str) -> str:
 
 
 # read system prompt template and insert database schema
-def create_system_prompt() -> str:
+def create_system_prompt(driver: neo4j.Driver) -> str:
     # read prompt template
     with open(os.path.join(PROJECT_DIR, "reasoning/prompt.txt")) as template_file:
         template = template_file.read()
 
     # get database schema from neo4j graph database
-    with neo4j.GraphDatabase.driver(DATABASE_URI, auth=(DATABASE_USERNAME, DATABASE_PASSWORD)) as driver:
-        node_schema, rel_schema = get_db_schema(driver, DATABASE_NAME)
+    node_schema, rel_schema = get_db_schema(driver, DATABASE_NAME)
 
     # insert database schema into system prompt template
     system_prompt = template.replace("{{node_schema}}", node_schema).replace("{{rel_schema}}", rel_schema)
 
     return system_prompt
 
+
+def ask_database(driver: neo4j.Driver, database: str, user_prompt: str, system_prompt: str):
+    raw_response = ask_llm(LLM_MODEL, system_prompt, user_prompt)
+    query = extract_cypher_query(raw_response)
+
+    with driver.session(database=database) as session:
+        result = session.run(query).data()[0]
+
+    return result
 
 
 
@@ -154,16 +162,18 @@ def main():
     Put your code for exercise 4.1g) here.
     Either implement a command line interface or run all 4 required prompts here.
     """
+    driver = neo4j.GraphDatabase.driver(DATABASE_URI, auth=(DATABASE_USERNAME, DATABASE_PASSWORD))
 
-    system_prompt = create_system_prompt()
+    system_prompt = create_system_prompt(driver)
 
     user_prompt = "When was the actor Keanu Reeves born?"
 
-    raw_response = ask_llm(LLM_MODEL, system_prompt, user_prompt)
+    result = ask_database(driver, DATABASE_NAME, user_prompt, system_prompt)
 
-    cypher_query = extract_cypher_query(raw_response)
+    driver.close()
 
-    print(cypher_query)
+    print(result)
+
 
 
 
