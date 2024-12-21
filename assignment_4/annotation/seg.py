@@ -9,7 +9,6 @@ import os
 
 
 SEG_DIR = os.path.dirname(os.path.abspath(__file__))
-SEGMENTATION_THRESHOLD = 0.5 # prediction threshold above which pixels are part of the mask created by sam2
 
 
 class Segmentor:
@@ -61,12 +60,21 @@ class Segmentor:
         with self._lock:
             with torch.inference_mode(), torch.autocast(self.device, dtype=torch.bfloat16):
                 if prev_masks is not None:
-                    masks, logits, _ = self.predictor.predict(input_points, input_labels, prev_masks)
+                    mask, _, logits = self.predictor.predict(
+                        point_coords=input_points,
+                        point_labels=input_labels,
+                        mask_input=np.expand_dims(prev_masks[len(prev_masks)-1], 0),
+                        multimask_output=False
+                    )
                 else:
-                    masks, logits, _ = self.predictor.predict(input_points, input_labels)
+                    mask, _, logits = self.predictor.predict(
+                        point_coords=input_points,
+                        point_labels=input_labels,
+                        multimask_output=False
+                    )
 
-                binary_mask = masks[0] > SEGMENTATION_THRESHOLD
-                return binary_mask, logits[0]
+                bool_mask = np.array(mask[0], dtype=bool)
+                return bool_mask, logits[0]
 
 def compute_pca3_visualization(features: torch.Tensor):
     # """
