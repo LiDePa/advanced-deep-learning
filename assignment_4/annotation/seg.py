@@ -3,16 +3,27 @@ from threading import Lock
 from PIL import Image
 import numpy as np
 import torch
+from sam2.build_sam import build_sam2
+from sam2.sam2_image_predictor import SAM2ImagePredictor
+import os
+
+
+SEG_DIR = os.path.dirname(os.path.abspath(__file__))
+SEGMENTATION_THRESHOLD = 0.5 # prediction threshold above which pixels are part of the mask created by sam2
 
 
 class Segmentor:
     def __init__(self, device="cpu"):
         self._lock = Lock()
+        self.device = device
+
+        # initialize sam2 model
+        checkpoint = os.path.join(SEG_DIR, "sam2.1_hiera_tiny.pt")
+        model_cfg = "configs/sam2.1/sam2.1_hiera_t.yaml"
+        self.predictor = SAM2ImagePredictor(build_sam2(model_cfg, checkpoint, device = self.device))
 
         # TODO: register forward hooks here
         # you'll want to create new methods for the Segmentor class and use them as callbacks for the hooks
-
-        raise NotImplementedError()
 
     def prepare_embeddings(self, img_path: str):
         """
@@ -21,8 +32,9 @@ class Segmentor:
         :param img_path: Path to the image
         """
         with self._lock:
-            # TODO: put your code here
-            pass
+            image = Image.open(img_path).convert("RGB")
+            image = np.array(image.convert("RGB"))
+            self.predictor.set_image(image)
 
     def segment(self, img_path: str, clicks: np.ndarray, prev_masks: Optional[np.ndarray]):
         """
@@ -48,11 +60,13 @@ class Segmentor:
 
         with self._lock:
             with torch.inference_mode(), torch.autocast(self.device, dtype=torch.bfloat16):
-                # TODO: run the prediction here
-                # using prev_masks will greatly improve the segmentation performance!
-                pass
+                if prev_masks is not None:
+                    masks, logits, _ = self.predictor.predict(input_points, input_labels, prev_masks)
+                else:
+                    masks, logits, _ = self.predictor.predict(input_points, input_labels)
 
-        raise NotImplementedError()
+                binary_mask = masks[0] > SEGMENTATION_THRESHOLD
+                return binary_mask, logits[0]
 
 def compute_pca3_visualization(features: torch.Tensor):
     # """

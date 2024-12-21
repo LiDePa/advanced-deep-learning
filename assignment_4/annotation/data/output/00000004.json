@@ -81,121 +81,31 @@
   "instances": [
     {
       "labels": [
-        "statue"
-      ],
-      "attributes": {
-        "chess_role": "rook"
-      },
-      "uid": "3186d617_8d0f_438d_be5a_f48ea6f0ef52"
-    },
-    {
-      "labels": [
-        "statue"
-      ],
-      "attributes": {
-        "chess_role": "knight"
-      },
-      "uid": "d34cba6a_d276_4ff5_b3a5_948b8b52893a"
-    },
-    {
-      "labels": [
-        "statue"
-      ],
-      "attributes": {
-        "chess_role": "queen"
-      },
-      "uid": "c9662769_e651_4201_92bc_b07b01e338ef"
-    },
-    {
-      "labels": [
-        "weapon"
-      ],
-      "attributes": {
-        "weapon_type": "shield"
-      },
-      "uid": "0e3ab1c5_3ef1_4238_8505_30bbe051d9aa"
-    },
-    {
-      "labels": [
-        "weapon"
-      ],
-      "attributes": {
-        "weapon_type": "flail"
-      },
-      "uid": "028b5a73_5704_4531_a0db_8a87362103c7"
-    },
-    {
-      "labels": [
-        "weapon"
-      ],
-      "attributes": {
-        "weapon_type": "staff"
-      },
-      "uid": "447dc845_24b7_4991_94fa_2a95935ecaca"
-    },
-    {
-      "labels": [
-        "socket"
-      ],
-      "attributes": {
-        "material": "concrete",
-        "colour": "grey"
-      },
-      "uid": "afb5e5f7_db87_46e9_889e_b9bd8bdf989e"
-    },
-    {
-      "labels": [
-        "sky"
-      ],
-      "attributes": {
-        "colour": "grey"
-      },
-      "uid": "2f27b9ef_7af7_40d4_bea9_5a1ce21189c1"
-    },
-    {
-      "labels": [
-        "building"
-      ],
-      "attributes": {
-        "colour": "yellow"
-      },
-      "uid": "f1cab620_b4b3_4232_ab25_d3593ca701a8"
-    },
-    {
-      "labels": [
-        "socket"
-      ],
-      "attributes": {
-        "material": "concrete",
-        "colour": "grey"
-      },
-      "uid": "1a17f91e_df94_4301_aca3_c3df64ee49bc"
-    },
-    {
-      "labels": [
-        "socket"
-      ],
-      "attributes": {
-        "material": "concrete",
-        "colour": "grey"
-      },
-      "uid": "4b03f90d_2c67_4332_a0f6_c27eeb632390"
-    },
-    {
-      "labels": [
-        "weapon"
-      ],
-      "attributes": {
-        "weapon_type": "sword"
-      },
-      "uid": "21235c80_55c5_43c9_b562_fb3028f20e33"
-    },
-    {
-      "labels": [
-        "sign"
+        "UNKOWN"
       ],
       "attributes": {},
-      "uid": "38d06a1b_fe71_47d4_8f62_73c8e1e2a537"
+      "uid": "71a564fa_a983_4380_9bb5_e23a8314d94a"
+    },
+    {
+      "labels": [
+        "UNKOWN"
+      ],
+      "attributes": {},
+      "uid": "60e1a13a_7cbb_45e4_9d7a_a93e168e531e"
+    },
+    {
+      "labels": [
+        "UNKOWN"
+      ],
+      "attributes": {},
+      "uid": "c9d1d4d4_1954_4a25_8a46_8c5fd3f0f495"
+    },
+    {
+      "labels": [
+        "UNKOWN"
+      ],
+      "attributes": {},
+      "uid": "010b69b4_a337_4a7c_86b2_b661ef5a5cb8"
     }
   ]
 }

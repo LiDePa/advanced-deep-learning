@@ -5,8 +5,7 @@ import json
 import re
 
 
-
-PROJECT_DIR = "assignment_4"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OLLAMA_URI = 'http://localhost:11434'
 LLM_MODEL = "llama3.1:70b"
 DATABASE_NAME = "neo4j"
@@ -133,7 +132,7 @@ def extract_cypher_query(raw_response: str) -> str:
 # read system prompt template and insert database schema
 def create_system_prompt(driver: neo4j.Driver) -> str:
     # read prompt template
-    with open(os.path.join(PROJECT_DIR, "reasoning/prompt.txt")) as template_file:
+    with open(os.path.join(SCRIPT_DIR, "prompt.txt")) as template_file:
         template = template_file.read()
 
     # get database schema from neo4j graph database
@@ -185,6 +184,7 @@ if __name__ == "__main__":
 
 
 # First try:
+#
 # MATCH (m:Movie {title: "Joe Versus the Volcano"})-[:ACTED_IN]-(p:Person) RETURN COUNT(p)
 # {'COUNT(p)': 3}
 # MATCH (m:Movie {title: 'Stand By Me'})-[:DIRECTED]-(p:Person) RETURN p.born
