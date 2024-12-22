@@ -9,6 +9,7 @@ import os
 
 
 SEG_DIR = os.path.dirname(os.path.abspath(__file__))
+EXPORT_FEATURES_PNG = True
 
 
 class Segmentor:
@@ -21,8 +22,54 @@ class Segmentor:
         model_cfg = "configs/sam2.1/sam2.1_hiera_t.yaml"
         self.predictor = SAM2ImagePredictor(build_sam2(model_cfg, checkpoint, device = self.device))
 
-        # TODO: register forward hooks here
-        # you'll want to create new methods for the Segmentor class and use them as callbacks for the hooks
+        # arrays holding raw feature maps of transformer layers
+        self.encoder_features = []
+        self.decoder_features = []
+
+        # register forward hooks for transformer layers
+        if EXPORT_FEATURES_PNG:
+            self._register_hooks()
+
+    # register forward hooks for transformer layers of encoder and decoder
+    def _register_hooks(self):
+        encoder_blocks = self.predictor.model.image_encoder.trunk.blocks
+        for i, block in enumerate(encoder_blocks):
+            block.register_forward_hook(self._encoder_hook)
+
+        decoder_blocks = self.predictor.model.sam_mask_decoder.transformer.layers
+        for i, block in enumerate(decoder_blocks):
+            block.register_forward_hook(self._decoder_hook)
+
+    # encoder hook callback
+    def _encoder_hook(self, _, __, output):
+        # rearrange dimensions to match expected input of compute_pca3_visualization
+        feature_tensor = output[0].detach().permute(2,0,1)
+
+        self.encoder_features.append(feature_tensor)
+
+    # decoder hook callback
+    def _decoder_hook(self, _, __, output):
+        # extract flattened spatial features
+        spatial_features = output[1][0].detach()
+
+        # calculate spatial dimensions assuming square feature maps
+        h = w = int(spatial_features.shape[0] ** 0.5)
+        c = int(spatial_features.shape[1])
+
+        # unflatten and rearrange dimensions to match expected input of compute_pca3_visualization
+        feature_tensor = spatial_features.permute(1, 0).reshape(c, h, w)
+
+        self.decoder_features.append(feature_tensor)
+
+    # export pca representations of transformer feature maps as png
+    def visualize(self):
+        for i, features in enumerate(self.encoder_features):
+            pca_image = compute_pca3_visualization(features)
+            Image.fromarray((pca_image * 255).astype(np.uint8)).save(f"encoder_layer_{i}.png")
+
+        for i, features in enumerate(self.decoder_features):
+            pca_image = compute_pca3_visualization(features)
+            Image.fromarray((pca_image * 255).astype(np.uint8)).save(f"decoder_features_{i}.png")
 
     def prepare_embeddings(self, img_path: str):
         """
@@ -63,7 +110,7 @@ class Segmentor:
                     mask, _, logits = self.predictor.predict(
                         point_coords=input_points,
                         point_labels=input_labels,
-                        mask_input=np.expand_dims(prev_masks[len(prev_masks)-1], 0),
+                        mask_input=np.expand_dims(prev_masks[-1], 0),
                         multimask_output=False
                     )
                 else:
@@ -73,8 +120,12 @@ class Segmentor:
                         multimask_output=False
                     )
 
-                bool_mask = np.array(mask[0], dtype=bool)
-                return bool_mask, logits[0]
+            if EXPORT_FEATURES_PNG:
+                self.visualize()
+
+            bool_mask = np.array(mask[0], dtype=bool)
+
+            return bool_mask, logits[0]
 
 def compute_pca3_visualization(features: torch.Tensor):
     # """
