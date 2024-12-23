@@ -105,6 +105,7 @@ class Segmentor:
         input_labels = clicks[:, 2].astype(int)
 
         with self._lock:
+            # run model depiction depending on existence of prev_masks
             with torch.inference_mode(), torch.autocast(self.device, dtype=torch.bfloat16):
                 if prev_masks is not None:
                     mask, _, logits = self.predictor.predict(
@@ -120,9 +121,12 @@ class Segmentor:
                         multimask_output=False
                     )
 
+            # export feature maps as pca pngs if flag is set
             if EXPORT_FEATURES_PNG:
                 self.visualize()
+                print("Saved PNGs")
 
+            # trun model output into boolean mask
             bool_mask = np.array(mask[0], dtype=bool)
 
             return bool_mask, logits[0]
@@ -151,4 +155,4 @@ def compute_pca3_visualization(features: torch.Tensor):
 
     return pca_features_np
 
-# TODO: don't forget to add your code for task 4.2
+

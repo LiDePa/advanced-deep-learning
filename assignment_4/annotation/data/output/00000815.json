@@ -1,0 +1,27 @@
+{
+  "img_id": "00000815",
+  "relations": [],
+  "instances": [
+    {
+      "labels": [
+        "UNKOWN"
+      ],
+      "attributes": {},
+      "uid": "e5feef17_c122_486a_9537_fc5957ec8cdd"
+    },
+    {
+      "labels": [
+        "UNKOWN"
+      ],
+      "attributes": {},
+      "uid": "696091e2_4f04_46ff_9191_57312bf5e852"
+    },
+    {
+      "labels": [
+        "UNKOWN"
+      ],
+      "attributes": {},
+      "uid": "9d39544a_e5d8_476f_a133_2488dbef8b70"
+    }
+  ]
+}

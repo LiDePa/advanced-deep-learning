@@ -1,0 +1,255 @@
+{
+  "img_id": "00000827",
+  "relations": [],
+  "instances": [
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "team blue",
+        "touching ball": "False",
+        "touching ground": "False"
+      },
+      "uid": "70593c8d_998b_4548_9a97_440408a151f1"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "team blue",
+        "touching ball": "False",
+        "touching ground": "True"
+      },
+      "uid": "5bc74850_86fe_4573_8b55_d08048f60a01"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "team blue",
+        "touching ball": "False",
+        "touching ground": "True"
+      },
+      "uid": "d8948485_b2bd_433c_a74f_c386cdcd1bb7"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "team black",
+        "touching ball": "True",
+        "touching ground": "False"
+      },
+      "uid": "46640c5b_9b1b_4e8e_8006_93402cb4994a"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "ball boy"
+      },
+      "uid": "222755fe_dfe7_4041_993b_8979010932b0"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "ball boy"
+      },
+      "uid": "687a7aac_6b2f_4643_a5e6_32c8f70a38bd"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "cd8aca9f_eeb4_497d_a6a0_018b51572838"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "d3f75393_9a1e_41a0_8c19_bd1ceb892784"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "23eb5ecd_daee_4b1d_9fda_85752b8f5dfe"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "2420e13f_8b55_4301_bd52_70122e0509b4"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "363df730_2479_4e5a_8e65_3f6d26e77aed"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "0a51e5fc_146b_424c_8f85_47fbb0675567"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "82349dd1_6eb4_4a87_88b8_3d393db44f43"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "995a644b_6796_4028_8b21_634512899a29"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "9d2c0355_78e3_4078_a7d8_ae96d6483682"
+    },
+    {
+      "labels": [
+        "Peron"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "c46f22c5_2b6c_4a87_941f_429243c9056b"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "e9f8a6e0_421a_4d37_a91a_2bd364f88083"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "078394fc_c6bd_458d_8961_8f566be0d434"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "6862a49c_f7b9_41b8_808e_7284505eee7f"
+    },
+    {
+      "labels": [
+        "Person"
+      ],
+      "attributes": {
+        "role": "viewer"
+      },
+      "uid": "61adffef_7b67_40c0_a37e_4981521eef17"
+    },
+    {
+      "labels": [
+        "Ball"
+      ],
+      "attributes": {
+        "touching ground": "False"
+      },
+      "uid": "f191014a_9225_4800_90eb_90563f248972"
+    },
+    {
+      "labels": [
+        "Ground"
+      ],
+      "attributes": {
+        "playing field": "False"
+      },
+      "uid": "e3b712ec_efff_415e_952c_221fdab52b06"
+    },
+    {
+      "labels": [
+        "Ground"
+      ],
+      "attributes": {
+        "playing field": "True"
+      },
+      "uid": "1dc4b828_681b_42d7_bc6e_d7eb77b23816"
+    },
+    {
+      "labels": [
+        "Stairs"
+      ],
+      "attributes": {},
+      "uid": "34860ada_e7a3_474b_bca2_220e4bea7996"
+    },
+    {
+      "labels": [
+        "Advertisement"
+      ],
+      "attributes": {
+        "advertiser": "KAI OS EVIZIO"
+      },
+      "uid": "640adec8_9338_48b9_91fc_4c0ae5e97a97"
+    },
+    {
+      "labels": [
+        "Advertisement"
+      ],
+      "attributes": {
+        "advertiser": "DRV"
+      },
+      "uid": "80b96f49_948e_4d96_bb02_0688cfdeddd5"
+    },
+    {
+      "labels": [
+        "Advertisement"
+      ],
+      "attributes": {
+        "advertiser": "AIKA"
+      },
+      "uid": "f49062ed_221b_46f4_b3ed_684e2b188f2f"
+    }
+  ]
+}

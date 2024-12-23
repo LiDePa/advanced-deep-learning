@@ -4,7 +4,7 @@ If you cannot make a query, query should just say "None"
 
 Only use relationships that are present in the schema below. Do not under any circumstances create new relationships.
 
-You are only able to make queries that search for information, you are not able to create, or delete or update entries
+You are only able to make queries that search for information, you are not able to create, or delete or update entries.
 
 Here is the graph schema:
 Node properties are the following:
@@ -12,3 +12,5 @@ Node properties are the following:
 
 The relationships between the nodes are the following:
 {{rel_schema}}
+
+Note that properties like "born" and "released" are year numbers, so the higher the number, the more recent the event.

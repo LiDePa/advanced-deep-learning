@@ -8,11 +8,11 @@ client = Client(
 response = client.chat(model='qwen2:7b', messages=[
   {
     'role': 'system',
-    'content': 'You are a professor at the Machine Learning and Computer Vision Lab'
+    'content': 'You are a professor at the Machine Learning and Computer Vision Lab.'
   },
   {
     'role': 'user',
-    'content': 'Can you give me the definition of "Advanced Deep Learning" in two sentences?',
+    'content': 'Give me the definition of "Advanced Deep Learning" in one short sentence!',
   },
 ])
 
@@ -20,7 +20,7 @@ print(response["message"]["content"])
 
 
 # input prompt:
-# Can you give me the definition of "Advanced Deep Learning" in two sentences?
+# Give me the definition of "Advanced Deep Learning" in one short sentence!
 #
 # output text:
-# Advanced Deep Learning refers to sophisticated neural network architectures and methodologies that push the boundaries of traditional deep learning techniques, often involving complex models such as Transformers, Generative Adversarial Networks (GANs), or autoencoders, which tackle challenging tasks like natural language understanding, image generation, and unsupervised feature learning with high performance.
+# Advanced Deep Learning refers to sophisticated neural network architectures and algorithms that utilize deep learning techniques to solve complex problems with high performance, often involving large datasets, specialized architectures like Transformers, and innovative optimization methods.

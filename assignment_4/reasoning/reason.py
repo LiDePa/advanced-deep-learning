@@ -29,17 +29,12 @@ def get_db_schema(driver: neo4j.Driver, database: str) -> tuple[str, str]:
     node_schema = ""
     relation_schema = ""
 
-
     query = "CALL apoc.meta.schema()"
     with driver.session(database=database) as session:
         result = session.run(query)
 
         # schema_data["value"] will contain a lot of information about relationships and nodes
         schema_data = result.data()[0]
-
-        # if you want to provide additional information like all possible categories,
-        # you could run an additional cypher query like the following
-        # res = session.run("MATCH (n:Node) RETURN DISTINCT n.category;")
 
     # set to be filled in parsing to prevent duplicate relations
     unique_relations = set()
@@ -82,13 +77,7 @@ def ask_llm(model: str, system_prompt: str, user_prompt: str) -> str:
     :param user_prompt: The user prompt for Ollama
     :return: The model response as a string. Do NOT return the response dict!
     """
-
-    # NOTE: if you want to run your code locally and only use a remote machine for the LLM,
-    # use SSH port forwarding for port 11434 (the default Ollama port)
-    # so something like `ssh -L 11434:localhost:11434 rzname@mmcXZY.informatik.uni-augsburg.de`
-    # this way, you don't have to run the Ollama server locally. The only requirement
-    # on you local machine is the ollama python package.
-
+    # send system and user prompt to the LLM and retain response
     client = Client(host=OLLAMA_URI)
     response = client.chat(model=LLM_MODEL, messages=[
         {
@@ -113,18 +102,19 @@ def extract_cypher_query(raw_response: str) -> str:
     :return: The cleaned response
     """
 
+    # find first { and las } in raw response and define them as the json_block
     start = raw_response.find("{")
     end = raw_response.rfind("}") + 1
     json_block = raw_response[start:end]
 
+    # get only the query from json_block
     data_response = json.loads(json_block)
     query = data_response.get("query", "")
 
-    # Check for restricted keywords
+    # check for restricted keywords before returning query
     restricted_keywords = ["delete", "merge", "insert"]
     if any(keyword in query.lower() for keyword in restricted_keywords):
         return ""
-
     else:
         return query
 
@@ -145,13 +135,14 @@ def create_system_prompt(driver: neo4j.Driver) -> str:
 
 
 def ask_database(driver: neo4j.Driver, database: str, user_prompt: str, system_prompt: str):
+    # send prompt to model and retain the produced query
     raw_response = ask_llm(LLM_MODEL, system_prompt, user_prompt)
     query = extract_cypher_query(raw_response)
-
     print(query)
 
+    # run query on the database
     with driver.session(database=database) as session:
-        result = session.run(query).data()[0]
+        result = session.run(query).data()
 
     return result
 
@@ -186,10 +177,21 @@ if __name__ == "__main__":
 # First try:
 #
 # MATCH (m:Movie {title: "Joe Versus the Volcano"})-[:ACTED_IN]-(p:Person) RETURN COUNT(p)
-# {'COUNT(p)': 3}
+# [{'COUNT(p)': 3}]
 # MATCH (m:Movie {title: 'Stand By Me'})-[:DIRECTED]-(p:Person) RETURN p.born
-# {'p.born': 1947}
+# [{'p.born': 1947}]
 # MATCH (p1:Person)-[:ACTED_IN]->(m1:Movie {title: "The Matrix Revolutions"}), (p2:Person)-[:ACTED_IN]->(m2:Movie {title: "The Matrix Reloaded"}) WHERE p1 = p2 RETURN DISTINCT p1.name
-# {'p1.name': 'Keanu Reeves'}
+# [{'p1.name': 'Keanu Reeves'}, {'p1.name': 'Carrie-Anne Moss'}, {'p1.name': 'Laurence Fishburne'}, {'p1.name': 'Hugo Weaving'}]
 # MATCH (p:Person)-[:DIRECTED]->(:Movie) RETURN p ORDER BY p.born ASC LIMIT 1
-# {'p': {'born': 1930, 'name': 'Clint Eastwood'}}
+# [{'p': {'born': 1930, 'name': 'Clint Eastwood'}}]
+
+# Second Try (First try after adapting prompt.txt):
+#
+# MATCH (m:Movie {title: "Joe Versus the Volcano"})-[:ACTED_IN]-(a) RETURN COUNT(a)
+# [{'COUNT(a)': 3}]
+# MATCH (p:Person)-[:DIRECTED]->(m:Movie {title: "Stand By Me"}) RETURN p.born
+# [{'p.born': 1947}]
+# MATCH (p1:Person)-[:ACTED_IN]->(:Movie {title: "The Matrix Revolutions"}) MATCH (p2:Person)-[:ACTED_IN]->(:Movie {title: "The Matrix Reloaded"}) WHERE p1 = p2 RETURN DISTINCT p1.name
+# [{'p1.name': 'Keanu Reeves'}, {'p1.name': 'Carrie-Anne Moss'}, {'p1.name': 'Laurence Fishburne'}, {'p1.name': 'Hugo Weaving'}]
+# MATCH (p:Person)-[:DIRECTED]->(m:Movie) RETURN p ORDER BY p.born DESC LIMIT 1
+# [{'p': {'born': 1967, 'name': 'Andy Wachowski'}}]
