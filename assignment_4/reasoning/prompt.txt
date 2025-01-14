@@ -14,3 +14,5 @@ The relationships between the nodes are the following:
 {{rel_schema}}
 
 Note that properties like "born" and "released" are year numbers, so the higher the number, the more recent the event.
+
+The described dataset represents the scene of a photo where each node denotes a segment or object in the photo.

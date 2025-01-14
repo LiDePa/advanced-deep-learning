@@ -2,10 +2,10 @@
 MATCH (n) DETACH DELETE n;
 
 // nodes
-CREATE (Person_70593c8d_998b_4548_9a97_440408a151f1:Person {role:'team blue', touching_ball:'False', touching_ground:'False', uid:'70593c8d_998b_4548_9a97_440408a151f1'})
+CREATE (Person_70593c8d_998b_4548_9a97_440408a151f1:Person {role:'team blue', touching_ball:'False', touching_ground:'False', action:'blocking', uid:'70593c8d_998b_4548_9a97_440408a151f1'})
 CREATE (Person_5bc74850_86fe_4573_8b55_d08048f60a01:Person {role:'team blue', touching_ball:'False', touching_ground:'True', uid:'5bc74850_86fe_4573_8b55_d08048f60a01'})
 CREATE (Person_d8948485_b2bd_433c_a74f_c386cdcd1bb7:Person {role:'team blue', touching_ball:'False', touching_ground:'True', uid:'d8948485_b2bd_433c_a74f_c386cdcd1bb7'})
-CREATE (Person_46640c5b_9b1b_4e8e_8006_93402cb4994a:Person {role:'team black', touching_ball:'True', touching_ground:'False', uid:'46640c5b_9b1b_4e8e_8006_93402cb4994a'})
+CREATE (Person_46640c5b_9b1b_4e8e_8006_93402cb4994a:Person {role:'team black', touching_ball:'True', touching_ground:'False', action:'attacking', uid:'46640c5b_9b1b_4e8e_8006_93402cb4994a'})
 CREATE (Person_222755fe_dfe7_4041_993b_8979010932b0:Person {role:'ball boy', uid:'222755fe_dfe7_4041_993b_8979010932b0'})
 CREATE (Person_687a7aac_6b2f_4643_a5e6_32c8f70a38bd:Person {role:'ball boy', uid:'687a7aac_6b2f_4643_a5e6_32c8f70a38bd'})
 CREATE (Person_cd8aca9f_eeb4_497d_a6a0_018b51572838:Person {role:'viewer', uid:'cd8aca9f_eeb4_497d_a6a0_018b51572838'})
@@ -17,7 +17,7 @@ CREATE (Person_0a51e5fc_146b_424c_8f85_47fbb0675567:Person {role:'viewer', uid:'
 CREATE (Person_82349dd1_6eb4_4a87_88b8_3d393db44f43:Person {role:'viewer', uid:'82349dd1_6eb4_4a87_88b8_3d393db44f43'})
 CREATE (Person_995a644b_6796_4028_8b21_634512899a29:Person {role:'viewer', uid:'995a644b_6796_4028_8b21_634512899a29'})
 CREATE (Person_9d2c0355_78e3_4078_a7d8_ae96d6483682:Person {role:'viewer', uid:'9d2c0355_78e3_4078_a7d8_ae96d6483682'})
-CREATE (Peron_c46f22c5_2b6c_4a87_941f_429243c9056b:Peron {role:'viewer', uid:'c46f22c5_2b6c_4a87_941f_429243c9056b'})
+CREATE (Person_c46f22c5_2b6c_4a87_941f_429243c9056b:Person {role:'viewer', uid:'c46f22c5_2b6c_4a87_941f_429243c9056b'})
 CREATE (Person_e9f8a6e0_421a_4d37_a91a_2bd364f88083:Person {role:'viewer', uid:'e9f8a6e0_421a_4d37_a91a_2bd364f88083'})
 CREATE (Person_078394fc_c6bd_458d_8961_8f566be0d434:Person {role:'viewer', uid:'078394fc_c6bd_458d_8961_8f566be0d434'})
 CREATE (Person_6862a49c_f7b9_41b8_808e_7284505eee7f:Person {role:'viewer', uid:'6862a49c_f7b9_41b8_808e_7284505eee7f'})
@@ -29,8 +29,13 @@ CREATE (Stairs_34860ada_e7a3_474b_bca2_220e4bea7996:Stairs {uid:'34860ada_e7a3_4
 CREATE (Advertisement_640adec8_9338_48b9_91fc_4c0ae5e97a97:Advertisement {advertiser:'KAI OS EVIZIO', uid:'640adec8_9338_48b9_91fc_4c0ae5e97a97'})
 CREATE (Advertisement_80b96f49_948e_4d96_bb02_0688cfdeddd5:Advertisement {advertiser:'DRV', uid:'80b96f49_948e_4d96_bb02_0688cfdeddd5'})
 CREATE (Advertisement_f49062ed_221b_46f4_b3ed_684e2b188f2f:Advertisement {advertiser:'AIKA', uid:'f49062ed_221b_46f4_b3ed_684e2b188f2f'})
+CREATE (Net_108266e6_73b1_4d77_85cd_71a8428e0ee7:Net {uid:'108266e6_73b1_4d77_85cd_71a8428e0ee7'})
+CREATE (Rows_e64d3a4e_ecdb_4b06_8ad1_7db024a04d0f:Rows {uid:'e64d3a4e_ecdb_4b06_8ad1_7db024a04d0f'});
 
-// relations
+// relations created using ChatGPT
+// All persons are watching the ball
+MATCH (p:Person), (b:Ball)
+CREATE (p)-[:WATCHING]->(b);
 
 // Only the player of team black is touching the ball
 MATCH (p:Person {role: "team black", uid: "46640c5b_9b1b_4e8e_8006_93402cb4994a"}), (b:Ball)
@@ -47,3 +52,23 @@ CREATE (p)-[:TOUCHING]->(s);
 // The persons with role "ball boy" are touching the ground that has attribute "playing_field": False
 MATCH (p:Person {role: "ball boy"}), (g:Ground {playing_field: "False"})
 CREATE (p)-[:TOUCHING]->(g);
+
+// All members of team black are playing against all members of team blue
+MATCH (teamBlack:Person {role: 'team black'}), (teamBlue:Person {role: 'team blue'})
+CREATE (teamBlack)-[:PLAYING_AGAINST]->(teamBlue);
+
+// Persons 70593c8d_998b_4548_9a97_440408a151f1 and 46640c5b_9b1b_4e8e_8006_93402cb4994a are higher than the net
+MATCH (p1:Person {uid: '70593c8d_998b_4548_9a97_440408a151f1'}),
+      (p2:Person {uid: '46640c5b_9b1b_4e8e_8006_93402cb4994a'}),
+      (net:Net {uid: '108266e6_73b1_4d77_85cd_71a8428e0ee7'})
+CREATE (p1)-[:HIGHER_THAN]->(net),
+       (p2)-[:HIGHER_THAN]->(net);
+
+// None of the players is touching the net
+MATCH (p:Person), (net:Net {uid: '108266e6_73b1_4d77_85cd_71a8428e0ee7'})
+WHERE NOT p.role IN ['viewer'] // Assuming "viewer" is not considered a player
+CREATE (p)-[:NOT_TOUCHING]->(net);
+
+// All persons with role "viewer" are touching the rows
+MATCH (viewer:Person {role: 'viewer'}), (rows:Rows {uid: 'e64d3a4e_ecdb_4b06_8ad1_7db024a04d0f'})
+CREATE (viewer)-[:TOUCHING]->(rows);

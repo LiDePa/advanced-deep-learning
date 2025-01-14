@@ -163,6 +163,11 @@ def main():
                     "Which actors starred in both ”The Matrix Revolutions” and ”The Matrix Reloaded”?",
                     "Who is the youngest director in the dataset?"]
 
+    # user_prompts = ["How many people on the image are in the air?",
+    #                 "Which team is in possession of the ball?",
+    #                 "Is any player trying to block the attack?",
+    #                 "How many people are watching the ball?"]
+
     for user_prompt in user_prompts:
         result = ask_database(driver, DATABASE_NAME, user_prompt, system_prompt)
         print(result)

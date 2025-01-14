@@ -9,7 +9,8 @@
       "attributes": {
         "role": "team blue",
         "touching ball": "False",
-        "touching ground": "False"
+        "touching ground": "False",
+        "action": "blocking"
       },
       "uid": "70593c8d_998b_4548_9a97_440408a151f1"
     },
@@ -42,7 +43,8 @@
       "attributes": {
         "role": "team black",
         "touching ball": "True",
-        "touching ground": "False"
+        "touching ground": "False",
+        "action": "attacking"
       },
       "uid": "46640c5b_9b1b_4e8e_8006_93402cb4994a"
     },
@@ -147,7 +149,7 @@
     },
     {
       "labels": [
-        "Peron"
+        "Person"
       ],
       "attributes": {
         "role": "viewer"
@@ -250,6 +252,20 @@
         "advertiser": "AIKA"
       },
       "uid": "f49062ed_221b_46f4_b3ed_684e2b188f2f"
+    },
+    {
+      "labels": [
+        "Net"
+      ],
+      "attributes": {},
+      "uid": "108266e6_73b1_4d77_85cd_71a8428e0ee7"
+    },
+    {
+      "labels": [
+        "Rows"
+      ],
+      "attributes": {},
+      "uid": "e64d3a4e_ecdb_4b06_8ad1_7db024a04d0f"
     }
   ]
 }
