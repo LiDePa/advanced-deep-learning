@@ -4,12 +4,45 @@ from typing import List, Tuple
 import numpy as np
 import torch
 from torch.utils.data import DataLoader
+import csv
+import glob
+import os
 
 
+# currently set up to receive the annotation directory
 def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int = 4) -> Tuple[
     List[str], List[np.ndarray], List[np.ndarray]]:
-    # TODO
-    raise NotImplementedError
+    annotated_frame_paths = []
+
+    # iterate through train, test and validation .csv files
+    for csv_file_path in sorted(glob.glob(os.path.join(annotation_path, "*"))):
+        with open(csv_file_path) as csv_file:
+            # skip first line
+            next(csv_file)
+
+            # iterate through each line=label in the .csv
+            annotations = csv.DictReader(csv_file, delimiter=';') #TODO: not sure if dictreader is the right approach
+            for label in annotations:
+                # build name of corresponding .jpg frame for the label and add it to annotated_frame_paths
+                frame_num = label["frame_num"]
+                if len(frame_num) < 5: # frames are named with their index having at least 5 digits
+                    frame_num = "0" + frame_num
+                frame = f"{label['event']}_({frame_num}).jpg"
+                annotated_frame_paths.append(
+                    os.path.join(image_base_path, label['event'], frame)
+                )
+
+                # create numpy array with keypoint coordinates
+                annotations_vector = np.fromstring(
+                    ",".join(label.split(";")[2:]), dtype=np.int32, sep=";"
+                )
+                annotations_matrix = annotations_vector.reshape(17, 3)
+
+
+
+
+
+
 
 
 class SkijumpDataset(torch.utils.data.Dataset):
