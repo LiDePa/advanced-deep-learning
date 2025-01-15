@@ -256,7 +256,7 @@
       <workItem from="1736807029588" duration="3945000" />
       <workItem from="1736854937954" duration="17619000" />
       <workItem from="1736895014152" duration="209000" />
-      <workItem from="1736925390090" duration="8317000" />
+      <workItem from="1736925390090" duration="15312000" />
     </task>
     <servers />
   </component>
@@ -275,13 +275,18 @@
           <url>file://$PROJECT_DIR$/assignment_3/engine.py</url>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/assignment_5/main.py</url>
+          <line>18</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1736894824481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_4_reason.coverage" NAME="assignment_4.reason Coverage Results" MODIFIED="1734389508446" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5_main.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1736948620360" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5_main.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1736979053572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$cutout_assignment_3_training.coverage" NAME="trash dropout assignment_3.training Coverage Results" MODIFIED="1733268158271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_2_training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732972664306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732795192017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_2" />
