@@ -12,7 +12,7 @@ if __name__ == "__main__":
     dataset_root = args.dataset_root
 
 
-    # TODO: this is only the test annotations for testing
+
     test_annotation_path = os.path.join(dataset_root, "annotations")
     image_base_path = os.path.join(dataset_root, "annotated_frames")
     dataset = load_dataset(test_annotation_path, image_base_path)

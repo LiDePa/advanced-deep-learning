@@ -7,13 +7,16 @@ from torch.utils.data import DataLoader
 import csv
 import glob
 import os
+from PIL import Image
 
 
-# currently set up to receive the annotation directory
+# currently set up to receive the annotations directory
 def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int = 4) -> Tuple[
     List[str], List[np.ndarray], List[np.ndarray]]:
+
     annotated_frame_paths = []
     keypoints_np = []
+    event_resolutions = {} # assume constant frame resolution across a given event; needed for bounding box padding
 
     # iterate through train, test and validation .csv files
     for csv_file_path in sorted(glob.glob(os.path.join(annotation_path, "*"))):
@@ -22,22 +25,49 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
             next(csv_file)
             next(csv_file)
 
-            # iterate through each line=label in the .csv
+            # iterate through each line(=label) in the .csv as a list of strings
             annotations = csv.reader(csv_file, delimiter=';')
             for label in annotations:
                 # build name of corresponding .jpg frame for the label and add it to annotated_frame_paths
                 frame_num = label[1]
-                if len(frame_num) < 5: # frames are named with their index having at least 5 digits
+                if len(frame_num) < 5: # .jpg frames are named with their index having at least 5 digits
                     frame_num = "0" + frame_num
                 frame = f"{label[0]}_({frame_num}).jpg"
-                annotated_frame_paths.append(
-                    os.path.join(image_base_path, label[0], frame)
-                )
+                frame_path = os.path.join(image_base_path, label[0], frame)
+                annotated_frame_paths.append(frame_path)
 
-                # create numpy array with keypoint coordinates
+                # save resolution of first frame that occurs for each event; is needed later for bounding box padding
+                if label[0] not in event_resolutions:
+                    with Image.open(frame_path) as img:
+                        width, height = img.size
+                    event_resolutions[label[0]] = [width, height]
+
+                # create numpy array with keypoint coordinates and add it to keypoints_np
                 keypoints_vector = np.array(label[-17*3:]) # take last 17 list entries, which contain keypoint values
                 keypoints_matrix = keypoints_vector.reshape(17, 3)
                 keypoints_np.append(keypoints_matrix)
+
+                # get visible keypoints and determine width and height of tightest bounding box
+                mask = keypoints_matrix[:,2] != "0"
+                keypoints_visible = keypoints_matrix[mask]
+                min_x = np.min(keypoints_visible[:, 0])
+                max_x = np.max(keypoints_visible[:, 0])
+                min_y = np.min(keypoints_visible[:, 1])
+                max_y = np.max(keypoints_visible[:, 1])
+                w = max_x - min_x
+                h = max_y - min_y
+
+                # pad the tightest bounding box by 20% in each direction
+                x_padding = np.ceil(0.2 * w).astype(int)
+                y_padding = np.ceil(0.2 * h).astype(int)
+                min_x_padded = min_x - x_padding
+                max_x_padded = max_x + x_padding
+                if min_x_padded < 0:
+                    min_x_padded = 0
+                # if max_x_padded >
+                # TODO: check if bounding box is too large on max values by comparing to valuesin event_resolutions
+
+
 
 
 
