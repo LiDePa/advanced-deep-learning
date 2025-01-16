@@ -26,9 +26,12 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
             next(csv_file)
             next(csv_file)
 
-            # iterate through each line(=label) in the .csv as a list of strings
+            # iterate through each line(=label) in the .csv as a list of immutable strings
             annotations = csv.reader(csv_file, delimiter=';')
             for label in annotations:
+                # create shallow copy to not modify the structure of annotations
+                label = label.copy()
+
                 # build name of corresponding .jpg frame for the label and add it to frame_paths
                 frame_num = label[1]
                 if len(frame_num) < 5: # .jpg frames are named with their index having at least 5 digits
