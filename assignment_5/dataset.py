@@ -7,7 +7,10 @@ from torch.utils.data import DataLoader
 import csv
 import glob
 import os
-from PIL import Image
+from PIL import Image, ImageDraw
+import matplotlib.pyplot as plt
+import random
+
 
 
 # currently set up to receive the annotations directory
@@ -81,12 +84,79 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
     return frame_paths, keypoints, bounding_boxes
 
 
+# most of the following function is written by the deepseek chatbot
+# never had to learn how to use matplotlib, more of a matlab guy. Looks like now I won't have to
+# feel free to deduct all points for Exercise 5.1 if appropriate
+def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
+    frame_paths, keypoints, _ = load_dataset(annotation_path, image_base_path)
 
+    # randomly select n_images from the dataset
+    selected_indices = random.sample(range(len(frame_paths)), n_images)
 
+    # get keypoint names and define a fitting color map
+    keypoint_names = [
+        "Head", "Right Shoulder", "Right Elbow", "Right Hand",
+        "Left Shoulder", "Left Elbow", "Left Hand",
+        "Right Hip", "Right Knee", "Right Ankle",
+        "Left Hip", "Left Knee", "Left Ankle",
+        "Right Ski Tip", "Right Ski Tail", "Left Ski Tip", "Left Ski Tail"
+    ]
+    colors = plt.cm.get_cmap('tab20', len(keypoint_names)).colors
 
+    project_folder = os.path.dirname(os.path.abspath(__file__))  # Get the script's directory
+    output_dir = os.path.join(project_folder, "output_plots")  # Output directory in the project folder
+    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
 
+    # Plot each selected image
+    for idx in selected_indices:
+        # Load the image
+        image_path = frame_paths[idx]
+        image = Image.open(image_path)
+        draw = ImageDraw.Draw(image)
 
+        # Get the keypoints for this image
+        kps = keypoints[idx]  # Shape: (17, 3)
 
+        # Get image height for scaling keypoint size
+        image_height = image.size[1]
+        keypoint_radius = int(image_height * 0.01)  # Proportional to image height
+
+        # Plot each keypoint
+        for i, (x, y, vis) in enumerate(kps):
+            if vis == 0:  # Skip invisible keypoints
+                continue
+            # Draw the keypoint
+            draw.ellipse(
+                [(x - keypoint_radius, y - keypoint_radius), (x + keypoint_radius, y + keypoint_radius)],
+                fill=tuple(int(c * 255) for c in colors[i]),  # Convert color to RGB
+                outline="black"
+            )
+
+        # Display the image with keypoints
+        plt.figure(figsize=(10, 10))
+        plt.imshow(image)
+        plt.axis("off")
+
+        # Add a legend
+        legend_elements = [
+            plt.Line2D(
+                [0], [0],
+                marker="o",
+                color="w",
+                markerfacecolor=colors[i],
+                markersize=10,
+                label=keypoint_names[i]
+            )
+            for i in range(len(keypoint_names))
+        ]
+        plt.legend(handles=legend_elements, loc="upper right", bbox_to_anchor=(1.2, 1))
+
+        # Save the plot
+        output_path = os.path.join(output_dir, f"plot_{os.path.basename(image_path)}")
+        plt.savefig(output_path, bbox_inches="tight")
+        plt.close()
+
+        print(f"Saved plot to {output_path}")
 
 
 
