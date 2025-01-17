@@ -1,0 +1,14 @@
+I have paths to jpg images I want to open with PIL and np arrays of keypoint koordinates. How do I plot the images with
+keypoints on them and add a legend, colorcoding the keypoints to a list of strings in the same order as the list of np arrays? I want the keypoints to be proportional to image height.
+
+The order of the keypoints is the following: head, right shoulder, right elbow, right hand, left shoulder, left elbow, left hand, right hip, right knee, right ankle, left hip. left knee, left ankle, right ski tip, right ski tail, left ski tip, left ski tail.
+
+Please write a function:
+def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
+    dataset = load_dataset(annotation_path, image_base_path)
+    ...
+that exports n_images random images from the dataset into the parent directory.
+load_dataset returns three lists:
+- frame_path consisting of strings
+- keypoints consisting of a 17x3 matrix where each row is x, y, visibility. Please ignore keypoints with visibility 0.
+- bounding_boxes which you can ignore

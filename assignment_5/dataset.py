@@ -13,80 +13,81 @@ import random
 
 
 
-# currently set up to receive the annotations directory
 def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int = 4) -> Tuple[
     List[str], List[np.ndarray], List[np.ndarray]]:
 
     frame_paths = []
     keypoints = []
     bounding_boxes = []
-    event_resolutions = {} # assume constant frame resolution across a given event; needed for bounding box padding
+    # assume constant frame resolution across a given event and read it only once on the first frame
+    # needed for bounding box padding
+    event_resolutions = {}
 
-    # iterate through train, test and validation .csv files
-    for csv_file_path in sorted(glob.glob(os.path.join(annotation_path, "*"))):
-        with open(csv_file_path) as csv_file:
-            # skip first two lines
-            next(csv_file)
-            next(csv_file)
+    with open(annotation_path) as csv_file:
+        # skip first two lines
+        next(csv_file)
+        next(csv_file)
 
-            # iterate through each line(=label) in the .csv as a list of immutable strings
-            annotations = csv.reader(csv_file, delimiter=';')
-            for label in annotations:
-                # create shallow copy to not modify the structure of annotations
-                label = label.copy()
+        # iterate through each line(=label) in the .csv as a list of immutable strings
+        annotations = csv.reader(csv_file, delimiter=';')
+        for label in annotations:
+            # create shallow copy to not modify the structure of annotations
+            label = label.copy()
 
-                # build name of corresponding .jpg frame for the label and add it to frame_paths
-                frame_num = label[1]
-                if len(frame_num) < 5: # .jpg frames are named with their index having at least 5 digits
-                    frame_num = "0" + frame_num
-                frame = f"{label[0]}_({frame_num}).jpg"
-                frame_path = os.path.join(image_base_path, label[0], frame)
-                frame_paths.append(frame_path)
+            # build name of corresponding .jpg frame for the label and add it to frame_paths
+            frame_num = label[1]
+            if len(frame_num) < 5: # .jpg frames are named with their index having at least 5 digits
+                frame_num = "0" + frame_num
+            frame = f"{label[0]}_({frame_num}).jpg"
+            frame_path = os.path.join(image_base_path, label[0], frame)
+            frame_paths.append(frame_path)
 
-                # save resolution of first frame that occurs for each event; is needed later for bounding box padding
-                if label[0] not in event_resolutions:
-                    with Image.open(frame_path) as img:
-                        width, height = img.size
-                    event_resolutions[label[0]] = [width, height]
+            # save resolution of first frame that occurs for each event; is needed later for bounding box padding
+            if label[0] not in event_resolutions:
+                with Image.open(frame_path) as img:
+                    width, height = img.size
+                event_resolutions[label[0]] = [width, height]
 
-                # create numpy array with keypoint coordinates and add it to keypoints
-                keypoints_vector = np.array(label[-17*3:]).astype(np.int32) # take last 17 list entries, which contain keypoint values
-                keypoints_matrix = keypoints_vector.reshape(17, 3)
-                keypoints.append(keypoints_matrix.astype(np.ndarray))
+            # create numpy array with keypoint coordinates and add it to keypoints
+            keypoints_vector = np.array(label[-17*3:]).astype(np.int32) # take last 17 list entries, which contain keypoint values
+            keypoints_matrix = keypoints_vector.reshape(17, 3)
+            keypoints.append(keypoints_matrix.astype(np.ndarray))
 
-                # get visible keypoints and determine width and height of tightest bounding box
-                mask = keypoints_matrix[:,2] != "0"
-                keypoints_visible = keypoints_matrix[mask]
-                min_x_tight = np.min(keypoints_visible[:, 0])
-                max_x_tight = np.max(keypoints_visible[:, 0])
-                min_y_tight = np.min(keypoints_visible[:, 1])
-                max_y_tight = np.max(keypoints_visible[:, 1])
-                w = max_x_tight - min_x_tight
-                h = max_y_tight - min_y_tight
+            # get visible keypoints and determine width and height of tightest bounding box
+            mask = keypoints_matrix[:,2] != "0"
+            keypoints_visible = keypoints_matrix[mask]
+            min_x_tight = np.min(keypoints_visible[:, 0])
+            max_x_tight = np.max(keypoints_visible[:, 0])
+            min_y_tight = np.min(keypoints_visible[:, 1])
+            max_y_tight = np.max(keypoints_visible[:, 1])
+            w = max_x_tight - min_x_tight
+            h = max_y_tight - min_y_tight
 
-                # pad the tightest bounding box by 20% in each direction
-                x_padding = np.ceil(0.2 * w).astype(int)
-                y_padding = np.ceil(0.2 * h).astype(int)
-                min_x = min_x_tight - x_padding
-                if min_x < 0:
-                    min_x = 0
-                max_x = max_x_tight + x_padding
-                if max_x > event_resolutions[label[0]][0]:
-                    max_x = event_resolutions[label[0]][0]
-                min_y = min_y_tight - y_padding
-                if min_y < 0:
-                    min_y = 0
-                max_y = max_y_tight + y_padding
-                if max_y > event_resolutions[label[0]][1]:
-                    max_y = event_resolutions[label[0]][1]
-                bounding_boxes.append(np.array([min_x, max_x, min_y, max_y]))
+            # pad the tightest bounding box by 20% in each direction
+            x_padding = np.ceil(0.2 * w).astype(int)
+            y_padding = np.ceil(0.2 * h).astype(int)
+            min_x = min_x_tight - x_padding
+            if min_x < 0:
+                min_x = 0
+            max_x = max_x_tight + x_padding
+            if max_x > event_resolutions[label[0]][0]:
+                max_x = event_resolutions[label[0]][0]
+            min_y = min_y_tight - y_padding
+            if min_y < 0:
+                min_y = 0
+            max_y = max_y_tight + y_padding
+            if max_y > event_resolutions[label[0]][1]:
+                max_y = event_resolutions[label[0]][1]
+            bounding_boxes.append(np.array([min_x, max_x, min_y, max_y]))
 
     return frame_paths, keypoints, bounding_boxes
 
 
+
 # most of the following function is written by the deepseek chatbot
-# never had to learn how to use matplotlib, more of a matlab guy. Looks like now I won't have to
-# feel free to deduct all points for Exercise 5.1 if appropriate
+# never had to learn how to use matplotlib, more of a matlab guy
+# Exercise 5.1 is a perfect example for something, I will from now on use LLMs for
+# you will find the prompt in my submission folder. Feel free to deduct points
 def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
     frame_paths, keypoints, _ = load_dataset(annotation_path, image_base_path)
 
