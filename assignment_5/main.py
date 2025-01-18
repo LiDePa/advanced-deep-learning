@@ -1,4 +1,5 @@
-from .dataset import load_dataset, plot_dataset_confirmation
+from assignment_4.reasoning.reason import DATABASE_NAME
+from .dataset import plot_dataset_confirmation, load_dataset, SkijumpDataset
 from argparse import ArgumentParser
 import os
 
@@ -13,7 +14,11 @@ if __name__ == "__main__":
     dataset_root = args.dataset_root
 
     image_base_path = os.path.join(dataset_root, "annotated_frames")
+    train_annotation_path = os.path.join(dataset_root, "annotations/train.csv")
+
+    images, labels, boxes = load_dataset(train_annotation_path, image_base_path)
+    dataset = SkijumpDataset(images, labels, boxes, validation_mode=True)
+    image2 = dataset[50]
 
     if args.dataset_confirmation_images is not None:
-        train_annotation_path = os.path.join(dataset_root, "annotations/train.csv")
         plot_dataset_confirmation(train_annotation_path, image_base_path, args.dataset_confirmation_images)

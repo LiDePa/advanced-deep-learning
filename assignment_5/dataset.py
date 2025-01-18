@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 import csv
-import glob
+import torchvision.transforms as transforms
 import os
 from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
@@ -174,16 +174,58 @@ class SkijumpDataset(torch.utils.data.Dataset):
         :param validation_mode: If True, the dataset returns heatmaps instead of coordinates and does not use data augmentation
         :param heatmap_downscale: Factor by which the heatmaps are smaller compared to the input size
         """
-        # TODO
-        raise NotImplementedError
+        self._images = images
+        self._labels = labels
+        self._boxes = boxes
+        self._input_size = input_size
+        self._validation_mode = validation_mode
 
     def __getitem__(self, idx):
         """
-        TODO: Load image, crop, pad and resize to desired size
         :return: adjusted image and heatmaps in train mode | adjusted image, original ground truth coordinates,
         resizing factor, and used bounding box in validation/test mode
         """
-        raise NotImplementedError
+
+        image = Image.open(self._images[idx]).convert("RGB")
+
+        # crop image to bounding box
+        image = image.crop((
+            self._boxes[idx][0],
+            self._boxes[idx][2],
+            self._boxes[idx][1],
+            self._boxes[idx][3]))
+
+        # get scale factor
+        # assume quadratic shape of input_size to avoid complex aspect ratio comparisons
+        scaling_ratio = self._input_size[0] / max(image.size)
+
+        # bilinear scaling while keeping aspect ratio
+        image.thumbnail(self._input_size)
+
+        # pad image either on the right or bottom
+        pad_image = transforms.Pad(
+            (0, 0, self._input_size[0] - image.width, self._input_size[1] - image.height),
+            fill=0,
+            padding_mode='constant')
+        image = pad_image(image)
+
+        # convert to tensor and normalize to ImageNet mean and standard deviation
+        to_tensor = transforms.ToTensor()
+        image_tensor = to_tensor(image)
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        image_tensor = normalize(image_tensor)
+
+        if self._validation_mode:
+            image_name = os.path.basename(self._images[idx])
+            return image_tensor, self._labels[idx], scaling_ratio, self._boxes[idx], image_name
+        else:
+            # rescale keypoints and keep them as float values, not sure if integers are preferred
+            keypoints_scaled = np.zeros_like(self._labels[idx])
+            keypoints_scaled[:,0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
+            keypoints_scaled[:,1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
+            keypoints_scaled[:,2] = self._labels[idx][:, 2] # not sure if necessary
+            return image_tensor, keypoints_scaled
+
 
     @classmethod
     def augment(cls, img: np.ndarray, label: np.ndarray, rot: float, trans_x: float, trans_y: float, flip: bool):
