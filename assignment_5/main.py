@@ -1,5 +1,8 @@
+from venv import create
+
 from assignment_4.reasoning.reason import DATABASE_NAME
 from .dataset import plot_dataset_confirmation, load_dataset, SkijumpDataset
+from .heatmaps import create_heatmaps
 from argparse import ArgumentParser
 import os
 
@@ -17,8 +20,8 @@ if __name__ == "__main__":
     train_annotation_path = os.path.join(dataset_root, "annotations/train.csv")
 
     images, labels, boxes = load_dataset(train_annotation_path, image_base_path)
-    dataset = SkijumpDataset(images, labels, boxes, validation_mode=True)
-    image2 = dataset[50]
+    dataset = SkijumpDataset(images, labels, boxes, validation_mode=False)
+    create_heatmaps(dataset[30][1])
 
     if args.dataset_confirmation_images is not None:
         plot_dataset_confirmation(train_annotation_path, image_base_path, args.dataset_confirmation_images)
