@@ -56,7 +56,7 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
             keypoints.append(keypoints_matrix.astype(np.ndarray))
 
             # get visible keypoints and determine width and height of tightest bounding box
-            mask = keypoints_matrix[:,2] != "0"
+            mask = keypoints_matrix[:,2] != 0
             keypoints_visible = keypoints_matrix[mask]
             min_x_tight = np.min(keypoints_visible[:, 0])
             max_x_tight = np.max(keypoints_visible[:, 0])
@@ -87,7 +87,6 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
 
 
 # most of the following function is written by the deepseek chatbot
-# never had to learn how to use matplotlib, more of a matlab guy
 # Exercise 5.1 is a perfect example for something, I will from now on use LLMs for
 # you will find the prompt in my submission folder. Feel free to deduct points
 def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
@@ -106,9 +105,10 @@ def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_imag
     ]
     colors = plt.cm.get_cmap('tab20', len(keypoint_names)).colors
 
-    project_folder = os.path.dirname(os.path.abspath(__file__))  # Get the script's directory
-    output_dir = os.path.join(project_folder, "output_plots")  # Output directory in the project folder
-    os.makedirs(output_dir, exist_ok=True)  # Create the directory if it doesn't exist
+    # create output directory
+    project_folder = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(project_folder, "output_plots")
+    os.makedirs(output_dir, exist_ok=True)
 
     # Plot each selected image
     for idx in selected_indices:
@@ -154,7 +154,7 @@ def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_imag
         ]
         plt.legend(handles=legend_elements, loc="upper right", bbox_to_anchor=(1.2, 1))
 
-        # Save the plot
+        # save plot
         output_path = os.path.join(output_dir, f"plot_{os.path.basename(image_path)}")
         plt.savefig(output_path, bbox_inches="tight")
         plt.close()
@@ -165,7 +165,8 @@ def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_imag
 
 class SkijumpDataset(torch.utils.data.Dataset):
 
-    def __init__(self, images, labels, boxes, input_size=(128, 128), validation_mode=False, heatmap_downscale=1):
+    def __init__(self, images, labels, boxes, input_size=(128, 128), validation_mode=False, heatmap_downscale=1,
+                 normalize=True):
         """
         Initializes the dataset with the output of the load_dataset function. You can add more parameters to this function if
         necessary.
@@ -182,8 +183,9 @@ class SkijumpDataset(torch.utils.data.Dataset):
         self._input_size = input_size
         self._validation_mode = validation_mode
         self._heatmap_downscale = heatmap_downscale
+        self._normalize = normalize
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx): #TODO: to(device)? check old assignments
         """
         :return: adjusted image and heatmaps in train mode | adjusted image, original ground truth coordinates,
         resizing factor, and used bounding box in validation/test mode
@@ -214,23 +216,26 @@ class SkijumpDataset(torch.utils.data.Dataset):
         # convert to tensor and normalize to ImageNet mean and standard deviation
         to_tensor = transforms.ToTensor()
         image_tensor = to_tensor(image)
-        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        image_tensor = normalize(image_tensor)
+        if self._normalize:
+            normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            image_tensor = normalize(image_tensor)
 
+        # validation mode returns
         if self._validation_mode:
             image_name = os.path.basename(self._images[idx])
 
             return image_tensor, self._labels[idx], scaling_ratio, self._boxes[idx], image_name
 
+        # training mode returns
         else:
-            # rescale keypoints and keep them as float values, not sure if integers are preferred
+            # rescale keypoints and keep them as float values
             keypoints_scaled = np.zeros_like(self._labels[idx])
             keypoints_scaled[:,0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
             keypoints_scaled[:,1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
             keypoints_scaled[:,2] = self._labels[idx][:, 2]
 
-            # create heatmaps depending on heatmap_downscale
-            heatmap_size = 128 / self._heatmap_downscale
+            # create heatmaps depending on heatmap_downscale parameter
+            heatmap_size = self._input_size[0] / self._heatmap_downscale
             heatmap_size = int(round(heatmap_size))
             heatmap_size = (heatmap_size, heatmap_size)
             heatmaps = create_heatmaps(keypoints_scaled, heatmap_size)

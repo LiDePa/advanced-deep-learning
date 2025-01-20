@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+import os
+import random
+import matplotlib.pyplot as plt
+import torch
+from torchvision.transforms.functional import to_pil_image
 
 
 def create_heatmaps(labels: np.ndarray, heatmap_size=(128, 128), sigma=2):
@@ -33,3 +38,55 @@ def create_heatmaps(labels: np.ndarray, heatmap_size=(128, 128), sigma=2):
     heatmaps = np.exp(exponent)
 
     return heatmaps
+
+
+
+def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
+                              dataset_64: torch.utils.data.Dataset,
+                              len_dataset: int):
+    """
+    creates .png images of 10 samples, 5 with 128px heatmaps and 5 with upscaled 64px heatmaps
+    Args:
+        dataset_128: a dataset created with 128px image and heatmap resolution
+        dataset_64: a dataset created with 128px image and 64px heatmap resolution
+        len_dataset: amount of samples in the dataset
+    """
+    # create output directory
+    project_folder = os.path.dirname(os.path.abspath(__file__))
+    output_dir = os.path.join(project_folder, "output_plots")
+    os.makedirs(output_dir, exist_ok=True)
+
+    # get 5 random indices for each dataset
+    indices_128 = random.sample(range(len_dataset), 5)
+    indices_64 = random.sample(range(len_dataset), 5)
+
+    for i in indices_128:
+        image, heatmaps = dataset_128[i]
+        heatmaps_2d = np.max(heatmaps, axis=0)
+
+        image_np = image.numpy()
+        image_np = np.transpose(image_np, (1, 2, 0))
+        image_np[:, :, 0] = np.maximum(image_np[:, :, 0], heatmaps_2d)
+
+        plt.figure(figsize=(10,10))
+        plt.imshow(image_np)
+
+        output_path = os.path.join(output_dir, f"plot_{i+3}") # i+3 equals line index in .csv
+        plt.savefig(output_path)
+        plt.close()
+
+    for i in indices_64:
+        image, heatmaps = dataset_64[i]
+        heatmaps_2d_64 = np.max(heatmaps, axis=0)
+        heatmaps_2d_128 = np.repeat(np.repeat(heatmaps_2d_64, 2, 0),2,1)
+
+        image_np = image.numpy()
+        image_np = np.transpose(image_np, (1, 2, 0))
+        image_np[:, :, 0] = np.maximum(image_np[:, :, 0], heatmaps_2d_128)
+
+        plt.figure(figsize=(10,10))
+        plt.imshow(image_np)
+
+        output_path = os.path.join(output_dir, f"plot_{i+3}") # i+3 equals line index in .csv
+        plt.savefig(output_path)
+        plt.close()
