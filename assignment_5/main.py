@@ -20,8 +20,8 @@ if __name__ == "__main__":
     train_annotation_path = os.path.join(dataset_root, "annotations/train.csv")
 
     images, labels, boxes = load_dataset(train_annotation_path, image_base_path)
-    dataset = SkijumpDataset(images, labels, boxes, validation_mode=False)
-    create_heatmaps(dataset[30][1])
+    dataset = SkijumpDataset(images, labels, boxes, validation_mode=False, heatmap_downscale=2)
+    item = dataset[30][1]
 
     if args.dataset_confirmation_images is not None:
         plot_dataset_confirmation(train_annotation_path, image_base_path, args.dataset_confirmation_images)

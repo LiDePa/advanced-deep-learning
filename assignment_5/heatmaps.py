@@ -4,10 +4,9 @@ import numpy as np
 
 def create_heatmaps(labels: np.ndarray, heatmap_size=(128, 128), sigma=2):
     n_keypoints = labels.shape[0]
-    sigma = 2
 
-    # create 2D-meshgrids of heatmap_size
-    # and broadcast them along a new axis of length n_keypoints
+    # create 2D-meshgrids of heatmap_size for x and y coordinates
+    # and broadcast both along a new axis of length n_keypoints
     x_coordinates = np.arange(heatmap_size[0], dtype=np.float32)
     y_coordinates = np.arange(heatmap_size[1], dtype=np.float32)
     x_meshgrid, y_meshgrid = np.meshgrid(x_coordinates, y_coordinates)

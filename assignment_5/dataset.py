@@ -11,6 +11,8 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import random
 
+from .heatmaps import create_heatmaps
+
 
 
 def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int = 4) -> Tuple[
@@ -179,13 +181,13 @@ class SkijumpDataset(torch.utils.data.Dataset):
         self._boxes = boxes
         self._input_size = input_size
         self._validation_mode = validation_mode
+        self._heatmap_downscale = heatmap_downscale
 
     def __getitem__(self, idx):
         """
         :return: adjusted image and heatmaps in train mode | adjusted image, original ground truth coordinates,
         resizing factor, and used bounding box in validation/test mode
         """
-
         image = Image.open(self._images[idx]).convert("RGB")
 
         # crop image to bounding box
@@ -195,9 +197,9 @@ class SkijumpDataset(torch.utils.data.Dataset):
             self._boxes[idx][1],
             self._boxes[idx][3]))
 
-        # get scale factor
-        # assume quadratic shape of input_size to avoid complex aspect ratio comparisons
-        scaling_ratio = self._input_size[0] / max(image.size)
+        # calculate scaling ratio considering input_size and heatmap_downscale
+        # assume quadratic shape of input_size to avoid aspect ratio comparisons
+        scaling_ratio = self._input_size[0] / (max(image.size) * self._heatmap_downscale)
 
         # bilinear scaling while keeping aspect ratio
         image.thumbnail(self._input_size)
@@ -217,14 +219,23 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         if self._validation_mode:
             image_name = os.path.basename(self._images[idx])
+
             return image_tensor, self._labels[idx], scaling_ratio, self._boxes[idx], image_name
+
         else:
             # rescale keypoints and keep them as float values, not sure if integers are preferred
             keypoints_scaled = np.zeros_like(self._labels[idx])
             keypoints_scaled[:,0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
             keypoints_scaled[:,1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
-            keypoints_scaled[:,2] = self._labels[idx][:, 2] # not sure if necessary
-            return image_tensor, keypoints_scaled
+            keypoints_scaled[:,2] = self._labels[idx][:, 2]
+
+            # create heatmaps depending on heatmap_downscale
+            heatmap_size = 128 / self._heatmap_downscale
+            heatmap_size = int(round(heatmap_size))
+            heatmap_size = (heatmap_size, heatmap_size)
+            heatmaps = create_heatmaps(keypoints_scaled, heatmap_size)
+
+            return image_tensor, heatmaps
 
 
     @classmethod
