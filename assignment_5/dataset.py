@@ -10,6 +10,7 @@ import os
 from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import random
+import cv2
 
 from .heatmaps import create_heatmaps
 
@@ -51,6 +52,7 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
                 event_resolutions[label[0]] = [width, height]
 
             # create numpy array with keypoint coordinates and add it to keypoints
+            # TODO: Ask why they added offset_columns; in case new keypoints are added? Wrong to do like this?
             keypoints_vector = np.array(label[-17*3:]).astype(np.int32) # take last 17 list entries, which contain keypoint values
             keypoints_matrix = keypoints_vector.reshape(17, 3)
             keypoints.append(keypoints_matrix.astype(np.ndarray))
@@ -165,8 +167,19 @@ def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_imag
 
 class SkijumpDataset(torch.utils.data.Dataset):
 
-    def __init__(self, images, labels, boxes, input_size=(128, 128), validation_mode=False, heatmap_downscale=1,
-                 normalize=True):
+    def __init__(self,
+                 images,
+                 labels,
+                 boxes,
+                 input_size=(128, 128),
+                 validation_mode=False,
+                 heatmap_downscale=1,
+                 normalize=True,
+                 aug_rotate=30.0,
+                 aug_x_translate=0.1,
+                 aug_y_translate=0.1,
+                 aug_flip=0.5):
+        #TODO: add params to description
         """
         Initializes the dataset with the output of the load_dataset function. You can add more parameters to this function if
         necessary.
@@ -176,6 +189,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         :param input_size: Size of the returned images, this is the input size of the model
         :param validation_mode: If True, the dataset returns heatmaps instead of coordinates and does not use data augmentation
         :param heatmap_downscale: Factor by which the heatmaps are smaller compared to the input size
+        :param normalize: If True, normalize the final tensor to ImageNet values
         """
         self._images = images
         self._labels = labels
@@ -184,12 +198,17 @@ class SkijumpDataset(torch.utils.data.Dataset):
         self._validation_mode = validation_mode
         self._heatmap_downscale = heatmap_downscale
         self._normalize = normalize
+        self._aug_rotate = aug_rotate
+        self.aug_x_translate = aug_x_translate
+        self.aug_y_translate = aug_y_translate
+        self._aug_flip = aug_flip
 
-    def __getitem__(self, idx): #TODO: to(device)? check old assignments
+    def __getitem__(self, idx):
         """
         :return: adjusted image and heatmaps in train mode | adjusted image, original ground truth coordinates,
         resizing factor, and used bounding box in validation/test mode
         """
+        # open image with PIL
         image = Image.open(self._images[idx]).convert("RGB")
 
         # crop image to bounding box
@@ -203,7 +222,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         # assume quadratic shape of input_size to avoid aspect ratio comparisons
         scaling_ratio = self._input_size[0] / (max(image.size) * self._heatmap_downscale)
 
-        # bilinear scaling while keeping aspect ratio
+        # bilinear scaling to input_size while keeping aspect ratio
         image.thumbnail(self._input_size)
 
         # pad image either on the right or bottom
@@ -212,6 +231,16 @@ class SkijumpDataset(torch.utils.data.Dataset):
             fill=0,
             padding_mode='constant')
         image = pad_image(image)
+
+        # TODO: augment() will be called here
+        # TODO: add randomness for arguments to be smaller, right now calling with max values
+        image = np.array(image)
+        image = self.augment(image,
+                             self._labels[idx],
+                             self._aug_rotate,
+                             self.aug_x_translate,
+                             self.aug_y_translate,
+                             self._aug_flip)
 
         # convert to tensor and normalize to ImageNet mean and standard deviation
         to_tensor = transforms.ToTensor()
@@ -243,13 +272,42 @@ class SkijumpDataset(torch.utils.data.Dataset):
             return image_tensor, heatmaps
 
 
+
     @classmethod
     def augment(cls, img: np.ndarray, label: np.ndarray, rot: float, trans_x: float, trans_y: float, flip: bool):
         """
         Geometric augmentation of the image and adjustment of the labels.
         """
-        # TODO
-        raise NotImplementedError
+        height, width = img.shape[:2]
+
+        ### ROTATE ###
+
+        # unpad image before rotating
+        # "keep as much from the image as possible and cut as least as possible"
+        # I'd personally call augment() before padding the image so this step would be less complex / more efficient
+        img_greyscale = np.max(img, axis=2)
+        row_indices, col_indices = np.where(img_greyscale != 0)
+        max_row = np.max(row_indices)
+        max_col = np.max(col_indices)
+        img_unpad = img[:max_row, :max_col, :]
+        height_unpad, width_unpad = img_unpad.shape[:2]
+        # TODO: how do i carry the keypoints? should still be correct here, but not after rotating...
+
+        # TODO: calculate new image size to keep entire rotated image visible
+        # use sin cos...
+
+        # create rotation matrix and rotate
+        center = (width_unpad / 2, height_unpad / 2)
+        rotation_matrix = cv2.getRotationMatrix2D(center, -rot, scale=1.0)
+        img_rotated = cv2.warpAffine(img, rotation_matrix, (width, height))
+
+        ### TRANSLATE ###
+
+        ### FLIP ###
+
+        breakpoint()
+
+
 
 
 def create_skijump_subsets(dataset_path: str, batch_size=16, image_size=(128, 128), heatmap_downscale=2) -> Tuple[
