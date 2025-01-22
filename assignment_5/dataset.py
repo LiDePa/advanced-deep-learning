@@ -220,48 +220,46 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         # calculate scaling ratio considering input_size and heatmap_downscale
         # assume quadratic shape of input_size to avoid aspect ratio comparisons
-        scaling_ratio = self._input_size[0] / (max(image.size) * self._heatmap_downscale)
+        scaling_ratio = self._input_size[0] / max(image.size)
 
         # bilinear scaling to input_size while keeping aspect ratio
         image.thumbnail(self._input_size)
 
+        # convert to numpy array and normalize to ImageNet mean and standard deviation
+        image = np.array(image) / 255.0
+        if self._normalize: # can be set to False for visualization plots
+            mean=[0.485, 0.456, 0.406]
+            std=[0.229, 0.224, 0.225]
+            image = (image - mean) / std
+
         # pad image either on the right or bottom
-        pad_image = transforms.Pad(
-            (0, 0, self._input_size[0] - image.width, self._input_size[1] - image.height),
-            fill=0,
-            padding_mode='constant')
-        image = pad_image(image)
+        padding = np.zeros((*self._input_size,image.shape[2]))
+        padding[:image.shape[0], :image.shape[1], :image.shape[2]] = image
+        image = padding
 
-        # TODO: augment() will be called here
-        # TODO: add randomness for arguments to be smaller, right now calling with max values
-        image = np.array(image)
-        image = self.augment(image,
-                             self._labels[idx],
-                             self._aug_rotate,
-                             self.aug_x_translate,
-                             self.aug_y_translate,
-                             self._aug_flip)
-
-        # convert to tensor and normalize to ImageNet mean and standard deviation
-        to_tensor = transforms.ToTensor()
-        image_tensor = to_tensor(image)
-        if self._normalize:
-            normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-            image_tensor = normalize(image_tensor)
-
-        # validation mode returns
+        # validation mode:
         if self._validation_mode:
             image_name = os.path.basename(self._images[idx])
+            return image, self._labels[idx], scaling_ratio, self._boxes[idx], image_name
 
-            return image_tensor, self._labels[idx], scaling_ratio, self._boxes[idx], image_name
-
-        # training mode returns
-        else:
-            # rescale keypoints and keep them as float values
+        # training mode:
+        elif not self._validation_mode:
+            #TODO: you changed scaling_ratio, remember? #
+            # rescale a copy of the keypoints and keep them as float values
             keypoints_scaled = np.zeros_like(self._labels[idx])
-            keypoints_scaled[:,0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
-            keypoints_scaled[:,1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
-            keypoints_scaled[:,2] = self._labels[idx][:, 2]
+            keypoints_scaled[:, 0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
+            keypoints_scaled[:, 1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
+            keypoints_scaled[:, 2] = self._labels[idx][:, 2]
+
+            # TODO: augment() will be called here
+            # TODO: add randomness for arguments to be smaller, right now calling with max values
+
+            image = self.augment(img=image,
+                                 label=keypoints_scaled,
+                                 rot=self._aug_rotate,
+                                 trans_x=self.aug_x_translate,
+                                 trans_y=self.aug_y_translate,
+                                 flip=self._aug_flip)
 
             # create heatmaps depending on heatmap_downscale parameter
             heatmap_size = self._input_size[0] / self._heatmap_downscale
@@ -269,7 +267,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
             heatmap_size = (heatmap_size, heatmap_size)
             heatmaps = create_heatmaps(keypoints_scaled, heatmap_size)
 
-            return image_tensor, heatmaps
+            return image, heatmaps
 
 
 
@@ -280,28 +278,54 @@ class SkijumpDataset(torch.utils.data.Dataset):
         """
         height, width = img.shape[:2]
 
-        ### ROTATE ###
+        # TODO: I'm getting non-fitting labels here it seems
 
-        # unpad image before rotating
+        ### ROTATE ###
+        # "augment() takes an image img as a numpy array that is already cropped and padded to quadratic size"
         # "keep as much from the image as possible and cut as least as possible"
-        # I'd personally call augment() before padding the image so this step would be less complex / more efficient
+        # I would personally call augment() before padding the image so this step would be a bit more efficient
+
+        # unpad image back to the bounding-box crop before rotating
         img_greyscale = np.max(img, axis=2)
         row_indices, col_indices = np.where(img_greyscale != 0)
         max_row = np.max(row_indices)
         max_col = np.max(col_indices)
-        img_unpad = img[:max_row, :max_col, :]
+        img_unpad = img[:max_row+1, :max_col+1, :]
         height_unpad, width_unpad = img_unpad.shape[:2]
-        # TODO: how do i carry the keypoints? should still be correct here, but not after rotating...
 
-        # TODO: calculate new image size to keep entire rotated image visible
-        # use sin cos...
+        # calculate new array size to keep entire rotated image visible
+        height_rotate = np.ceil(np.abs(
+            np.cos(np.deg2rad(rot))*height_unpad + np.sin(np.deg2rad(rot))*width_unpad
+        )).astype(int)
+        width_rotate = np.ceil(np.abs(
+            np.cos(np.deg2rad(rot))*width_unpad + np.sin(np.deg2rad(rot))*height_unpad
+        )).astype(int)
 
-        # create rotation matrix and rotate
-        center = (width_unpad / 2, height_unpad / 2)
+        # put image into center of a larger array of width_rotate and height_rotate
+        img_rotate = np.zeros((height_rotate, width_rotate, img_unpad.shape[2]))
+        x_pad_rotate = np.round((width_rotate-width_unpad)/2).astype(int)
+        y_pad_rotate = np.round((height_rotate-height_unpad)/2).astype(int)
+        img_rotate[y_pad_rotate:y_pad_rotate+height_unpad, x_pad_rotate:x_pad_rotate+width_unpad, :] = img_unpad
+
+        # adapt keypoints to the larger array
+        keypoints = label[:,:2]
+        keypoints[:,0] = keypoints[:,0] + x_pad_rotate
+        keypoints[:,1] = keypoints[:,1] + y_pad_rotate
+
+        # create rotation matrix and rotate image inside the larger array
+        center = (width_rotate / 2, height_rotate / 2)
         rotation_matrix = cv2.getRotationMatrix2D(center, -rot, scale=1.0)
-        img_rotated = cv2.warpAffine(img, rotation_matrix, (width, height))
+        img_rotate = cv2.warpAffine(img_rotate, rotation_matrix, (width_rotate, height_rotate))
+
+        # make keypoints homogeneous and rotate them
+        keypoints_rotate = np.ones_like(label)
+        keypoints_rotate[:,:2] = keypoints
+        keypoints_rotate = (rotation_matrix @ keypoints_rotate.T).T
+
+
 
         ### TRANSLATE ###
+
 
         ### FLIP ###
 
