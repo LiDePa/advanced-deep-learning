@@ -5,7 +5,6 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 import csv
-import torchvision.transforms as transforms
 import os
 from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
@@ -34,7 +33,7 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
         # iterate through each line(=label) in the .csv as a list of immutable strings
         annotations = csv.reader(csv_file, delimiter=';')
         for label in annotations:
-            # create shallow copy to not modify the structure of annotations
+            # create shallow copy to not modify the structure of annotations, deeper strings are immutable
             label = label.copy()
 
             # build name of corresponding .jpg frame for the label and add it to frame_paths
@@ -267,6 +266,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
             heatmap_size = int(round(heatmap_size))
             heatmap_size = (heatmap_size, heatmap_size)
             heatmaps = create_heatmaps(keypoints_scaled, heatmap_size)
+            # TODO: check if heatmap sizes still behave as wanted
 
             return image, heatmaps
 
@@ -278,13 +278,14 @@ class SkijumpDataset(torch.utils.data.Dataset):
         Geometric augmentation of the image and adjustment of the labels.
         """
         height, width = img.shape[:2]
+        label = np.copy(label)
 
         ### ROTATE ###
         # "keep as much from the image as possible and cut as least as possible"
-        # I would personally call augment() before padding the image, but I won't
+        # I would personally call augment() before padding the image, but I won't:
         # "augment() takes an image img as a numpy array that is already cropped and padded to quadratic size"
 
-        # unpad image back to the bounding-box crop before rotating
+        # unpad image back to the bounding-box crop
         img_greyscale = np.max(img, axis=2)
         row_indices, col_indices = np.where(img_greyscale != 0)
         max_row = np.max(row_indices)
@@ -292,20 +293,17 @@ class SkijumpDataset(torch.utils.data.Dataset):
         img_unpadded = img[:max_row+1, :max_col+1, :]
         height_unpadded, width_unpadded = img_unpadded.shape[:2]
 
-        # calculate new array size to keep entire rotated image visible
+        # put image into center of a larger array to keep entire rotated image visible
         height_rotated = np.ceil(np.abs(
             np.cos(np.deg2rad(rot))*height_unpadded + np.sin(np.deg2rad(rot))*width_unpadded
         )).astype(int)
         width_rotated = np.ceil(np.abs(
             np.cos(np.deg2rad(rot))*width_unpadded + np.sin(np.deg2rad(rot))*height_unpadded
         )).astype(int)
-
-        # put image into center of a larger array of size width_rotated and height_rotated
         img_rotated = np.zeros((height_rotated, width_rotated, img_unpadded.shape[2]))
         y_pad_rotate = np.round((height_rotated-height_unpadded)/2).astype(int)
         x_pad_rotate = np.round((width_rotated-width_unpadded)/2).astype(int)
-        img_rotated[y_pad_rotate:y_pad_rotate+height_unpadded, x_pad_rotate:x_pad_rotate+width_unpadded,
-        :] = img_unpadded
+        img_rotated[y_pad_rotate:y_pad_rotate+height_unpadded, x_pad_rotate:x_pad_rotate+width_unpadded,:] = img_unpadded
 
         # adapt keypoints to the larger array
         keypoints = label[:,:2]
@@ -322,25 +320,55 @@ class SkijumpDataset(torch.utils.data.Dataset):
         keypoints_rotated[:,:2] = keypoints
         keypoints_rotated = (rotation_matrix @ keypoints_rotated.T).T
 
-
-
         ### TRANSLATE ###
-        # TODO: ask why trans arguments are floats
 
-        # translate image and keypoints in x direction
+        # translate image and keypoints
         img_translated = np.zeros_like(img_rotated)
-        img_translated[int(trans_y):,:,:] = img_rotated[:img_rotated.shape[0]-int(trans_y),:,:]
-        img_translated[:,int(trans_y):,:] = img_translated[:,:img_rotated.shape[1]-int(trans_x),:]
-        # TODO: still buggy, doppel
-        # TODO: keypoint translation
+        img_translated[int(trans_y):,int(trans_x):,:] = img_rotated[:img_rotated.shape[0]-int(trans_y),:img_rotated.shape[1]-int(trans_x),:]
+        keypoints_translated = keypoints_rotated
+        keypoints_translated[:,1] = keypoints_translated[:,1] + trans_y
+        keypoints_translated[:,0] = keypoints_translated[:,0] + trans_x
 
+        # put keypoints back into the label to prepare for flipping
+        label[:, :2] = keypoints_translated
 
         ### FLIP ###
 
-        # TODO: set invisible labels to 0
+        # TODO: if flip bool is true and if 50% randomness here
+        # flip image and keypoints inside label
+        img_flipped = cv2.flip(img_translated, 1)
+        label_flipped = label
+        label_flipped[:,:2] = keypoints_translated
+        label_flipped[:,0] = width_rotated - 1 - label_flipped[:,0] # this is what cv2.flip() does with pixel indices according to documentation
+
+        # permute label to account for mirroring of the depicted person
+        permutation_order = [0, 4, 5, 6, 1, 2, 3, 10, 11, 12, 7, 8, 9, 15, 16, 13, 14]
+        label = label_flipped[permutation_order]
+
+        ### CROP, KEYPOINT VISIBILITY ###
+        # crop back to input size and mark cropped off keypoints as invisible
+
+        # calculate to be cropped off margins
+        top_margin = np.floor((height_rotated - height) / 2).astype(int)
+        left_margin = np.floor((width_rotated - width) / 2).astype(int)
+
+        # identify keypoints that will be cropped and set their visibility to zero
+        invisible_keypoints = (
+                (label[:,1] < top_margin) |
+                (label[:,1] >= top_margin + height) |
+                (label[:,0] < left_margin) |
+                (label[:,0] >= left_margin + width)
+        )
+        label[invisible_keypoints,2] = 0
+
+        # crop image and adjust keypoints accordingly
+        img_augmented = img_flipped[top_margin : top_margin + height, left_margin : left_margin + width]
+        label[:,1] = label[:,1] - top_margin
+        label[:,0] = label[:,0] - left_margin
 
         breakpoint()
 
+        return img_augmented, label
 
 
 
