@@ -290,8 +290,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
         row_indices, col_indices = np.where(img_greyscale != 0)
         max_row = np.max(row_indices)
         max_col = np.max(col_indices)
-        img_unpadded = img[:max_row+1, :max_col+1, :]
-        height_unpadded, width_unpadded = img_unpadded.shape[:2]
+        img = img[:max_row+1, :max_col+1, :]
+        height_unpadded, width_unpadded = img.shape[:2]
 
         # put image into center of a larger array to keep entire rotated image visible
         height_rotated = np.ceil(np.abs(
@@ -300,10 +300,10 @@ class SkijumpDataset(torch.utils.data.Dataset):
         width_rotated = np.ceil(np.abs(
             np.cos(np.deg2rad(rot))*width_unpadded + np.sin(np.deg2rad(rot))*height_unpadded
         )).astype(int)
-        img_rotated = np.zeros((height_rotated, width_rotated, img_unpadded.shape[2]))
+        img_rotated = np.zeros((height_rotated, width_rotated, img.shape[2]))
         y_pad_rotate = np.round((height_rotated-height_unpadded)/2).astype(int)
         x_pad_rotate = np.round((width_rotated-width_unpadded)/2).astype(int)
-        img_rotated[y_pad_rotate:y_pad_rotate+height_unpadded, x_pad_rotate:x_pad_rotate+width_unpadded,:] = img_unpadded
+        img_rotated[y_pad_rotate:y_pad_rotate+height_unpadded, x_pad_rotate:x_pad_rotate+width_unpadded,:] = img
 
         # adapt keypoints to the larger array
         keypoints = label[:,:2]
@@ -314,45 +314,47 @@ class SkijumpDataset(torch.utils.data.Dataset):
         center = (width_rotated / 2, height_rotated / 2)
         rotation_matrix = cv2.getRotationMatrix2D(center, -rot, scale=1.0)
         img_rotated = cv2.warpAffine(img_rotated, rotation_matrix, (width_rotated, height_rotated))
+        img = img_rotated
 
         # make keypoints homogeneous and rotate them
         keypoints_rotated = np.ones_like(label)
         keypoints_rotated[:,:2] = keypoints
         keypoints_rotated = (rotation_matrix @ keypoints_rotated.T).T
+        label[:,:2] = keypoints_rotated
 
         ### TRANSLATE ###
 
-        # translate image and keypoints
-        img_translated = np.zeros_like(img_rotated)
-        img_translated[int(trans_y):,int(trans_x):,:] = img_rotated[:img_rotated.shape[0]-int(trans_y),:img_rotated.shape[1]-int(trans_x),:]
-        keypoints_translated = keypoints_rotated
-        keypoints_translated[:,1] = keypoints_translated[:,1] + trans_y
-        keypoints_translated[:,0] = keypoints_translated[:,0] + trans_x
+        # round trans_y and trans_x parameters as we don't want to interpolate pixels
+        trans_y = np.round(trans_y).astype(int)
+        trans_x = np.round(trans_x).astype(int)
 
-        # put keypoints back into the label to prepare for flipping
-        label[:, :2] = keypoints_translated
+        # translate image
+        img_translated = np.zeros_like(img)
+        img_translated[trans_y:,trans_x:,:] = img[:img.shape[0]-trans_y,:img.shape[1]-trans_x,:]
+        img = img_translated
+
+        # translate keypoints inside label
+        label[:,1] = label[:,1] + trans_y
+        label[:,0] = label[:,0] + trans_x
 
         ### FLIP ###
 
         # TODO: if flip bool is true and if 50% randomness here
         # flip image and keypoints inside label
-        img_flipped = cv2.flip(img_translated, 1)
-        label_flipped = label
-        label_flipped[:,:2] = keypoints_translated
-        label_flipped[:,0] = width_rotated - 1 - label_flipped[:,0] # this is what cv2.flip() does with pixel indices according to documentation
+        img = cv2.flip(img, 1)
+        label[:,0] = width_rotated - label[:,0]
 
         # permute label to account for mirroring of the depicted person
         permutation_order = [0, 4, 5, 6, 1, 2, 3, 10, 11, 12, 7, 8, 9, 15, 16, 13, 14]
-        label = label_flipped[permutation_order]
+        label = label[permutation_order]
 
         ### CROP, KEYPOINT VISIBILITY ###
-        # crop back to input size and mark cropped off keypoints as invisible
 
         # calculate to be cropped off margins
         top_margin = np.floor((height_rotated - height) / 2).astype(int)
         left_margin = np.floor((width_rotated - width) / 2).astype(int)
 
-        # identify keypoints that will be cropped and set their visibility to zero
+        # identify keypoints that will be cropped off and set their visibility to zero
         invisible_keypoints = (
                 (label[:,1] < top_margin) |
                 (label[:,1] >= top_margin + height) |
@@ -361,14 +363,12 @@ class SkijumpDataset(torch.utils.data.Dataset):
         )
         label[invisible_keypoints,2] = 0
 
-        # crop image and adjust keypoints accordingly
-        img_augmented = img_flipped[top_margin : top_margin + height, left_margin : left_margin + width]
+        # crop image back to input size and adjust keypoints accordingly
+        img = img[top_margin : top_margin + height, left_margin : left_margin + width]
         label[:,1] = label[:,1] - top_margin
         label[:,0] = label[:,0] - left_margin
 
-        breakpoint()
-
-        return img_augmented, label
+        return img, label
 
 
 
