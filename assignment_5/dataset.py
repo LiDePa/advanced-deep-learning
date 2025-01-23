@@ -176,8 +176,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
                  normalize=True,
                  aug_rotate=30.0,
                  aug_translate=0.1,
-                 aug_flip=0.5):
-        #TODO: add params to description; aug values are max values or probablities (flip)
+                 aug_flip=True):
         """
         Initializes the dataset with the output of the load_dataset function. You can add more parameters to this function if
         necessary.
@@ -188,6 +187,9 @@ class SkijumpDataset(torch.utils.data.Dataset):
         :param validation_mode: If True, the dataset returns heatmaps instead of coordinates and does not use data augmentation
         :param heatmap_downscale: Factor by which the heatmaps are smaller compared to the input size
         :param normalize: If True, normalize the final tensor to ImageNet values
+        :param aug_rotate: Augmentation: Maximum angle of random rotation
+        :param aug_translate: Augmentation: Maximum proportion of random translation
+        :param aug_flip: Augmentation: If true, image is horizontally flipped with a 50% chance
         """
         self._images = images
         self._labels = labels
@@ -248,13 +250,11 @@ class SkijumpDataset(torch.utils.data.Dataset):
             label_scaled[:, 2] = self._labels[idx][:, 2]
             label = label_scaled
 
-            #TODO: maybe add another flag for augment in general? not sure how to handle this
-
             # introduce randomness to the max values and call augment()
             aug_rotate = self._aug_rotate * random.random()
             aug_y_translate = self._aug_translate * random.random() * image.shape[1]
             aug_x_translate = self._aug_translate * random.random() * image.shape[0]
-            aug_flip = random.random() < self._aug_flip
+            aug_flip = random.choice([self._aug_flip, False])
             image, label = self.augment(img=image,
                                  label=label,
                                  rot=aug_rotate,
@@ -294,7 +294,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         img = img[:max_row+1, :max_col+1, :]
         height_unpadded, width_unpadded = img.shape[:2]
 
-        # put image into center of a larger array to keep entire rotated image visible
+        # put image into center of a new array to keep entire rotated image visible
         height_rotated = np.ceil(np.abs(
             np.cos(np.deg2rad(rot))*height_unpadded + np.sin(np.deg2rad(rot))*width_unpadded
         )).astype(int)
@@ -306,12 +306,12 @@ class SkijumpDataset(torch.utils.data.Dataset):
         x_pad_rotate = np.round((width_rotated-width_unpadded)/2).astype(int)
         img_rotated[y_pad_rotate:y_pad_rotate+height_unpadded, x_pad_rotate:x_pad_rotate+width_unpadded,:] = img
 
-        # adapt keypoints to the larger array
+        # adapt keypoints to the new array
         keypoints = label[:,:2]
         keypoints[:,0] = keypoints[:,0] + x_pad_rotate
         keypoints[:,1] = keypoints[:,1] + y_pad_rotate
 
-        # create rotation matrix and rotate image inside the larger array
+        # create rotation matrix and rotate image inside the new array
         center = (width_rotated / 2, height_rotated / 2)
         rotation_matrix = cv2.getRotationMatrix2D(center, -rot, scale=1.0)
         img_rotated = cv2.warpAffine(img_rotated, rotation_matrix, (width_rotated, height_rotated))
@@ -324,8 +324,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
         label[:,:2] = keypoints_rotated
 
         ### TRANSLATE ###
-
-        # round trans_y and trans_x parameters instead of interpolating pixels
+        # TODO: needs to also work with negative values, maybe do if
+        # round trans_y and trans_x parameters as they are passed as float
         trans_y = np.round(trans_y).astype(int)
         trans_x = np.round(trans_x).astype(int)
 
@@ -352,6 +352,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         ### CROP, KEYPOINT VISIBILITY ###
 
         # calculate to be cropped off margins
+        # TODO: breaks for small angles if height_rotated is smaller than height, watch out that keypoint vis and cropping uses this, maybe do if
         top_margin = np.floor((height_rotated - height) / 2).astype(int)
         left_margin = np.floor((width_rotated - width) / 2).astype(int)
 
