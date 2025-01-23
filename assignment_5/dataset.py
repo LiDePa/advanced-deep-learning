@@ -177,7 +177,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
                  aug_rotate=30.0,
                  aug_translate=0.1,
                  aug_flip=0.5):
-        #TODO: add params to description
+        #TODO: add params to description; aug values are max values or probablities (flip)
         """
         Initializes the dataset with the output of the load_dataset function. You can add more parameters to this function if
         necessary.
@@ -241,32 +241,33 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         # training mode:
         elif not self._validation_mode:
-            # rescale a copy of the keypoints and keep them as float values
-            keypoints_scaled = np.zeros_like(self._labels[idx])
-            keypoints_scaled[:, 0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
-            keypoints_scaled[:, 1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
-            keypoints_scaled[:, 2] = self._labels[idx][:, 2]
+            # rescale a copy of the label and keep it as float values
+            label_scaled = np.zeros_like(self._labels[idx])
+            label_scaled[:, 0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
+            label_scaled[:, 1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
+            label_scaled[:, 2] = self._labels[idx][:, 2]
+            label = label_scaled
 
-            # TODO: augment() will be called here
-            # TODO: add randomness for arguments to be smaller, right now calling with max values
+            #TODO: maybe add another flag for augment in general? not sure how to handle this
 
-            # TODO: there should be two np.rand calls here to have different x and y translations
-            aug_y_translate = self._aug_translate * image.shape[1]
-            aug_x_translate = self._aug_translate * image.shape[0]
-
-            image = self.augment(img=image,
-                                 label=keypoints_scaled,
-                                 rot=self._aug_rotate,
+            # introduce randomness to the max values and call augment()
+            aug_rotate = self._aug_rotate * random.random()
+            aug_y_translate = self._aug_translate * random.random() * image.shape[1]
+            aug_x_translate = self._aug_translate * random.random() * image.shape[0]
+            aug_flip = random.random() < self._aug_flip
+            image, label = self.augment(img=image,
+                                 label=label,
+                                 rot=aug_rotate,
                                  trans_x=aug_x_translate,
                                  trans_y=aug_y_translate,
-                                 flip=self._aug_flip)
+                                 flip=aug_flip)
 
             # create heatmaps depending on heatmap_downscale parameter
             heatmap_size = self._input_size[0] / self._heatmap_downscale
             heatmap_size = int(round(heatmap_size))
             heatmap_size = (heatmap_size, heatmap_size)
-            heatmaps = create_heatmaps(keypoints_scaled, heatmap_size)
-            # TODO: check if heatmap sizes still behave as wanted
+            heatmaps = create_heatmaps(label, heatmap_size)
+            # TODO: check if heatmaps and their sizes still behave as wanted
 
             return image, heatmaps
 
@@ -316,7 +317,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         img_rotated = cv2.warpAffine(img_rotated, rotation_matrix, (width_rotated, height_rotated))
         img = img_rotated
 
-        # make keypoints homogeneous and rotate them
+        # make keypoints homogeneous, rotate them, put them back into label
         keypoints_rotated = np.ones_like(label)
         keypoints_rotated[:,:2] = keypoints
         keypoints_rotated = (rotation_matrix @ keypoints_rotated.T).T
@@ -324,7 +325,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         ### TRANSLATE ###
 
-        # round trans_y and trans_x parameters as we don't want to interpolate pixels
+        # round trans_y and trans_x parameters instead of interpolating pixels
         trans_y = np.round(trans_y).astype(int)
         trans_x = np.round(trans_x).astype(int)
 
@@ -339,14 +340,14 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         ### FLIP ###
 
-        # TODO: if flip bool is true and if 50% randomness here
-        # flip image and keypoints inside label
-        img = cv2.flip(img, 1)
-        label[:,0] = width_rotated - label[:,0]
+        if flip:
+            # flip image and keypoints inside label
+            img = cv2.flip(img, 1)
+            label[:,0] = width_rotated - label[:,0]
 
-        # permute label to account for mirroring of the depicted person
-        permutation_order = [0, 4, 5, 6, 1, 2, 3, 10, 11, 12, 7, 8, 9, 15, 16, 13, 14]
-        label = label[permutation_order]
+            # permute label to account for mirroring of the depicted person
+            permutation_order = [0, 4, 5, 6, 1, 2, 3, 10, 11, 12, 7, 8, 9, 15, 16, 13, 14]
+            label = label[permutation_order]
 
         ### CROP, KEYPOINT VISIBILITY ###
 
@@ -354,6 +355,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         top_margin = np.floor((height_rotated - height) / 2).astype(int)
         left_margin = np.floor((width_rotated - width) / 2).astype(int)
 
+        # TODO: test this part
         # identify keypoints that will be cropped off and set their visibility to zero
         invisible_keypoints = (
                 (label[:,1] < top_margin) |
@@ -367,6 +369,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
         img = img[top_margin : top_margin + height, left_margin : left_margin + width]
         label[:,1] = label[:,1] - top_margin
         label[:,0] = label[:,0] - left_margin
+
+        breakpoint()
 
         return img, label
 
