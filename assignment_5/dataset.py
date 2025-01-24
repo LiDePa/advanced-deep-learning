@@ -51,8 +51,8 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
                 event_resolutions[label[0]] = [width, height]
 
             # create numpy array with keypoint coordinates and add it to keypoints
-            # TODO: Ask why they added offset_columns; in case new keypoints are added? Wrong to do like this?
-            keypoints_vector = np.array(label[-17*3:]).astype(np.int32) # take last 17 list entries, which contain keypoint values
+            # TODO: Ask why they added offset_columns; in case new keypoint types are added? Wrong to do it like this?
+            keypoints_vector = np.array(label[-17*3:]).astype(np.int32) # take last 17*3 list entries, which contain keypoint values
             keypoints_matrix = keypoints_vector.reshape(17, 3)
             keypoints.append(keypoints_matrix.astype(np.ndarray))
 
@@ -69,18 +69,10 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
             # pad the tightest bounding box by 20% in each direction
             x_padding = np.ceil(0.2 * w).astype(int)
             y_padding = np.ceil(0.2 * h).astype(int)
-            min_x = min_x_tight - x_padding
-            if min_x < 0:
-                min_x = 0
-            max_x = max_x_tight + x_padding
-            if max_x > event_resolutions[label[0]][0]:
-                max_x = event_resolutions[label[0]][0]
-            min_y = min_y_tight - y_padding
-            if min_y < 0:
-                min_y = 0
-            max_y = max_y_tight + y_padding
-            if max_y > event_resolutions[label[0]][1]:
-                max_y = event_resolutions[label[0]][1]
+            min_x = max(0, min_x_tight - x_padding)
+            max_x = min(max_x_tight + x_padding, event_resolutions[label[0]][0])
+            min_y = max(0, min_y_tight - y_padding)
+            max_y = min(max_y_tight + y_padding, event_resolutions[label[0]][1])
             bounding_boxes.append(np.array([min_x, max_x, min_y, max_y]))
 
     return frame_paths, keypoints, bounding_boxes
@@ -266,13 +258,11 @@ class SkijumpDataset(torch.utils.data.Dataset):
                                             flip=aug_flip)
 
             # create heatmaps depending on heatmap_downscale parameter
-            #TODO: labels are not getting downscaled, this was done in label_scaled several lines above
             label[:,:2] = label[:,:2] / self._heatmap_downscale
             heatmap_size = self._input_size[0] / self._heatmap_downscale
             heatmap_size = int(round(heatmap_size))
             heatmap_size = (heatmap_size, heatmap_size)
             heatmaps = create_heatmaps(label, heatmap_size)
-            # TODO: check if heatmaps and their sizes still behave as wanted
 
             return image, heatmaps
 

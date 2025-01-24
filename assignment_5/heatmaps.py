@@ -43,7 +43,8 @@ def create_heatmaps(labels: np.ndarray, heatmap_size=(128, 128), sigma=2):
 
 def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
                               dataset_64: torch.utils.data.Dataset,
-                              len_dataset: int):
+                              len_dataset: int,
+                              task: str):
     """
     creates .png images of 10 samples, 5 with 128px heatmaps and 5 with upscaled 64px heatmaps
     Args:
@@ -64,12 +65,13 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
         image, heatmaps = dataset_128[i]
         heatmaps_2d = np.max(heatmaps, axis=0)
 
-        image[:,:,0] = np.maximum(image[:,:,0], heatmaps_2d)
+        #image[:,:,0] = np.maximum(image[:,:,0], heatmaps_2d)
 
         plt.figure(figsize=(10,10))
         plt.imshow(image)
+        plt.imshow(heatmaps_2d, cmap='viridis', alpha=heatmaps_2d*0.8)
 
-        output_path = os.path.join(output_dir, f"plot_{i+3}") # i+3 equals line index in .csv
+        output_path = os.path.join(output_dir, f"{task}_{i+3}") # i+3 equals line index in .csv
         plt.savefig(output_path)
         plt.close()
 
@@ -78,11 +80,12 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
         heatmaps_2d_64 = np.max(heatmaps, axis=0)
         heatmaps_2d = np.repeat(np.repeat(heatmaps_2d_64, 2, 0),2,1)
 
-        image[:, :, 0] = np.maximum(image[:, :, 0], heatmaps_2d)
+        #image[:, :, 0] = np.maximum(image[:, :, 0], heatmaps_2d)
 
         plt.figure(figsize=(10,10))
         plt.imshow(image)
+        plt.imshow(heatmaps_2d, cmap='viridis', alpha=heatmaps_2d*0.8)
 
-        output_path = os.path.join(output_dir, f"plot_{i+3}") # i+3 equals line index in .csv
+        output_path = os.path.join(output_dir, f"{task}_{i+3}") # i+3 equals line index in .csv
         plt.savefig(output_path)
         plt.close()
