@@ -250,17 +250,19 @@ class SkijumpDataset(torch.utils.data.Dataset):
             label_scaled[:, 2] = self._labels[idx][:, 2]
             label = label_scaled
 
-            # introduce randomness to the max values and call augment()
+            # introduce randomness to the parameters and call augment()
             aug_rotate = self._aug_rotate * random.random()
-            aug_y_translate = self._aug_translate * random.random() * image.shape[1]
-            aug_x_translate = self._aug_translate * random.random() * image.shape[0]
+            aug_y_translate = self._aug_translate * (2*random.random()-1) * image.shape[1]
+            aug_x_translate = self._aug_translate * (2*random.random()-1) * image.shape[0]
             aug_flip = random.choice([self._aug_flip, False])
+            aug_rotate = 30
+            label = np.array([[0,0,2],[60,60,2],[127,127,2]])
             image, label = self.augment(img=image,
-                                 label=label,
-                                 rot=aug_rotate,
-                                 trans_x=aug_x_translate,
-                                 trans_y=aug_y_translate,
-                                 flip=aug_flip)
+                                        label=label,
+                                        rot=aug_rotate,
+                                        trans_y=aug_y_translate,
+                                        trans_x=aug_x_translate,
+                                        flip=aug_flip)
 
             # create heatmaps depending on heatmap_downscale parameter
             heatmap_size = self._input_size[0] / self._heatmap_downscale
@@ -294,13 +296,19 @@ class SkijumpDataset(torch.utils.data.Dataset):
         img = img[:max_row+1, :max_col+1, :]
         height_unpadded, width_unpadded = img.shape[:2]
 
-        # put image into center of a new array to keep entire rotated image visible
-        height_rotated = np.ceil(np.abs(
-            np.cos(np.deg2rad(rot))*height_unpadded + np.sin(np.deg2rad(rot))*width_unpadded
-        )).astype(int)
-        width_rotated = np.ceil(np.abs(
-            np.cos(np.deg2rad(rot))*width_unpadded + np.sin(np.deg2rad(rot))*height_unpadded
-        )).astype(int)
+        # put image into center of a new (possibly larger) array to keep entire rotated image visible
+        height_rotated = max(128,
+                             np.ceil(np.abs(
+                                 np.cos(np.deg2rad(rot))*height_unpadded
+                                 + np.sin(np.deg2rad(rot))*width_unpadded)
+                             ).astype(int)
+                             )
+        width_rotated = max(128,
+                            np.ceil(np.abs(
+                                np.cos(np.deg2rad(rot))*width_unpadded
+                                + np.sin(np.deg2rad(rot))*height_unpadded)
+                            ).astype(int)
+                            )
         img_rotated = np.zeros((height_rotated, width_rotated, img.shape[2]))
         y_pad_rotate = np.round((height_rotated-height_unpadded)/2).astype(int)
         x_pad_rotate = np.round((width_rotated-width_unpadded)/2).astype(int)
@@ -324,14 +332,25 @@ class SkijumpDataset(torch.utils.data.Dataset):
         label[:,:2] = keypoints_rotated
 
         ### TRANSLATE ###
-        # TODO: needs to also work with negative values, maybe do if
+
         # round trans_y and trans_x parameters as they are passed as float
         trans_y = np.round(trans_y).astype(int)
         trans_x = np.round(trans_x).astype(int)
 
-        # translate image
+        # translate image in y direction
+        img_y_translated = np.zeros_like(img)
+        if trans_y >= 0:
+            img_y_translated[trans_y:,:,:] = img[:img.shape[0]-trans_y,:,:]
+        elif trans_y < 0:
+            img_y_translated[:img.shape[0]+trans_y,:,:] = img[-trans_y:,:,:]
+
+        # translate y-translated image in x direction
         img_translated = np.zeros_like(img)
-        img_translated[trans_y:,trans_x:,:] = img[:img.shape[0]-trans_y,:img.shape[1]-trans_x,:]
+        if trans_x >= 0:
+            img_translated[:,trans_x:,:] = img_y_translated[:,:img.shape[1]-trans_x,:]
+        elif trans_x < 0:
+            img_translated[:,:img.shape[1]+trans_x,:] = img_y_translated[:,-trans_x:,:]
+
         img = img_translated
 
         # translate keypoints inside label
@@ -352,7 +371,6 @@ class SkijumpDataset(torch.utils.data.Dataset):
         ### CROP, KEYPOINT VISIBILITY ###
 
         # calculate to be cropped off margins
-        # TODO: breaks for small angles if height_rotated is smaller than height, watch out that keypoint vis and cropping uses this, maybe do if
         top_margin = np.floor((height_rotated - height) / 2).astype(int)
         left_margin = np.floor((width_rotated - width) / 2).astype(int)
 

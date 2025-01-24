@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     images, labels, boxes = load_dataset(train_annotation_path, image_base_path)
     dataset = SkijumpDataset(images, labels, boxes, validation_mode=False, heatmap_downscale=2)
-    item = dataset[32][1]
+    item = dataset[30][1]
 
     # TODO: make sure def augment isn't fucking things up here, maybe change normalize flag to plotting mode flag?
 
@@ -36,9 +36,9 @@ if __name__ == "__main__":
             dataset_128 = SkijumpDataset(images, labels, boxes,
                                          validation_mode=False,
                                          heatmap_downscale=1,
-                                         normalize=False)
+                                         normalize=False) #aug 0 here
             dataset_64 = SkijumpDataset(images, labels, boxes,
                                          validation_mode=False,
                                          heatmap_downscale=2,
-                                         normalize=False)
+                                         normalize=False) #aug 0 here
             plot_heatmap_confirmation(dataset_128, dataset_64, len(images))
