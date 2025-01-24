@@ -71,7 +71,7 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
         plt.imshow(image)
         plt.imshow(heatmaps_2d, cmap='viridis', alpha=heatmaps_2d*0.8)
 
-        output_path = os.path.join(output_dir, f"{task}_{i+3}") # i+3 equals line index in .csv
+        output_path = os.path.join(output_dir, f"{task}_{i+3}_128") # i+3 equals line index in .csv
         plt.savefig(output_path)
         plt.close()
 
@@ -86,6 +86,6 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
         plt.imshow(image)
         plt.imshow(heatmaps_2d, cmap='viridis', alpha=heatmaps_2d*0.8)
 
-        output_path = os.path.join(output_dir, f"{task}_{i+3}") # i+3 equals line index in .csv
+        output_path = os.path.join(output_dir, f"{task}_{i+3}_64") # i+3 equals line index in .csv
         plt.savefig(output_path)
         plt.close()

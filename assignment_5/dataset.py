@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 import torch
+from torch.onnx import select_model_mode_for_export
 from torch.utils.data import DataLoader
 import csv
 import os
@@ -51,8 +52,7 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
                 event_resolutions[label[0]] = [width, height]
 
             # create numpy array with keypoint coordinates and add it to keypoints
-            # TODO: Ask why they added offset_columns; in case new keypoint types are added? Wrong to do it like this?
-            keypoints_vector = np.array(label[-17*3:]).astype(np.int32) # take last 17*3 list entries, which contain keypoint values
+            keypoints_vector = np.array(label[-17*3:]).astype(np.int32)
             keypoints_matrix = keypoints_vector.reshape(17, 3)
             keypoints.append(keypoints_matrix.astype(np.ndarray))
 
@@ -82,7 +82,7 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
 # Most of the following function is written by the deepseek chatbot.
 # Exercise 5.1 is a perfect example for something, I will use LLMs for in the future.
 # You will find the prompt in my submission folder. Feel free to deduct the points.
-# All other functions are 100% written by me!
+# All other functions are written by me!
 def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
     frame_paths, keypoints, _ = load_dataset(annotation_path, image_base_path)
 
@@ -202,7 +202,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         :return: adjusted image and heatmaps in train mode | adjusted image, original ground truth coordinates,
         resizing factor, and used bounding box in validation/test mode
         """
-        # open image with PIL
+        # open image as PIL
         image = Image.open(self._images[idx]).convert("RGB")
 
         # crop image to bounding box
@@ -289,7 +289,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         ### ROTATE ###
 
-        # put image into center of a new (possibly larger) array to keep entire rotated image visible
+        # put image into center of a new (likely larger) array to keep entire rotated image visible
         height_rotated = max(128,
                              np.ceil(np.abs(
                                  np.cos(np.deg2rad(rot))*height_unpadded
