@@ -255,8 +255,6 @@ class SkijumpDataset(torch.utils.data.Dataset):
             aug_y_translate = self._aug_translate * (2*random.random()-1) * image.shape[1]
             aug_x_translate = self._aug_translate * (2*random.random()-1) * image.shape[0]
             aug_flip = random.choice([self._aug_flip, False])
-            aug_rotate = 30
-            label = np.array([[0,0,2],[60,60,2],[127,127,2]])
             image, label = self.augment(img=image,
                                         label=label,
                                         rot=aug_rotate,
@@ -280,11 +278,10 @@ class SkijumpDataset(torch.utils.data.Dataset):
         """
         Geometric augmentation of the image and adjustment of the labels.
         """
+
         height, width = img.shape[:2]
         label = np.copy(label)
 
-        ### ROTATE ###
-        # "keep as much from the image as possible and cut as least as possible"
         # I would personally call augment() before padding the image, but I won't:
         # "augment() takes an image img as a numpy array that is already cropped and padded to quadratic size"
 
@@ -295,6 +292,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
         max_col = np.max(col_indices)
         img = img[:max_row+1, :max_col+1, :]
         height_unpadded, width_unpadded = img.shape[:2]
+
+        ### ROTATE ###
 
         # put image into center of a new (possibly larger) array to keep entire rotated image visible
         height_rotated = max(128,
@@ -368,28 +367,23 @@ class SkijumpDataset(torch.utils.data.Dataset):
             permutation_order = [0, 4, 5, 6, 1, 2, 3, 10, 11, 12, 7, 8, 9, 15, 16, 13, 14]
             label = label[permutation_order]
 
-        ### CROP, KEYPOINT VISIBILITY ###
-
-        # calculate to be cropped off margins
-        top_margin = np.floor((height_rotated - height) / 2).astype(int)
-        left_margin = np.floor((width_rotated - width) / 2).astype(int)
-
-        # TODO: test this part
-        # identify keypoints that will be cropped off and set their visibility to zero
-        invisible_keypoints = (
-                (label[:,1] < top_margin) |
-                (label[:,1] >= top_margin + height) |
-                (label[:,0] < left_margin) |
-                (label[:,0] >= left_margin + width)
-        )
-        label[invisible_keypoints,2] = 0
+        ### CROP ###
 
         # crop image back to input size and adjust keypoints accordingly
+        top_margin = np.floor((height_rotated - height) / 2).astype(int)
+        left_margin = np.floor((width_rotated - width) / 2).astype(int)
         img = img[top_margin : top_margin + height, left_margin : left_margin + width]
         label[:,1] = label[:,1] - top_margin
         label[:,0] = label[:,0] - left_margin
 
-        breakpoint()
+        # identify keypoints that have been cropped off and set their visibility to zero
+        invisible_keypoints = (
+                (label[:,1] < 0) |
+                (label[:,1] >= height) |
+                (label[:,0] < 0) |
+                (label[:,0] >= width)
+        )
+        label[invisible_keypoints,2] = 0
 
         return img, label
 
