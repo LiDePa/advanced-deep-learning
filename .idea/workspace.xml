@@ -7,6 +7,8 @@
     <list default="true" id="22379e84-5cce-4691-9c1a-6b13edf030e3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_5/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_5/heatmaps.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/heatmaps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_5/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,37 +44,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.4_1_(c).executor&quot;: &quot;Run&quot;,
-    &quot;Python.5_1.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.anno2cypher.executor&quot;: &quot;Run&quot;,
-    &quot;Python.app.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.assignment_3.executor&quot;: &quot;Run&quot;,
-    &quot;Python.assignment_5.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.assignment_5.main.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.plot_assignment_5.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.plot_heatmap_assignment_5.main.executor&quot;: &quot;Debug&quot;,
-    &quot;Python.reason.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/RazerBlade14/Documents/AdDeLe/advanced-deep-learning&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;Console&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.4_1_(c).executor": "Run",
+    "Python.5_1.executor": "Debug",
+    "Python.anno2cypher.executor": "Run",
+    "Python.app.executor": "Debug",
+    "Python.assignment_3.executor": "Run",
+    "Python.assignment_5.executor": "Debug",
+    "Python.assignment_5.main.executor": "Debug",
+    "Python.plot_assignment_5.main.executor": "Run",
+    "Python.plot_dataset_assignment_5.main.executor": "Run",
+    "Python.plot_heatmap_assignment_5.main.executor": "Debug",
+    "Python.reason.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/RazerBlade14/Documents/AdDeLe/advanced-deep-learning",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "Console",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning\assignment_4" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.assignment_5.main">
+  <component name="RunManager" selected="Python.plot_heatmap_assignment_5.main">
     <configuration name="4_1_(c)" type="PythonConfigurationType" factoryName="Python">
       <module name="advanced-deep-learning" />
       <option name="ENV_FILES" value="" />
@@ -193,7 +196,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="plot_assignment_5.main" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="plot_dataset_assignment_5.main" type="PythonConfigurationType" factoryName="Python">
       <module name="advanced-deep-learning" />
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -271,7 +274,7 @@
       <item itemvalue="Python.anno2cypher" />
       <item itemvalue="Python.app" />
       <item itemvalue="Python.assignment_5.main" />
-      <item itemvalue="Python.plot_assignment_5.main" />
+      <item itemvalue="Python.plot_dataset_assignment_5.main" />
       <item itemvalue="Python.plot_heatmap_assignment_5.main" />
       <item itemvalue="Python.reason" />
     </list>
@@ -319,7 +322,7 @@
       <workItem from="1737535270208" duration="26714000" />
       <workItem from="1737622448267" duration="23095000" />
       <workItem from="1737672986231" duration="1787000" />
-      <workItem from="1737707696535" duration="7866000" />
+      <workItem from="1737707696535" duration="15042000" />
     </task>
     <servers />
   </component>
@@ -333,6 +336,11 @@
           <url>file://$PROJECT_DIR$/assignment_3/engine.py</url>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/assignment_5/main.py</url>
+          <line>31</line>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
@@ -340,7 +348,7 @@
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_4_reason.coverage" NAME="assignment_4.reason Coverage Results" MODIFIED="1734389508446" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1736894824481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5_main.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1737715521867" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_heatmap_assignment_5_main.coverage" NAME="plot_heatmap_assignment_5.main Coverage Results" MODIFIED="1737406109256" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_heatmap_assignment_5_main.coverage" NAME="plot_heatmap_assignment_5.main Coverage Results" MODIFIED="1737726500397" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$cutout_assignment_3_training.coverage" NAME="trash dropout assignment_3.training Coverage Results" MODIFIED="1733268158271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_2_training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732972664306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732795192017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_2" />
@@ -355,6 +363,7 @@
     <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_cutout_assignment_3_training.coverage" NAME="logs cutout assignment_3.training Coverage Results" MODIFIED="1733251917199" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_assignment_5_main.coverage" NAME="plot_assignment_5.main Coverage Results" MODIFIED="1737138810307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$4_1__c_.coverage" NAME="4_1_(c) Coverage Results" MODIFIED="1734904516174" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_dataset_assignment_5_main.coverage" NAME="plot_dataset_assignment_5.main Coverage Results" MODIFIED="1737718407321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$5_1.coverage" NAME="5_1 Coverage Results" MODIFIED="1736860196046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$trash_cutout_assignment_3_training.coverage" NAME="trash cutout assignment_3.training Coverage Results" MODIFIED="1733391417824" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
   </component>

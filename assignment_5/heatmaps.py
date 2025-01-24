@@ -64,12 +64,10 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
         image, heatmaps = dataset_128[i]
         heatmaps_2d = np.max(heatmaps, axis=0)
 
-        image_np = image.numpy()
-        image_np = np.transpose(image_np, (1, 2, 0))
-        image_np[:, :, 0] = np.maximum(image_np[:, :, 0], heatmaps_2d)
+        image[:,:,0] = np.maximum(image[:,:,0], heatmaps_2d)
 
         plt.figure(figsize=(10,10))
-        plt.imshow(image_np)
+        plt.imshow(image)
 
         output_path = os.path.join(output_dir, f"plot_{i+3}") # i+3 equals line index in .csv
         plt.savefig(output_path)
@@ -78,14 +76,12 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
     for i in indices_64:
         image, heatmaps = dataset_64[i]
         heatmaps_2d_64 = np.max(heatmaps, axis=0)
-        heatmaps_2d_128 = np.repeat(np.repeat(heatmaps_2d_64, 2, 0),2,1)
+        heatmaps_2d = np.repeat(np.repeat(heatmaps_2d_64, 2, 0),2,1)
 
-        image_np = image.numpy()
-        image_np = np.transpose(image_np, (1, 2, 0))
-        image_np[:, :, 0] = np.maximum(image_np[:, :, 0], heatmaps_2d_128)
+        image[:, :, 0] = np.maximum(image[:, :, 0], heatmaps_2d)
 
         plt.figure(figsize=(10,10))
-        plt.imshow(image_np)
+        plt.imshow(image)
 
         output_path = os.path.join(output_dir, f"plot_{i+3}") # i+3 equals line index in .csv
         plt.savefig(output_path)

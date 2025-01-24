@@ -87,9 +87,10 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
 
 
 
-# most of the following function is written by the deepseek chatbot
-# Exercise 5.1 is a perfect example for something, I will from now on use LLMs for
-# you will find the prompt in my submission folder. Feel free to deduct points
+# Most of the following function is written by the deepseek chatbot.
+# Exercise 5.1 is a perfect example for something, I will use LLMs for in the future.
+# You will find the prompt in my submission folder. Feel free to deduct the points.
+# All other functions are 100% written by me!
 def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
     frame_paths, keypoints, _ = load_dataset(annotation_path, image_base_path)
 
@@ -173,7 +174,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
                  input_size=(128, 128),
                  validation_mode=False,
                  heatmap_downscale=1,
-                 normalize=True,
+                 normalize=True, # can be set to False for visualization plots
+                 augment = True,
                  aug_rotate=30.0,
                  aug_translate=0.1,
                  aug_flip=True):
@@ -186,7 +188,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         :param input_size: Size of the returned images, this is the input size of the model
         :param validation_mode: If True, the dataset returns heatmaps instead of coordinates and does not use data augmentation
         :param heatmap_downscale: Factor by which the heatmaps are smaller compared to the input size
-        :param normalize: If True, normalize the final tensor to ImageNet values
+        :param normalize: If True, normalize the image to ImageNet values
         :param aug_rotate: Augmentation: Maximum angle of random rotation
         :param aug_translate: Augmentation: Maximum proportion of random translation
         :param aug_flip: Augmentation: If true, image is horizontally flipped with a 50% chance
@@ -198,6 +200,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         self._validation_mode = validation_mode
         self._heatmap_downscale = heatmap_downscale
         self._normalize = normalize
+        self._augment = augment
         self._aug_rotate = aug_rotate
         self._aug_translate = aug_translate
         self._aug_flip = aug_flip
@@ -221,7 +224,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         # assume quadratic shape of input_size to avoid aspect ratio comparisons
         scaling_ratio = self._input_size[0] / max(image.size)
 
-        # bilinear scaling to input_size while keeping aspect ratio
+        # if cropped image is larger than input_size: bilinear scaling to input_size while keeping aspect ratio
         image.thumbnail(self._input_size)
 
         # convert to numpy array and normalize to ImageNet mean and standard deviation
@@ -243,26 +246,28 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         # training mode:
         elif not self._validation_mode:
-            # rescale a copy of the label and keep it as float values
-            label_scaled = np.zeros_like(self._labels[idx])
-            label_scaled[:, 0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
-            label_scaled[:, 1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
-            label_scaled[:, 2] = self._labels[idx][:, 2]
-            label = label_scaled
+            # adapt a copy of the label to the cropped image and scale the keypoints if cropped image has also been scaled
+            label = np.copy(self._labels[idx])
+            scaling_ratio = min(scaling_ratio, 1.0)
+            label[:, 0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
+            label[:, 1] = (self._labels[idx][:, 1] - self._boxes[idx][2]) * scaling_ratio
 
-            # introduce randomness to the parameters and call augment()
-            aug_rotate = self._aug_rotate * random.random()
-            aug_y_translate = self._aug_translate * (2*random.random()-1) * image.shape[1]
-            aug_x_translate = self._aug_translate * (2*random.random()-1) * image.shape[0]
-            aug_flip = random.choice([self._aug_flip, False])
-            image, label = self.augment(img=image,
-                                        label=label,
-                                        rot=aug_rotate,
-                                        trans_y=aug_y_translate,
-                                        trans_x=aug_x_translate,
-                                        flip=aug_flip)
+            if self._augment:
+                # introduce randomness to the augmentation parameters and call augment()
+                aug_rotate = self._aug_rotate * random.random()
+                aug_y_translate = self._aug_translate * (2 * random.random() - 1) * image.shape[1]
+                aug_x_translate = self._aug_translate * (2 * random.random() - 1) * image.shape[0]
+                aug_flip = random.choice([self._aug_flip, False])
+                image, label = self.augment(img=image,
+                                            label=label,
+                                            rot=aug_rotate,
+                                            trans_y=aug_y_translate,
+                                            trans_x=aug_x_translate,
+                                            flip=aug_flip)
 
             # create heatmaps depending on heatmap_downscale parameter
+            #TODO: labels are not getting downscaled, this was done in label_scaled several lines above
+            label[:,:2] = label[:,:2] / self._heatmap_downscale
             heatmap_size = self._input_size[0] / self._heatmap_downscale
             heatmap_size = int(round(heatmap_size))
             heatmap_size = (heatmap_size, heatmap_size)
@@ -282,10 +287,9 @@ class SkijumpDataset(torch.utils.data.Dataset):
         height, width = img.shape[:2]
         label = np.copy(label)
 
+        # unpad image back to the bounding-box crop
         # I would personally call augment() before padding the image, but I won't:
         # "augment() takes an image img as a numpy array that is already cropped and padded to quadratic size"
-
-        # unpad image back to the bounding-box crop
         img_greyscale = np.max(img, axis=2)
         row_indices, col_indices = np.where(img_greyscale != 0)
         max_row = np.max(row_indices)
