@@ -82,7 +82,7 @@ def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int
 # Most of the following function is written by the deepseek chatbot.
 # Exercise 5.1 is a perfect example for something, I will use LLMs for in the future.
 # You will find the prompt in my submission folder. Feel free to deduct the points.
-# All other functions are written by me!
+# All other code is written by me!
 def plot_dataset_confirmation(annotation_path: str, image_base_path: str, n_images: int):
     frame_paths, keypoints, _ = load_dataset(annotation_path, image_base_path)
 
@@ -238,7 +238,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
         # training mode:
         elif not self._validation_mode:
-            # adapt a copy of the label to the cropped image and scale the keypoints if cropped image has also been scaled
+            # adapt a copy of the label to the cropped image and scale the keypoints if cropped image has been scaled
             label = np.copy(self._labels[idx])
             scaling_ratio = min(scaling_ratio, 1.0)
             label[:, 0] = (self._labels[idx][:, 0] - self._boxes[idx][0]) * scaling_ratio
@@ -257,7 +257,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
                                             trans_x=aug_x_translate,
                                             flip=aug_flip)
 
-            # create heatmaps depending on heatmap_downscale parameter
+            # create heatmaps depending on heatmap_downscale
             label[:,:2] = label[:,:2] / self._heatmap_downscale
             heatmap_size = self._input_size[0] / self._heatmap_downscale
             heatmap_size = int(round(heatmap_size))

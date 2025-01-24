@@ -61,12 +61,12 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
     indices_128 = random.sample(range(len_dataset), 5)
     indices_64 = random.sample(range(len_dataset), 5)
 
+    # plot 5 samples with native resolution heatmaps
     for i in indices_128:
         image, heatmaps = dataset_128[i]
         heatmaps_2d = np.max(heatmaps, axis=0)
 
-        #image[:,:,0] = np.maximum(image[:,:,0], heatmaps_2d)
-
+        # draw figure and draw heatmaps with themselves as the alpha channel
         plt.figure(figsize=(10,10))
         plt.imshow(image)
         plt.imshow(heatmaps_2d, cmap='viridis', alpha=heatmaps_2d*0.8)
@@ -75,13 +75,13 @@ def plot_heatmap_confirmation(dataset_128: torch.utils.data.Dataset,
         plt.savefig(output_path)
         plt.close()
 
+    # plot 5 samples with upscaled 64 px heatmaps
     for i in indices_64:
         image, heatmaps = dataset_64[i]
         heatmaps_2d_64 = np.max(heatmaps, axis=0)
         heatmaps_2d = np.repeat(np.repeat(heatmaps_2d_64, 2, 0),2,1)
 
-        #image[:, :, 0] = np.maximum(image[:, :, 0], heatmaps_2d)
-
+        # draw figure and draw heatmaps with themselves as the alpha channel
         plt.figure(figsize=(10,10))
         plt.imshow(image)
         plt.imshow(heatmaps_2d, cmap='viridis', alpha=heatmaps_2d*0.8)
