@@ -4,7 +4,6 @@ import os
 import random
 import matplotlib.pyplot as plt
 import torch
-from torchvision.transforms.functional import to_pil_image
 
 
 def create_heatmaps(labels: np.ndarray, heatmap_size=(128, 128), sigma=2):

@@ -167,7 +167,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
                  validation_mode=False,
                  heatmap_downscale=1,
                  normalize=True, # can be set to False for visualization plots
-                 augment = True,
+                 augment=False,
                  aug_rotate=30.0,
                  aug_translate=0.1,
                  aug_flip=True):
@@ -181,6 +181,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         :param validation_mode: If True, the dataset returns heatmaps instead of coordinates and does not use data augmentation
         :param heatmap_downscale: Factor by which the heatmaps are smaller compared to the input size
         :param normalize: If True, normalize the image to ImageNet values
+        :param augment: Augments samples if true
         :param aug_rotate: Augmentation: Maximum angle of random rotation
         :param aug_translate: Augmentation: Maximum proportion of random translation
         :param aug_flip: Augmentation: If true, image is horizontally flipped with a 50% chance
@@ -385,7 +386,48 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
 def create_skijump_subsets(dataset_path: str, batch_size=16, image_size=(128, 128), heatmap_downscale=2) -> Tuple[
     DataLoader, DataLoader, DataLoader]:
-    # TODO initialize train, validation and test data loader and return them in this order
     # dataset_path is the path to the base folder containing the annotations and the images in subdirectories (do not rename
     # them or the files)
-    raise NotImplementedError
+
+    annotations_dir = os.path.join(dataset_path, "annotations")
+    images_dir = os.path.join(dataset_path, "annotated_frames")
+
+    train_images, train_labels, train_boxes = load_dataset(
+        os.path.join(annotations_dir, 'train.csv'),
+        images_dir
+    )
+    val_images, val_labels, val_boxes = load_dataset(
+        os.path.join(annotations_dir, 'val.csv'),
+        images_dir
+    )
+    test_images, test_labels, test_boxes = load_dataset(
+        os.path.join(annotations_dir, 'test.csv'),
+        images_dir,
+    )
+
+    train_dataset = SkijumpDataset(
+        train_images, train_labels, train_boxes,
+        input_size=image_size,
+        validation_mode=False,
+        heatmap_downscale=heatmap_downscale,
+        augment=True
+    )
+    val_dataset = SkijumpDataset(
+        val_images, val_labels, val_boxes,
+        input_size=image_size,
+        validation_mode=True,
+        heatmap_downscale=heatmap_downscale
+    )
+    test_dataset = SkijumpDataset(
+        test_images, test_labels, test_boxes,
+        input_size=image_size,
+        validation_mode=True,
+        heatmap_downscale=heatmap_downscale
+    )
+
+    # Create DataLoaders
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+
+    return train_loader, val_loader, test_loader
