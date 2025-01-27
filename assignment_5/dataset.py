@@ -16,8 +16,7 @@ from .heatmaps import create_heatmaps
 
 
 
-def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int = 4) -> Tuple[
-    List[str], List[np.ndarray], List[np.ndarray]]:
+def load_dataset(annotation_path: str, image_base_path: str, offset_columns: int = 4) -> Tuple[List[str], List[np.ndarray], List[np.ndarray]]:
 
     frame_paths = []
     keypoints = []
@@ -267,6 +266,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
             return image, heatmaps
 
+    def __len__(self):
+        return len(self._images)
 
 
     @classmethod
@@ -384,6 +385,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
 
 
 
+# the following function was added after submitting assignment_5
 def create_skijump_subsets(dataset_path: str, batch_size=16, image_size=(128, 128), heatmap_downscale=2) -> Tuple[
     DataLoader, DataLoader, DataLoader]:
     # dataset_path is the path to the base folder containing the annotations and the images in subdirectories (do not rename
@@ -400,7 +402,7 @@ def create_skijump_subsets(dataset_path: str, batch_size=16, image_size=(128, 12
         os.path.join(annotations_dir, 'val.csv'),
         images_dir
     )
-    test_images, test_labels, test_boxes = load_dataset(
+    test_images, test_labels, test_boxes = load_dataset(    # test_labels are not real labels, not sure what to do here atm
         os.path.join(annotations_dir, 'test.csv'),
         images_dir,
     )
@@ -416,18 +418,19 @@ def create_skijump_subsets(dataset_path: str, batch_size=16, image_size=(128, 12
         val_images, val_labels, val_boxes,
         input_size=image_size,
         validation_mode=True,
-        heatmap_downscale=heatmap_downscale
+        heatmap_downscale=heatmap_downscale,
+        augment=False
     )
-    test_dataset = SkijumpDataset(
+    test_dataset = SkijumpDataset(                          # test_labels are not real labels, not sure what to do here atm
         test_images, test_labels, test_boxes,
         input_size=image_size,
         validation_mode=True,
-        heatmap_downscale=heatmap_downscale
+        heatmap_downscale=heatmap_downscale,
+        augment=False
     )
 
-    # Create DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, drop_last=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, drop_last=False)
 
     return train_loader, val_loader, test_loader

@@ -1,12 +1,13 @@
 from venv import create
 
 from assignment_4.reasoning.reason import DATABASE_NAME
-from .dataset import plot_dataset_confirmation, load_dataset, SkijumpDataset
+from .dataset import plot_dataset_confirmation, load_dataset, SkijumpDataset, create_skijump_subsets
 from .heatmaps import plot_heatmap_confirmation
 from .metric import pck
 from argparse import ArgumentParser
 import os
 import numpy as np
+
 
 
 parser = ArgumentParser("Exercise 5")
@@ -22,6 +23,7 @@ parser.add_argument("--augmentation-confirmation", action="store_true")
 parser.add_argument("--test-pck", action="store_true")
 
 
+
 if __name__ == "__main__":
     args = parser.parse_args()
     dataset_root = args.dataset_root
@@ -33,6 +35,11 @@ if __name__ == "__main__":
     images, labels, boxes = load_dataset(train_annotation_path, image_base_path)
     dataset = SkijumpDataset(images, labels, boxes, validation_mode=False, heatmap_downscale=1, augment=False)
     sample = dataset[48]
+
+    # example dataloader creation for testing
+    train, val, test = create_skijump_subsets(dataset_root)
+
+
 
     if args.dataset_confirmation_images is not None:
         plot_dataset_confirmation(train_annotation_path, image_base_path, args.dataset_confirmation_images)
