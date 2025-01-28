@@ -1,6 +1,7 @@
 from venv import create
 
 from assignment_4.reasoning.reason import DATABASE_NAME
+from .models import ResNet18Model
 from .dataset import plot_dataset_confirmation, load_dataset, SkijumpDataset, create_skijump_subsets
 from .heatmaps import plot_heatmap_confirmation
 from .metric import pck
@@ -33,6 +34,9 @@ if __name__ == "__main__":
     # parse arguments and get dataset_root path
     args = parser.parse_args()
     dataset_root = args.dataset_root
+
+    # TESTING
+    model_resnet = ResNet18Model()
 
 
 

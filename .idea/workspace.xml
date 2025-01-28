@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="22379e84-5cce-4691-9c1a-6b13edf030e3" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/assignment_5/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_5/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_5/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/model.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -377,7 +377,8 @@
       <workItem from="1737758152415" duration="24000" />
       <workItem from="1737883322394" duration="11717000" />
       <workItem from="1737967438658" duration="4192000" />
-      <workItem from="1737975262556" duration="2442000" />
+      <workItem from="1737975262556" duration="5950000" />
+      <workItem from="1738053271202" duration="499000" />
     </task>
     <servers />
   </component>
@@ -390,11 +391,6 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/assignment_3/engine.py</url>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/assignment_5/main.py</url>
-          <line>38</line>
-          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
