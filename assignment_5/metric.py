@@ -4,7 +4,6 @@ import numpy as np
 
 
 # the following function was added after submitting assignment_5
-# it is mostly written by the deepseek chatbot and only slightly corrected
 def pck(annotations, predictions, torso_indices, t=0.1):
     annotations = np.array(annotations).astype(np.float32)  # Shape: (n_images, n_keypoints, 3)
     predictions = np.array(predictions).astype(np.float32)  # Shape: (n_images, n_keypoints, 3)
@@ -13,26 +12,31 @@ def pck(annotations, predictions, torso_indices, t=0.1):
     left_hip = annotations[:, torso_indices[0], :2].astype(np.float32)
     right_shoulder = annotations[:, torso_indices[1], :2].astype(np.float32)
 
-    # Calculate torso size as the Euclidean distance between the two torso keypoints
-    torso_size = np.linalg.norm(left_hip - right_shoulder, axis=1)
+    # calculate torso sizes and threshold distances
+    d_torso = np.linalg.norm(left_hip - right_shoulder, axis=1)
+    d_max = d_torso * t
 
-    # Calculate Euclidean distance between predicted and ground truth keypoints
-    distances = np.linalg.norm(annotations[..., :2] - predictions[..., :2], axis=2)
-
-    # Create a mask for visible keypoints
+    # replace all true invisible keypoints with nan
     visible_mask = annotations[..., 2] != 0
+    visible_mask_broadcast = visible_mask[:,:, np.newaxis]
+    annotations = np.where(visible_mask_broadcast, annotations, np.nan)
+    predictions = np.where(visible_mask_broadcast, predictions, np.nan)
 
-    # Calculate PCK for each keypoint
-    pck_per_keypoint = np.zeros(annotations.shape[1])
-    for k in range(annotations.shape[1]):
-        # Only consider visible keypoints
-        keypoint_distances = distances[:, k][visible_mask[:, k]]
-        keypoint_torso_size = torso_size[visible_mask[:, k]]
+    # identify where annotations and predictions disagree on keypoint visibility
+    visible_mask_pred = predictions[...,2] != 0
+    false_invisibles = ~visible_mask_pred & visible_mask
 
-        # Calculate PCK for this keypoint
-        pck_per_keypoint[k] = np.mean(keypoint_distances <= t * keypoint_torso_size)
+    # calculate distances between predicted and ground truth keypoints while keeping invisible keypoints as nan
+    d_kp = np.linalg.norm(annotations[..., :2] - predictions[..., :2], axis=2)
 
-    # Calculate overall PCK
-    overall_pck = np.mean(pck_per_keypoint)
+    # identify correct keypoints and carry invisible ones as nan
+    nan_mask = np.isnan(d_kp)
+    correct_mask = d_kp < d_max[:, np.newaxis]
+    correct_mask = correct_mask & ~false_invisibles
+    correct_mask = np.where(nan_mask, np.nan, correct_mask)
 
-    return overall_pck, pck_per_keypoint
+    # calculate pck per keypoint and overall pck
+    pck_per_keypoint = np.nanmean(correct_mask, axis=0)
+    pck_overall= np.mean(pck_per_keypoint)
+
+    return pck_overall, pck_per_keypoint

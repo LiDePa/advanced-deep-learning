@@ -78,13 +78,17 @@ if __name__ == "__main__":
 
     # execute argument test_pck
     if args.test_pck:
-        # test pck score
+        image_base_path = os.path.join(dataset_root, "annotated_frames")
         val_annotation_path = os.path.join(dataset_root, "annotations/val.csv")
+
+        # test pck score
         predictions_path = "assignment_5/predictions.csv"
         _, labels_val_test, _ = load_dataset(val_annotation_path, image_base_path)
         _, labels_predictions_test, _ = load_dataset(predictions_path, image_base_path)
         pck_overall_test_01, pck_keypoints_test_01 = pck(labels_val_test, labels_predictions_test, (10, 1), t=0.1)
         pck_overall_test_02, pck_keypoints_test_02 = pck(labels_val_test, labels_predictions_test, (10, 1), t=0.2)
+
+        # print rounded result
         pck_keypoints_test_01 = np.round(pck_keypoints_test_01, 3)
         pck_overall_test_01 = np.round(pck_overall_test_01, 3)
         pck_keypoints_test_02 = np.round(pck_keypoints_test_02, 3)
