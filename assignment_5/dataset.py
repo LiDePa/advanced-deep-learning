@@ -357,7 +357,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         if flip:
             # flip image and keypoints inside label
             img = cv2.flip(img, 1)
-            label[:,0] = width_rotated - label[:,0]
+            label[:,0] = width_rotated - label[:,0] - 1
 
             # permute label to account for mirroring of the depicted person
             permutation_order = [0, 4, 5, 6, 1, 2, 3, 10, 11, 12, 7, 8, 9, 15, 16, 13, 14]

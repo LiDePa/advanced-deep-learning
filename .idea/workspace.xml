@@ -6,9 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="22379e84-5cce-4691-9c1a-6b13edf030e3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_5/dataset.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/dataset.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_5/heatmaps.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/heatmaps.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_5/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_5/metric.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/metric.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_6/metric.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assignment_5/pck_predictions.txt" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_5/pck_predictions.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +58,7 @@
     &quot;Python.plot_assignment_5.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.plot_augmentation_assignment_5.main.executor&quot;: &quot;Run&quot;,
     &quot;Python.plot_dataset_assignment_5.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.plot_heatmap_assignment_5.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plot_heatmap_assignment_5.main.executor&quot;: &quot;Debug&quot;,
     &quot;Python.reason.executor&quot;: &quot;Run&quot;,
     &quot;Python.test_pck_assignment_5.main.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
@@ -77,7 +79,7 @@
       <recent name="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning\assignment_4" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test_pck_assignment_5.main">
+  <component name="RunManager" selected="Python.assignment_5.main">
     <configuration name="4_1_(c)" type="PythonConfigurationType" factoryName="Python">
       <module name="advanced-deep-learning" />
       <option name="ENV_FILES" value="" />
@@ -325,10 +327,10 @@
       <item itemvalue="Python.app" />
       <item itemvalue="Python.assignment_5.main" />
       <item itemvalue="Python.plot_augmentation_assignment_5.main" />
-      <item itemvalue="Python.test_pck_assignment_5.main" />
       <item itemvalue="Python.plot_dataset_assignment_5.main" />
       <item itemvalue="Python.plot_heatmap_assignment_5.main" />
       <item itemvalue="Python.reason" />
+      <item itemvalue="Python.test_pck_assignment_5.main" />
     </list>
   </component>
   <component name="SharedIndexes">
@@ -382,7 +384,12 @@
       <workItem from="1738053271202" duration="5627000" />
       <workItem from="1738059890224" duration="3390000" />
       <workItem from="1738063538043" duration="7099000" />
-      <workItem from="1738139411280" duration="2738000" />
+      <workItem from="1738139411280" duration="3380000" />
+      <workItem from="1738143274227" duration="108000" />
+      <workItem from="1738143475431" duration="13000" />
+      <workItem from="1738145340442" duration="3887000" />
+      <workItem from="1738229984734" duration="6549000" />
+      <workItem from="1738323547615" duration="2248000" />
     </task>
     <servers />
   </component>
@@ -396,6 +403,16 @@
           <url>file://$PROJECT_DIR$/assignment_3/engine.py</url>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/assignment_5/heatmaps.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/assignment_5/heatmaps.py</url>
+          <line>40</line>
+          <option name="timeStamp" value="13" />
+        </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
@@ -405,18 +422,13 @@
         </breakpoint>
       </default-breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="PythonConfigurationType">
-        <watch expression="distances" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1736894824481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_4_reason.coverage" NAME="assignment_4.reason Coverage Results" MODIFIED="1734389508446" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5_main.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1737977643054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_heatmap_assignment_5_main.coverage" NAME="plot_heatmap_assignment_5.main Coverage Results" MODIFIED="1737755426371" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$test_pck_assignment_5_main.coverage" NAME="test_pck_assignment_5.main Coverage Results" MODIFIED="1738141225133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_5_main.coverage" NAME="assignment_5.main Coverage Results" MODIFIED="1738325767386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_heatmap_assignment_5_main.coverage" NAME="plot_heatmap_assignment_5.main Coverage Results" MODIFIED="1738324387820" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$test_pck_assignment_5_main.coverage" NAME="test_pck_assignment_5.main Coverage Results" MODIFIED="1738143342838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$cutout_assignment_3_training.coverage" NAME="trash dropout assignment_3.training Coverage Results" MODIFIED="1733268158271" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_2_training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732972664306" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$training.coverage" NAME="assignment_2.training Coverage Results" MODIFIED="1732795192017" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/assignment_2" />

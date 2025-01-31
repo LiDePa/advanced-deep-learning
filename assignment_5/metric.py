@@ -5,14 +5,12 @@ import numpy as np
 
 # the following function was added after submitting assignment_5
 def pck(annotations, predictions, torso_indices, t=0.1):
-    annotations = np.array(annotations).astype(np.float32)  # Shape: (n_images, n_keypoints, 3)
-    predictions = np.array(predictions).astype(np.float32)  # Shape: (n_images, n_keypoints, 3)
-
-    # Extract torso keypoints (left hip and right shoulder)
-    left_hip = annotations[:, torso_indices[0], :2].astype(np.float32)
-    right_shoulder = annotations[:, torso_indices[1], :2].astype(np.float32)
+    annotations = np.array(annotations).astype(np.float32)
+    predictions = np.array(predictions).astype(np.float32)
 
     # calculate torso sizes and threshold distances
+    left_hip = annotations[:, torso_indices[0], :2].astype(np.float32)
+    right_shoulder = annotations[:, torso_indices[1], :2].astype(np.float32)
     d_torso = np.linalg.norm(left_hip - right_shoulder, axis=1)
     d_max = d_torso * t
 
@@ -35,7 +33,7 @@ def pck(annotations, predictions, torso_indices, t=0.1):
     correct_mask = correct_mask & ~false_invisibles
     correct_mask = np.where(nan_mask, np.nan, correct_mask)
 
-    # calculate pck per keypoint and overall pck
+    # calculate pck per keypoint and overall pck while ignoring true invisible keypoints marked as nan
     pck_per_keypoint = np.nanmean(correct_mask, axis=0)
     pck_overall= np.mean(pck_per_keypoint)
 

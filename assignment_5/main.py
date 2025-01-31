@@ -36,6 +36,20 @@ if __name__ == "__main__":
 
 
 
+
+    image_base_path = os.path.join(dataset_root, "annotated_frames")
+    annotation_path = os.path.join(dataset_root, "annotations/train.csv")
+    images, labels, boxes = load_dataset(annotation_path, image_base_path)
+    dataset = SkijumpDataset(images, labels, boxes,
+                                 validation_mode=False,
+                                 heatmap_downscale=1,
+                                 normalize=False,
+                                 augment=False)
+    print(dataset[92])
+
+
+
+
     # execute argument dataset_confirmation_images
     if args.dataset_confirmation_images is not None:
         image_base_path = os.path.join(dataset_root, "annotated_frames")
