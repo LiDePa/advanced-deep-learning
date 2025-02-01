@@ -7,7 +7,6 @@
     <list default="true" id="22379e84-5cce-4691-9c1a-6b13edf030e3" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assignment_6/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_6/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assignment_6/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/assignment_6/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,7 +51,7 @@
     "Python.assignment_3.executor": "Run",
     "Python.assignment_5.executor": "Debug",
     "Python.assignment_5.main.executor": "Debug",
-    "Python.assignment_6.main.executor": "Run",
+    "Python.assignment_6.main.executor": "Debug",
     "Python.plot_assignment_5.main.executor": "Run",
     "Python.plot_augmentation_assignment_5.main.executor": "Run",
     "Python.plot_dataset_assignment_5.main.executor": "Run",
@@ -388,7 +387,7 @@
       <workItem from="1738145340442" duration="3887000" />
       <workItem from="1738229984734" duration="6549000" />
       <workItem from="1738323547615" duration="4740000" />
-      <workItem from="1738402546520" duration="11236000" />
+      <workItem from="1738402546520" duration="13089000" />
     </task>
     <servers />
   </component>
@@ -401,6 +400,11 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/assignment_3/engine.py</url>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/assignment_6/main.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -434,7 +438,7 @@
     <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_dropout_assignment_3_training.coverage" NAME="logs dropout assignment_3.training Coverage Results" MODIFIED="1733410654774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$logs_filter_assignment_3_training.coverage" NAME="logs filter assignment_3.training Coverage Results" MODIFIED="1733340514781" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$anno2cypher.coverage" NAME="anno2cypher Coverage Results" MODIFIED="1734985534601" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
-    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_6_main.coverage" NAME="assignment_6.main Coverage Results" MODIFIED="1738403845361" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
+    <SUITE FILE_PATH="coverage/advanced_deep_learning$assignment_6_main.coverage" NAME="assignment_6.main Coverage Results" MODIFIED="1738426967678" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$plot_dataset_assignment_5_main.coverage" NAME="plot_dataset_assignment_5.main Coverage Results" MODIFIED="1737737147388" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="C:\Users\RazerBlade14\Documents\AdDeLe\advanced-deep-learning" />
     <SUITE FILE_PATH="coverage/advanced_deep_learning$5_1.coverage" NAME="5_1 Coverage Results" MODIFIED="1736860196046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>

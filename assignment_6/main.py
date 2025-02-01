@@ -38,8 +38,12 @@ if __name__ == "__main__":
 
 
     test_model = ResNet18Model(17)
-    print(test_model)
+    train_loader, val_loader, test_loader = create_skijump_subsets(dataset_root)
+    data_iter = iter(train_loader)
+    inputs, targets = next(data_iter)
+    test_output = test_model.forward(inputs)
 
+    breakpoint()
 
 
 

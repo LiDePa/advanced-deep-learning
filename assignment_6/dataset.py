@@ -234,6 +234,7 @@ class SkijumpDataset(torch.utils.data.Dataset):
         # validation mode:
         if self._validation_mode:
             image_name = os.path.basename(self._images[idx])
+            image = torch.tensor(image).permute(2, 0, 1)
             return image, self._labels[idx], scaling_ratio, self._boxes[idx], image_name
 
         # training mode:
@@ -263,6 +264,8 @@ class SkijumpDataset(torch.utils.data.Dataset):
             heatmap_size = int(round(heatmap_size))
             heatmap_size = (heatmap_size, heatmap_size)
             heatmaps = create_heatmaps(label, heatmap_size)
+
+            image = torch.tensor(image).permute(2, 0, 1)
 
             return image, heatmaps
 
