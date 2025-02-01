@@ -4,6 +4,7 @@ from assignment_4.reasoning.reason import DATABASE_NAME
 from .dataset import plot_dataset_confirmation, load_dataset, SkijumpDataset, create_skijump_subsets
 from .heatmaps import plot_heatmap_confirmation
 from .metric import pck
+from .models import ResNet18Model
 from argparse import ArgumentParser
 import os
 import numpy as np
@@ -36,16 +37,8 @@ if __name__ == "__main__":
 
 
 
-
-    image_base_path = os.path.join(dataset_root, "annotated_frames")
-    annotation_path = os.path.join(dataset_root, "annotations/train.csv")
-    images, labels, boxes = load_dataset(annotation_path, image_base_path)
-    dataset = SkijumpDataset(images, labels, boxes,
-                                 validation_mode=False,
-                                 heatmap_downscale=1,
-                                 normalize=False,
-                                 augment=False)
-    print(dataset[92])
+    test_model = ResNet18Model(17)
+    print(test_model)
 
 
 
